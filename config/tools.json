@@ -1,0 +1,71 @@
+{
+  "project": {
+    "name": "开发工具箱",
+    "description": "前端开发常用工具集合",
+    "version": "1.0.0"
+  },
+  "categories": [
+    {
+      "id": "media",
+      "name": "媒体处理",
+      "icon": "🎬",
+      "color": "#1ab370"
+    },
+    {
+      "id": "developer",
+      "name": "开发工具",
+      "icon": "💻",
+      "color": "#3498db"
+    },
+    {
+      "id": "converter",
+      "name": "格式转换",
+      "icon": "🔄",
+      "color": "#9b59b6"
+    },
+    {
+      "id": "utility",
+      "name": "实用工具",
+      "icon": "🛠️",
+      "color": "#e67e22"
+    }
+  ],
+  "tools": [
+    {
+      "id": "video-inspector",
+      "name": "视频播放诊断",
+      "icon": "🎬",
+      "description": "HTML5视频事件监控、日志分析、播放问题诊断",
+      "category": "media",
+      "path": "./tools/video-inspector/index.html",
+      "featured": true,
+      "tags": ["video", "debug", "html5"],
+      "version": "1.0.0",
+      "author": "Toolbox"
+    },
+    {
+      "id": "json-formatter",
+      "name": "JSON 格式化工具",
+      "icon": "🔧",
+      "description": "JSON 格式化、压缩、验证、树形视图、格式转换、数据统计",
+      "category": "developer",
+      "path": "./tools/json-formatter/index.html",
+      "featured": true,
+      "tags": ["json", "formatter", "validator", "converter"],
+      "version": "1.0.0",
+      "author": "Toolbox"
+    },
+    {
+      "id": "crypto-tool",
+      "name": "加密解密工具",
+      "icon": "🔐",
+      "description": "AES、DES、SHA 等多种加密算法,支持 Base64、Hex 编码,提供常用场景模板",
+      "category": "utility",
+      "path": "./tools/crypto-tool/index.html",
+      "featured": true,
+      "tags": ["crypto", "encrypt", "decrypt", "hash", "security"],
+      "version": "1.0.0",
+      "author": "Toolbox"
+    }
+  ]
+}

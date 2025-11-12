@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>视频播放诊断 - 开发工具箱</title>
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1e3a5f 0%,
+          #3d5a80 20%,
+          #ee6c4d 50%,
+          #f4a261 75%,
+          #e9c46a 100%
+        );
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .main-container {
+        max-width: 900px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .title {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        margin: 20px 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .video-source-panel {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .source-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+        -webkit-touch-callout: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .tab-btn.active {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .tab-btn:active {
+        transform: scale(0.95);
+      }
+
+      .source-content {
+        display: none;
+      }
+
+      .source-content.active {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .video-input {
+        flex: 1;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        font-size: 14px;
+        color: #2c3e50;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .video-input:focus {
+        border-color: #ee6c4d;
+        box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.2);
+      }
+
+      .file-upload-btn {
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(238, 108, 77, 0.3);
+        -webkit-touch-callout: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .file-upload-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .file-upload-btn:active {
+        transform: translateY(0);
+      }
+
+      .load-btn {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(238, 108, 77, 0.3);
+        -webkit-touch-callout: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .load-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .load-btn:active {
+        transform: translateY(0);
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .current-source {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        word-break: break-all;
+      }
+
+      .video-wrapper {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .close-btn:active {
+        transform: scale(0.9);
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+      }
+
+      .video-container:fullscreen {
+        z-index: auto;
+      }
+
+      .video-container:-webkit-full-screen {
+        z-index: auto;
+      }
+
+      .video-container:-moz-full-screen {
+        z-index: auto;
+      }
+
+      .video-container:-ms-fullscreen {
+        z-index: auto;
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+        display: block;
+        max-height: 70vh;
+      }
+
+      video:fullscreen {
+        max-height: 100vh;
+      }
+
+      video:-webkit-full-screen {
+        max-height: 100vh;
+      }
+
+      video:-moz-full-screen {
+        max-height: 100vh;
+      }
+
+      video:-ms-fullscreen {
+        max-height: 100vh;
+      }
+
+      .video-title {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+        color: white;
+        padding: 15px 20px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        font-size: 16px;
+        font-weight: 600;
+        z-index: 10;
+      }
+
+      .play-indicator {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        animation: fadeOut 0.5s ease;
+      }
+
+      .play-indicator.show {
+        display: flex;
+      }
+
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+      }
+
+      .play-indicator::before {
+        content: "";
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 15px 0 15px 25px;
+        border-color: transparent transparent transparent #ee6c4d;
+        margin-left: 5px;
+      }
+
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .modal-container {
+          padding: 10px;
+        }
+
+        .video-title {
+          font-size: 14px;
+          padding: 12px 15px;
+        }
+
+        .close-btn {
+          width: 35px;
+          height: 35px;
+          font-size: 20px;
+        }
+
+        .open-btn {
+          padding: 12px 30px;
+          font-size: 16px;
+        }
+      }
+
+      @media (orientation: landscape) and (max-width: 896px) {
+        .modal-container {
+          padding: 10px;
+          max-width: 100%;
+        }
+
+        video {
+          max-height: 90vh;
+        }
+      }
+
+      /* 日志面板样式 */
+      .log-panel {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-height: 600px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        min-height: 0; /* 防止内容溢出 */
+      }
+
+      .log-panel-container {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .log-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        flex-shrink: 0; /* 防止header被压缩 */
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .log-title {
+        color: white;
+        font-size: 18px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .log-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .log-clear-btn {
+        padding: 8px 18px;
+        background: rgba(255, 71, 87, 0.8);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(255, 71, 87, 0.3);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .log-clear-btn:hover {
+        background: rgba(255, 71, 87, 0.9);
+      }
+
+      .log-clear-btn:active {
+        transform: scale(0.95);
+        background: rgba(255, 71, 87, 1);
+      }
+
+      .log-diagnose-btn,
+      .log-copy-btn {
+        padding: 8px 18px;
+        background: rgba(238, 108, 77, 0.8);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(238, 108, 77, 0.3);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .log-diagnose-btn:hover,
+      .log-copy-btn:hover {
+        background: rgba(238, 108, 77, 0.9);
+      }
+
+      .log-diagnose-btn:active,
+      .log-copy-btn:active {
+        transform: scale(0.95);
+        background: rgba(238, 108, 77, 1);
+      }
+
+      .log-copy-btn.success {
+        background: rgba(42, 157, 143, 0.9);
+      }
+
+      .log-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding: 10px 2px 8px 2px; /* 顶部和底部增加padding,为角标留出空间 */
+        min-height: 48px; /* 确保容器有足够高度容纳按钮和角标 */
+        overflow-x: auto;
+        overflow-y: visible; /* 允许垂直溢出显示角标 */
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .log-tabs::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .log-tabs::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 2px;
+      }
+
+      .log-tabs::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+      }
+
+      .log-tab-btn {
+        position: relative; /* 为角标提供定位基准 */
+        flex-shrink: 0;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        overflow: visible; /* 允许角标溢出显示 */
+        /* iOS触摸优化 */
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+        -webkit-touch-callout: none;
+        user-select: none;
+        touch-action: manipulation;
+      }
+
+      .log-tab-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .log-tab-btn:active {
+        transform: scale(0.95);
+      }
+
+      .log-tab-btn.active {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .log-count {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+        border: 1.5px solid rgba(255, 255, 255, 0.9);
+        border-radius: 9px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 18px;
+        text-align: center;
+        color: white;
+        box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+      }
+
+      .log-tab-btn.active .log-count {
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        border-color: rgba(255, 255, 255, 1);
+        transform: scale(1.08);
+        box-shadow: 0 3px 10px rgba(238, 108, 77, 0.5);
+      }
+
+      .log-tab-text {
+        display: inline-block;
+        position: relative;
+        z-index: 1;
+      }
+
+      .log-content {
+        flex: 1;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 15px;
+        max-height: 450px;
+        min-height: 0; /* 防止flex子元素溢出 */
+      }
+
+      .log-item {
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 3px solid;
+        border-radius: 6px;
+        color: white;
+        font-size: 13px;
+        line-height: 1.6;
+        animation: logSlideIn 0.3s ease;
+        white-space: normal;
+        word-break: break-all;
+      }
+
+      @keyframes logSlideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .log-item.info {
+        border-color: #98c1d9;
+      }
+
+      .log-item.success {
+        border-color: #2a9d8f;
+      }
+
+      .log-item.warning {
+        border-color: #f39c12;
+      }
+
+      .log-item.error {
+        border-color: #e74c3c;
+      }
+
+      .log-time {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        margin-right: 10px;
+        font-weight: 600;
+        font-family: "Courier New", monospace;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 3px 8px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+
+      .log-type {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+
+      .log-type.info {
+        background: #98c1d9;
+      }
+
+      .log-type.success {
+        background: #2a9d8f;
+      }
+
+      .log-type.warning {
+        background: #f39c12;
+      }
+
+      .log-type.error {
+        background: #e74c3c;
+      }
+
+      .log-empty {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.4);
+        padding: 40px 20px;
+        font-size: 14px;
+      }
+
+      .log-content::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .log-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+
+      .log-content::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+      }
+
+      .log-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        .main-container {
+          gap: 16px;
+        }
+
+        .title {
+          font-size: 22px;
+          margin: 15px 0;
+        }
+
+        .video-source-panel {
+          padding: 16px;
+        }
+
+        .source-tabs {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .tab-btn {
+          padding: 12px 20px;
+          font-size: 13px;
+        }
+
+        .input-group {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .video-input {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+
+        .load-btn,
+        .file-upload-btn {
+          width: 100%;
+          padding: 10px 20px;
+          font-size: 13px;
+        }
+
+        .current-source {
+          font-size: 12px;
+          padding: 6px 10px;
+        }
+
+        .video-wrapper {
+          padding: 16px;
+        }
+
+        .video-title {
+          font-size: 14px;
+          padding: 12px 15px;
+        }
+
+        .log-panel {
+          max-height: 500px;
+          padding: 15px;
+        }
+
+        .log-header {
+          margin-bottom: 12px;
+          padding-bottom: 12px;
+        }
+
+        .log-title {
+          font-size: 16px;
+        }
+
+        .log-actions {
+          gap: 8px;
+        }
+
+        .log-clear-btn,
+        .log-diagnose-btn,
+        .log-copy-btn {
+          padding: 7px 14px;
+          font-size: 12px;
+        }
+
+        .log-tabs {
+          gap: 6px;
+          padding: 8px 2px 6px 2px;
+          min-height: 42px;
+        }
+
+        .log-tab-btn {
+          padding: 6px 12px;
+          font-size: 11px;
+        }
+
+        .log-count {
+          top: -8px;
+          right: -8px;
+          min-width: 16px;
+          height: 16px;
+          font-size: 9px;
+          line-height: 16px;
+          padding: 0 4px;
+          border-width: 1.5px;
+        }
+
+        .log-content {
+          max-height: 350px;
+          padding: 12px;
+        }
+
+        .log-item {
+          font-size: 12px;
+          padding: 8px 10px;
+          margin-bottom: 6px;
+        }
+
+        .log-time {
+          font-size: 11px;
+          padding: 2px 6px;
+        }
+
+        .log-type {
+          font-size: 10px;
+          padding: 2px 6px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .main-container {
+          gap: 12px;
+        }
+
+        .title {
+          font-size: 20px;
+          margin: 10px 0;
+        }
+
+        .video-source-panel {
+          padding: 12px;
+        }
+
+        .source-tabs {
+          gap: 6px;
+        }
+
+        .tab-btn {
+          padding: 10px 16px;
+          font-size: 12px;
+        }
+
+        .source-content {
+          gap: 8px;
+        }
+
+        .video-input {
+          padding: 9px 10px;
+          font-size: 12px;
+        }
+
+        .load-btn,
+        .file-upload-btn {
+          padding: 9px 16px;
+          font-size: 12px;
+        }
+
+        .current-source {
+          font-size: 11px;
+          padding: 5px 8px;
+        }
+
+        .video-wrapper {
+          padding: 12px;
+        }
+
+        .video-title {
+          font-size: 13px;
+          padding: 10px 12px;
+        }
+
+        .log-panel {
+          max-height: 450px;
+          padding: 12px;
+        }
+
+        .log-header {
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 10px;
+          padding-bottom: 10px;
+        }
+
+        .log-title {
+          font-size: 14px;
+          flex: 1 1 100%;
+        }
+
+        .log-actions {
+          gap: 6px;
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .log-clear-btn,
+        .log-diagnose-btn,
+        .log-copy-btn {
+          padding: 6px 12px;
+          font-size: 11px;
+          flex: 1;
+        }
+
+        .log-tabs {
+          gap: 4px;
+          padding: 6px 2px 4px 2px;
+          min-height: 38px;
+        }
+
+        .log-tab-btn {
+          padding: 5px 10px;
+          font-size: 10px;
+        }
+
+        .log-count {
+          top: -6px;
+          right: -6px;
+          min-width: 14px;
+          height: 14px;
+          font-size: 8px;
+          line-height: 14px;
+          padding: 0 3px;
+          border-width: 1px;
+        }
+
+        .log-content {
+          max-height: 300px;
+          padding: 10px;
+        }
+
+        .log-item {
+          font-size: 11px;
+          padding: 6px 8px;
+          margin-bottom: 5px;
+        }
+
+        .log-time {
+          font-size: 10px;
+          padding: 2px 5px;
+          margin-right: 6px;
+        }
+
+        .log-type {
+          font-size: 9px;
+          padding: 1px 5px;
+          margin-right: 6px;
+        }
+
+        .log-empty {
+          padding: 30px 15px;
+          font-size: 13px;
+        }
+      }
+
+      /* 主题设置按钮 */
+      .theme-toggle-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        font-size: 26px;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .theme-toggle-btn:hover {
+        transform: scale(1.1) rotate(15deg);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .theme-toggle-btn:active {
+        transform: scale(0.95);
+      }
+
+      @media (max-width: 768px) {
+        .theme-toggle-btn {
+          width: 48px;
+          height: 48px;
+          font-size: 22px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 主题设置按钮 -->
+    <button
+      class="theme-toggle-btn"
+      onclick="openThemeSelector()"
+      title="主题设置"
+    >
+      🎨
+    </button>
+
+    <a href="../../index.html" class="back-home-btn">返回首页</a>
+    <div class="main-container">
+      <h1 class="title">📹 视频播放诊断</h1>
+
+      <div class="video-source-panel">
+        <div class="source-tabs">
+          <button class="tab-btn active" data-tab="url">🌐 在线地址</button>
+          <button class="tab-btn" data-tab="local">📁 本地文件</button>
+        </div>
+
+        <div class="source-content active" id="urlContent">
+          <div class="input-group">
+            <input
+              type="text"
+              class="video-input"
+              id="videoUrlInput"
+              placeholder="输入视频URL地址 (支持 mp4, webm, ogg 等格式)"
+            />
+            <button class="load-btn" id="loadUrlBtn">加载</button>
+          </div>
+          <div class="current-source" id="currentUrlSource">当前:</div>
+        </div>
+
+        <div class="source-content" id="localContent">
+          <div class="input-group">
+            <input
+              type="file"
+              class="file-input"
+              id="fileInput"
+              accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo,video/x-matroska,.mp4,.webm,.ogg,.mov,.avi,.mkv,.mpeg,.mpg,.3gp,.flv,.m4v"
+            />
+            <button class="file-upload-btn" id="uploadBtn">
+              📤 选择本地视频
+            </button>
+          </div>
+          <div class="current-source" id="currentLocalSource">未选择文件</div>
+        </div>
+      </div>
+
+      <div class="video-wrapper">
+        <div class="video-container">
+          <div class="video-title"></div>
+
+          <div class="play-indicator" id="playIndicator"></div>
+
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+          </div>
+
+          <video
+            id="videoPlayer"
+            src=""
+            controls
+            muted
+            playsinline
+            preload="metadata"
+          ></video>
+        </div>
+      </div>
+
+      <div class="log-panel" id="logPanel">
+        <div class="log-panel-container">
+          <div class="log-header">
+            <!-- <div class="log-title">
+              <span>📋</span>
+              <span>日志</span>
+            </div> -->
+            <div class="log-actions">
+              <button class="log-diagnose-btn" id="logDiagnoseBtn">
+                🔍 诊断
+              </button>
+              <button class="log-copy-btn" id="logCopyBtn">📋 复制</button>
+              <button class="log-clear-btn" id="logClearBtn">清空日志</button>
+            </div>
+          </div>
+
+          <div class="log-tabs">
+            <button class="log-tab-btn active" data-log-type="all">
+              <span class="log-tab-text">全部</span
+              ><span class="log-count" id="countAll">0</span>
+            </button>
+            <button class="log-tab-btn" data-log-type="info">
+              <span class="log-tab-text">信息</span
+              ><span class="log-count" id="countInfo">0</span>
+            </button>
+            <button class="log-tab-btn" data-log-type="success">
+              <span class="log-tab-text">成功</span
+              ><span class="log-count" id="countSuccess">0</span>
+            </button>
+            <button class="log-tab-btn" data-log-type="warning">
+              <span class="log-tab-text">警告</span
+              ><span class="log-count" id="countWarning">0</span>
+            </button>
+            <button class="log-tab-btn" data-log-type="error">
+              <span class="log-tab-text">错误</span
+              ><span class="log-count" id="countError">0</span>
+            </button>
+          </div>
+
+          <div class="log-content" id="logContent">
+            <div class="log-empty">暂无日志记录</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const videoPlayer = document.getElementById("videoPlayer");
+      const playIndicator = document.getElementById("playIndicator");
+      const loading = document.getElementById("loading");
+      const logPanel = document.getElementById("logPanel");
+      const logClearBtn = document.getElementById("logClearBtn");
+      const logDiagnoseBtn = document.getElementById("logDiagnoseBtn");
+      const logCopyBtn = document.getElementById("logCopyBtn");
+      const logContent = document.getElementById("logContent");
+      const videoUrlInput = document.getElementById("videoUrlInput");
+      const loadUrlBtn = document.getElementById("loadUrlBtn");
+      const fileInput = document.getElementById("fileInput");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const currentUrlSource = document.getElementById("currentUrlSource");
+      const currentLocalSource = document.getElementById("currentLocalSource");
+      const videoTitle = document.querySelector(".video-title");
+
+      let videoLogs = [];
+      let currentVideoFile = null;
+      let lastRenderedLogCount = 0; // 记录上次渲染的日志数量
+      let autoScroll = true; // 是否自动滚动到底部
+      let currentLogFilter = "all"; // 当前日志过滤类型
+
+      // 节流变量
+      let progressLogThrottle = null;
+      let lastProgressLog = 0;
+
+      // 日志类型统计
+      let logCounts = {
+        all: 0,
+        info: 0,
+        success: 0,
+        warning: 0,
+        error: 0
+      };
+
+      // 视频源Tab切换功能
+      const tabBtns = document.querySelectorAll(".tab-btn");
+      const sourceContents = document.querySelectorAll(".source-content");
+
+      // 日志类型Tab切换功能
+      const logTabBtns = document.querySelectorAll(".log-tab-btn");
+      const countElements = {
+        all: document.getElementById("countAll"),
+        info: document.getElementById("countInfo"),
+        success: document.getElementById("countSuccess"),
+        warning: document.getElementById("countWarning"),
+        error: document.getElementById("countError")
+      };
+
+      // 视频源Tab切换
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const tab = this.getAttribute("data-tab");
+
+          tabBtns.forEach((b) => b.classList.remove("active"));
+          sourceContents.forEach((c) => c.classList.remove("active"));
+
+          this.classList.add("active");
+          if (tab === "url") {
+            document.getElementById("urlContent").classList.add("active");
+          } else {
+            document.getElementById("localContent").classList.add("active");
+          }
+
+          addLog(
+            `切换到${tab === "url" ? "在线地址" : "本地文件"}模式`,
+            "info"
+          );
+        });
+      });
+
+      // 日志类型Tab切换
+      logTabBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const logType = this.getAttribute("data-log-type");
+
+          logTabBtns.forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          currentLogFilter = logType;
+
+          // 重新渲染日志列表
+          lastRenderedLogCount = 0;
+          logContent.innerHTML = "";
+          renderLogs();
+        });
+      });
+
+      // 更新日志计数显示
+      function updateLogCounts() {
+        Object.keys(logCounts).forEach((type) => {
+          if (countElements[type]) {
+            const count = logCounts[type];
+            countElements[type].textContent = count > 99 ? "99+" : count;
+          }
+        });
+      }
+
+      // 加载在线视频
+      loadUrlBtn.addEventListener("click", function () {
+        const url = videoUrlInput.value.trim();
+
+        if (!url) {
+          alert("请输入视频URL地址");
+          return;
+        }
+
+        addLog(`准备加载在线视频: ${url}`, "info");
+
+        // 释放之前的本地文件URL
+        if (currentVideoFile) {
+          URL.revokeObjectURL(currentVideoFile);
+          currentVideoFile = null;
+          addLog("已释放之前的本地文件URL", "info");
+        }
+
+        // 先重置视频元素
+        videoPlayer.pause();
+        videoPlayer.removeAttribute("src");
+        videoPlayer.load();
+
+        addLog("视频元素已重置,准备设置新源", "info");
+
+        // 设置新源
+        videoPlayer.src = url;
+        currentUrlSource.textContent = `当前: ${url}`;
+        videoTitle.textContent = "在线视频";
+
+        addLog("新视频源已设置,开始加载...", "info");
+
+        // 尝试加载
+        videoPlayer.load();
+
+        // 延迟检查加载状态
+        setTimeout(function () {
+          addLog(
+            `3秒后状态检查 - 网络状态: ${videoPlayer.networkState}, 就绪状态: ${videoPlayer.readyState}`,
+            "info"
+          );
+          if (videoPlayer.networkState === 3) {
+            addLog("检测到网络错误状态,可能是CORS或网络连接问题", "error");
+          }
+        }, 3000);
+      });
+
+      // 支持回车键加载
+      videoUrlInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          loadUrlBtn.click();
+        }
+      });
+
+      // 选择本地文件
+      uploadBtn.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+
+        if (!file) {
+          return;
+        }
+
+        // 支持的视频格式列表
+        const supportedVideoTypes = [
+          "video/mp4",
+          "video/webm",
+          "video/ogg",
+          "video/quicktime",
+          "video/x-msvideo",
+          "video/x-matroska",
+          "video/mpeg",
+          "video/3gpp",
+          "video/x-flv"
+        ];
+
+        // 支持的视频扩展名
+        const supportedExtensions = [
+          ".mp4",
+          ".webm",
+          ".ogg",
+          ".mov",
+          ".avi",
+          ".mkv",
+          ".mpeg",
+          ".mpg",
+          ".3gp",
+          ".flv",
+          ".m4v"
+        ];
+
+        // 获取文件扩展名
+        const fileName = file.name.toLowerCase();
+        const fileExtension = fileName.substring(fileName.lastIndexOf("."));
+
+        // 双重验证:检查MIME类型和文件扩展名
+        const isVideoType =
+          file.type.startsWith("video/") ||
+          supportedVideoTypes.includes(file.type);
+        const hasVideoExtension = supportedExtensions.includes(fileExtension);
+
+        if (!isVideoType && !hasVideoExtension) {
+          alert(
+            `请选择视频文件!\n\n支持的格式: ${supportedExtensions.join(", ")}`
+          );
+          fileInput.value = ""; // 清空文件选择
+          addLog(
+            `文件类型错误: ${file.name} (${file.type || "未知类型"})`,
+            "error"
+          );
+          return;
+        }
+
+        // 检查文件大小 (建议不超过500MB)
+        const maxSize = 500 * 1024 * 1024; // 500MB
+        if (file.size > maxSize) {
+          const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+          if (
+            !confirm(
+              `文件较大 (${sizeMB} MB),加载可能需要较长时间。\n是否继续?`
+            )
+          ) {
+            fileInput.value = "";
+            return;
+          }
+        }
+
+        // 释放之前的URL
+        if (currentVideoFile) {
+          URL.revokeObjectURL(currentVideoFile);
+        }
+
+        // 创建本地文件URL
+        currentVideoFile = URL.createObjectURL(file);
+        videoPlayer.src = currentVideoFile;
+        videoPlayer.load();
+
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        currentLocalSource.textContent = `${file.name} (${fileSize} MB)`;
+        videoTitle.textContent = file.name;
+
+        addLog(
+          `加载本地视频: ${file.name} (${fileSize} MB, ${
+            file.type || "未知类型"
+          })`,
+          "success"
+        );
+      });
+
+      function addLog(message, type = "info") {
+        const now = new Date();
+        // 格式化时间为: 2025-01-10 14:32:15
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        const time = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        videoLogs.push({
+          time,
+          message,
+          type,
+          timestamp: now.getTime()
+        });
+
+        // 更新统计
+        logCounts.all++;
+        if (logCounts[type] !== undefined) {
+          logCounts[type]++;
+        }
+        updateLogCounts();
+
+        renderLogs();
+      }
+
+      function renderLogs() {
+        // 过滤日志
+        const filteredLogs =
+          currentLogFilter === "all"
+            ? videoLogs
+            : videoLogs.filter((log) => log.type === currentLogFilter);
+
+        if (filteredLogs.length === 0) {
+          logContent.innerHTML = '<div class="log-empty">暂无此类型日志</div>';
+          lastRenderedLogCount = 0;
+          return;
+        }
+
+        // 增量渲染:仅添加新日志,避免全量重绘
+        const newLogsCount = filteredLogs.length - lastRenderedLogCount;
+
+        if (newLogsCount > 0) {
+          // 首次渲染或切换过滤后
+          if (lastRenderedLogCount === 0) {
+            const emptyDiv = logContent.querySelector(".log-empty");
+            if (emptyDiv) {
+              emptyDiv.remove();
+            }
+          }
+
+          // 仅渲染新增的日志
+          const fragment = document.createDocumentFragment();
+          const newLogs = filteredLogs.slice(lastRenderedLogCount);
+
+          newLogs.forEach((log) => {
+            const logItem = document.createElement("div");
+            logItem.className = `log-item ${log.type}`;
+            logItem.setAttribute("data-log-type", log.type);
+            logItem.innerHTML = `
+              <span class="log-time">${log.time}</span>
+              <span class="log-type ${
+                log.type
+              }">${log.type.toUpperCase()}</span>
+              <span class="log-message">${log.message}</span>
+            `;
+            fragment.appendChild(logItem);
+          });
+
+          logContent.appendChild(fragment);
+          lastRenderedLogCount = filteredLogs.length;
+
+          // 只有在自动滚动模式下才滚动到底部
+          if (autoScroll) {
+            logContent.scrollTop = logContent.scrollHeight;
+          }
+        }
+      }
+
+      function clearLogs() {
+        videoLogs = [];
+        lastRenderedLogCount = 0;
+
+        // 重置计数
+        logCounts = {
+          all: 0,
+          info: 0,
+          success: 0,
+          warning: 0,
+          error: 0
+        };
+        updateLogCounts();
+
+        renderLogs();
+      }
+
+      // 监听用户滚动,判断是否禁用自动滚动
+      logContent.addEventListener("scroll", function () {
+        const isAtBottom =
+          logContent.scrollHeight -
+            logContent.scrollTop -
+            logContent.clientHeight <
+          50;
+        autoScroll = isAtBottom;
+      });
+
+      // 清空日志按钮
+      function handleClearLogs(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        clearLogs();
+        addLog("用户清空了日志", "info");
+      }
+
+      logClearBtn.addEventListener("click", handleClearLogs);
+      logClearBtn.addEventListener("touchend", function (e) {
+        e.preventDefault();
+        handleClearLogs(e);
+      });
+
+      // 诊断按钮 - 实时输出当前视频状态
+      function handleDiagnose(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        addLog("========== 开始诊断 ==========", "info");
+
+        // 设备信息
+        const userAgent = navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+        const isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+        const isWeChat = /MicroMessenger/.test(userAgent);
+
+        addLog(`当前设备: ${isIOS ? "iOS" : "其他"}`, "info");
+        addLog(
+          `当前浏览器: ${isSafari ? "Safari" : isWeChat ? "微信" : "其他"}`,
+          "info"
+        );
+
+        // 视频元素状态
+        addLog(`视频源: ${videoPlayer.src || "未设置"}`, "info");
+        addLog(
+          `视频源长度: ${videoPlayer.src ? videoPlayer.src.length : 0}字符`,
+          "info"
+        );
+        addLog(
+          `就绪状态: ${videoPlayer.readyState} (0=未加载,1=元数据,2=当前帧,3=未来数据,4=足够)`,
+          videoPlayer.readyState >= 2 ? "success" : "warning"
+        );
+        addLog(
+          `网络状态: ${videoPlayer.networkState} (0=空闲,1=加载中,2=无源,3=网络错误)`,
+          videoPlayer.networkState === 3 ? "error" : "info"
+        );
+        addLog(`是否暂停: ${videoPlayer.paused}`, "info");
+        addLog(`当前时间: ${videoPlayer.currentTime.toFixed(2)}秒`, "info");
+        addLog(
+          `总时长: ${
+            isNaN(videoPlayer.duration)
+              ? "未知"
+              : videoPlayer.duration.toFixed(2) + "秒"
+          }`,
+          "info"
+        );
+        addLog(
+          `视频分辨率: ${videoPlayer.videoWidth}x${videoPlayer.videoHeight}`,
+          videoPlayer.videoWidth > 0 ? "success" : "warning"
+        );
+
+        // 缓冲信息
+        if (videoPlayer.buffered.length > 0) {
+          const bufferedEnd = videoPlayer.buffered.end(
+            videoPlayer.buffered.length - 1
+          );
+          addLog(`已缓冲: ${bufferedEnd.toFixed(2)}秒`, "success");
+        } else {
+          addLog(`已缓冲: 0秒`, "warning");
+        }
+
+        // 错误信息
+        if (videoPlayer.error) {
+          const errorCode = videoPlayer.error.code;
+          const errorNames = [
+            "",
+            "ABORTED",
+            "NETWORK",
+            "DECODE",
+            "SRC_NOT_SUPPORTED"
+          ];
+          addLog(
+            `错误代码: ${errorCode} (${errorNames[errorCode] || "未知"})`,
+            "error"
+          );
+          addLog(`错误消息: ${videoPlayer.error.message || "无"}`, "error");
+        } else {
+          addLog(`无错误`, "success");
+        }
+
+        // 网络信息
+        if (
+          navigator.connection ||
+          navigator.mozConnection ||
+          navigator.webkitConnection
+        ) {
+          const connection =
+            navigator.connection ||
+            navigator.mozConnection ||
+            navigator.webkitConnection;
+          addLog(
+            `网络类型: ${
+              connection.effectiveType || connection.type || "未知"
+            }`,
+            "info"
+          );
+          if (connection.downlink) {
+            addLog(`下载速度: ${connection.downlink} Mbps`, "info");
+          }
+        }
+
+        // 视频格式支持
+        const mp4Support = videoPlayer.canPlayType(
+          'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+        );
+        addLog(
+          `MP4支持: ${mp4Support || "不支持"}`,
+          mp4Support ? "success" : "error"
+        );
+
+        // 建议
+        if (videoPlayer.readyState === 0) {
+          addLog("⚠️ 建议: 视频未加载,尝试点击视频或刷新页面", "warning");
+        }
+        if (videoPlayer.networkState === 3) {
+          addLog("⚠️ 建议: 网络错误,检查视频URL是否可访问", "error");
+        }
+        if (isIOS && videoPlayer.paused && videoPlayer.readyState === 0) {
+          addLog("⚠️ iOS提示: 点击视频播放按钮激活加载", "warning");
+        }
+
+        addLog("========== 诊断完成 ==========", "info");
+      }
+
+      logDiagnoseBtn.addEventListener("click", handleDiagnose);
+      logDiagnoseBtn.addEventListener("touchend", function (e) {
+        e.preventDefault();
+        handleDiagnose(e);
+      });
+
+      // 一键复制日志功能
+      function handleCopyLogs(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        if (videoLogs.length === 0) {
+          alert("暂无日志可复制");
+          return;
+        }
+
+        // 格式化日志为文本
+        const logsText = videoLogs
+          .map(
+            (log) => `[${log.time}] [${log.type.toUpperCase()}] ${log.message}`
+          )
+          .join("\n");
+
+        // 复制到剪贴板
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(logsText)
+            .then(() => {
+              // 显示成功提示
+              logCopyBtn.textContent = "✅ 已复制";
+              logCopyBtn.classList.add("success");
+
+              setTimeout(() => {
+                logCopyBtn.textContent = "📋 复制";
+                logCopyBtn.classList.remove("success");
+              }, 2000);
+
+              addLog(`已复制 ${videoLogs.length} 条日志到剪贴板`, "success");
+            })
+            .catch((err) => {
+              console.error("复制失败:", err);
+              alert("复制失败,请手动选择文本复制");
+            });
+        } else {
+          // 降级方案:使用textarea
+          const textarea = document.createElement("textarea");
+          textarea.value = logsText;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+
+          try {
+            const successful = document.execCommand("copy");
+            if (successful) {
+              logCopyBtn.textContent = "✅ 已复制";
+              logCopyBtn.classList.add("success");
+
+              setTimeout(() => {
+                logCopyBtn.textContent = "📋 复制";
+                logCopyBtn.classList.remove("success");
+              }, 2000);
+
+              addLog(`已复制 ${videoLogs.length} 条日志到剪贴板`, "success");
+            } else {
+              alert("复制失败,请手动选择文本复制");
+            }
+          } catch (err) {
+            console.error("复制失败:", err);
+            alert("复制失败,请手动选择文本复制");
+          } finally {
+            document.body.removeChild(textarea);
+          }
+        }
+      }
+
+      logCopyBtn.addEventListener("click", handleCopyLogs);
+      logCopyBtn.addEventListener("touchend", function (e) {
+        e.preventDefault();
+        handleCopyLogs(e);
+      });
+
+      videoPlayer.addEventListener("loadstart", function () {
+        console.log("视频开始加载");
+        addLog("视频开始加载", "info");
+        loading.classList.add("show");
+      });
+
+      videoPlayer.addEventListener("canplay", function () {
+        console.log("视频可以播放");
+        addLog("视频已准备就绪,可以播放", "success");
+        loading.classList.remove("show");
+      });
+
+      videoPlayer.addEventListener("play", function () {
+        console.log("视频开始播放");
+        const currentTime = Math.floor(videoPlayer.currentTime);
+        addLog(`视频开始播放 (位置: ${currentTime}秒)`, "success");
+        showPlayIndicator();
+      });
+
+      videoPlayer.addEventListener("pause", function () {
+        console.log("视频已暂停");
+        const currentTime = Math.floor(videoPlayer.currentTime);
+        addLog(`视频已暂停 (位置: ${currentTime}秒)`, "warning");
+      });
+
+      videoPlayer.addEventListener("ended", function () {
+        console.log("视频播放结束");
+        addLog("视频播放结束", "success");
+      });
+
+      let lastLoggedTime = -1;
+      videoPlayer.addEventListener("timeupdate", function () {
+        const currentTime = Math.floor(videoPlayer.currentTime);
+        const duration = Math.floor(videoPlayer.duration);
+
+        if (
+          currentTime % 30 === 0 &&
+          currentTime !== lastLoggedTime &&
+          currentTime > 0
+        ) {
+          lastLoggedTime = currentTime;
+          const progress = ((currentTime / duration) * 100).toFixed(1);
+          addLog(
+            `播放进度: ${currentTime}秒 / ${duration}秒 (${progress}%)`,
+            "info"
+          );
+        }
+      });
+
+      videoPlayer.addEventListener("volumechange", function () {
+        console.log("音量变化:", videoPlayer.volume);
+        const volume = (videoPlayer.volume * 100).toFixed(0);
+        const muteStatus = videoPlayer.muted ? " (已静音)" : "";
+        addLog(`音量调整为: ${volume}%${muteStatus}`, "info");
+      });
+
+      videoPlayer.addEventListener("error", function (e) {
+        console.error("视频加载错误:", e);
+
+        // 详细的错误信息
+        let errorMsg = "视频加载失败";
+        let errorDetail = "";
+
+        if (videoPlayer.error) {
+          const errorCode = videoPlayer.error.code;
+          const errorMessage = videoPlayer.error.message;
+
+          switch (errorCode) {
+            case 1:
+              errorDetail = "MEDIA_ERR_ABORTED: 用户中止了视频加载";
+              break;
+            case 2:
+              errorDetail = "MEDIA_ERR_NETWORK: 网络错误,视频下载失败";
+              break;
+            case 3:
+              errorDetail = "MEDIA_ERR_DECODE: 视频解码失败,可能格式不支持";
+              break;
+            case 4:
+              errorDetail =
+                "MEDIA_ERR_SRC_NOT_SUPPORTED: 视频格式或MIME类型不支持";
+              break;
+            default:
+              errorDetail = `未知错误 (代码: ${errorCode})`;
+          }
+
+          addLog(`${errorMsg}: ${errorDetail}`, "error");
+          if (errorMessage) {
+            addLog(`错误详情: ${errorMessage}`, "error");
+          }
+        } else {
+          addLog(errorMsg, "error");
+        }
+
+        addLog(`视频URL: ${videoPlayer.src}`, "error");
+        addLog(`当前网络状态: ${videoPlayer.networkState}`, "error");
+        addLog(`当前就绪状态: ${videoPlayer.readyState}`, "error");
+
+        loading.classList.remove("show");
+      });
+
+      videoPlayer.addEventListener("waiting", function () {
+        console.log("视频缓冲中...");
+        addLog("视频正在缓冲...", "warning");
+        loading.classList.add("show");
+      });
+
+      videoPlayer.addEventListener("playing", function () {
+        console.log("视频继续播放");
+        addLog("缓冲完成,继续播放", "success");
+        loading.classList.remove("show");
+      });
+
+      function showPlayIndicator() {
+        playIndicator.classList.add("show");
+        setTimeout(() => {
+          playIndicator.classList.remove("show");
+        }, 500);
+      }
+
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        function (event) {
+          const now = Date.now();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        false
+      );
+
+      videoPlayer.addEventListener("fullscreenchange", function () {
+        console.log("全屏状态改变");
+        const isFullscreen =
+          document.fullscreenElement || document.webkitFullscreenElement;
+        if (isFullscreen) {
+          addLog("进入全屏模式", "info");
+        } else {
+          addLog("退出全屏模式", "info");
+        }
+      });
+
+      videoPlayer.addEventListener("loadedmetadata", function () {
+        const duration = Math.floor(videoPlayer.duration);
+        const width = videoPlayer.videoWidth;
+        const height = videoPlayer.videoHeight;
+        addLog(
+          `视频元数据加载完成 (时长: ${duration}秒, 分辨率: ${width}x${height})`,
+          "info"
+        );
+      });
+
+      videoPlayer.addEventListener("seeked", function () {
+        const currentTime = Math.floor(videoPlayer.currentTime);
+        addLog(`用户跳转到 ${currentTime}秒`, "info");
+      });
+
+      // iOS特有事件 - suspend (暂停下载)
+      videoPlayer.addEventListener("suspend", function () {
+        addLog("视频下载暂停 (suspend事件)", "warning");
+        addLog(
+          `暂停时网络状态: ${videoPlayer.networkState}, 就绪状态: ${videoPlayer.readyState}`,
+          "info"
+        );
+      });
+
+      // 数据加载进度 - 添加节流,每3秒最多记录一次
+      videoPlayer.addEventListener("progress", function () {
+        const now = Date.now();
+
+        // 节流:距离上次记录不足3秒则跳过
+        if (now - lastProgressLog < 3000) {
+          return;
+        }
+
+        if (videoPlayer.buffered.length > 0) {
+          const bufferedEnd = videoPlayer.buffered.end(
+            videoPlayer.buffered.length - 1
+          );
+          const duration = videoPlayer.duration;
+          if (duration > 0) {
+            const bufferedPercent = ((bufferedEnd / duration) * 100).toFixed(1);
+
+            // 只有缓冲进度变化明显(>=5%)才记录
+            const lastPercent = lastProgressLog
+              ? ((lastProgressLog / duration) * 100).toFixed(1)
+              : 0;
+            if (
+              Math.abs(bufferedPercent - lastPercent) >= 5 ||
+              lastProgressLog === 0
+            ) {
+              addLog(
+                `缓冲进度: ${bufferedPercent}% (${bufferedEnd.toFixed(
+                  1
+                )}秒/${duration.toFixed(1)}秒)`,
+                "info"
+              );
+              lastProgressLog = now;
+            }
+          }
+        }
+      });
+
+      // 可以开始播放但还没有足够数据
+      videoPlayer.addEventListener("canplaythrough", function () {
+        addLog("视频已缓冲足够数据,可以流畅播放", "success");
+      });
+
+      // 浏览器停止获取媒体数据
+      videoPlayer.addEventListener("stalled", function () {
+        addLog("视频数据获取停滞 (stalled事件)", "warning");
+        addLog(`停滞时网络状态: ${videoPlayer.networkState}`, "warning");
+      });
+
+      // loadeddata - 加载了当前帧数据
+      videoPlayer.addEventListener("loadeddata", function () {
+        addLog("视频当前帧数据加载完成", "success");
+        addLog(`加载后就绪状态: ${videoPlayer.readyState}`, "info");
+      });
+
+      // iOS可能需要用户交互才能播放
+      videoPlayer.addEventListener("click", function () {
+        if (videoPlayer.paused) {
+          addLog("用户点击视频尝试播放", "info");
+          videoPlayer.play().catch(function (error) {
+            addLog(`播放失败: ${error.name} - ${error.message}`, "error");
+          });
+        }
+      });
+
+      // 监听播放承诺的拒绝
+      const originalPlay = videoPlayer.play;
+      videoPlayer.play = function () {
+        const playPromise = originalPlay.apply(this, arguments);
+        if (playPromise !== undefined) {
+          playPromise
+            .then(function () {
+              addLog("播放成功启动", "success");
+            })
+            .catch(function (error) {
+              addLog(`播放被拒绝: ${error.name} - ${error.message}`, "error");
+              if (error.name === "NotAllowedError") {
+                addLog("提示: iOS需要用户交互才能自动播放视频", "warning");
+              } else if (error.name === "NotSupportedError") {
+                addLog("提示: 视频格式可能不被当前设备支持", "warning");
+              }
+            });
+        }
+        return playPromise;
+      };
+
+      // 页面加载完成后添加初始日志和设备信息
+      window.addEventListener("DOMContentLoaded", function () {
+        addLog("页面加载完成", "success");
+
+        // 检测设备和浏览器信息
+        const userAgent = navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+        const isSafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+        const isWeChat = /MicroMessenger/.test(userAgent);
+
+        addLog(`设备信息: ${isIOS ? "iOS设备" : "非iOS设备"}`, "info");
+        addLog(
+          `浏览器: ${
+            isSafari ? "Safari" : isWeChat ? "微信浏览器" : "其他浏览器"
+          }`,
+          "info"
+        );
+        addLog(`UserAgent: ${userAgent.substring(0, 100)}...`, "info");
+
+        // 检测视频支持情况
+        const canPlayMP4 = videoPlayer.canPlayType(
+          'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+        );
+        const canPlayWebM = videoPlayer.canPlayType(
+          'video/webm; codecs="vp8, vorbis"'
+        );
+        const canPlayOgg = videoPlayer.canPlayType(
+          'video/ogg; codecs="theora, vorbis"'
+        );
+
+        addLog(
+          `MP4支持: ${canPlayMP4 || "不支持"}`,
+          canPlayMP4 ? "success" : "warning"
+        );
+        addLog(
+          `WebM支持: ${canPlayWebM || "不支持"}`,
+          canPlayWebM ? "info" : "warning"
+        );
+        addLog(
+          `Ogg支持: ${canPlayOgg || "不支持"}`,
+          canPlayOgg ? "info" : "warning"
+        );
+
+        // 检测网络状态
+        if (
+          navigator.connection ||
+          navigator.mozConnection ||
+          navigator.webkitConnection
+        ) {
+          const connection =
+            navigator.connection ||
+            navigator.mozConnection ||
+            navigator.webkitConnection;
+          addLog(
+            `网络类型: ${
+              connection.effectiveType || connection.type || "未知"
+            }`,
+            "info"
+          );
+        }
+
+        // 输出当前视频源
+        addLog(`当前视频源: ${videoPlayer.src}`, "info");
+        addLog(
+          `视频就绪状态: ${videoPlayer.readyState} (0=未加载, 1=元数据, 2=当前帧, 3=未来数据, 4=足够数据)`,
+          "info"
+        );
+        addLog(
+          `视频网络状态: ${videoPlayer.networkState} (0=空闲, 1=加载中, 2=无源, 3=网络错误)`,
+          "info"
+        );
+
+        // 尝试主动加载视频
+        if (videoPlayer.readyState === 0 && videoPlayer.src) {
+          addLog("检测到视频未开始加载,尝试手动触发load()", "warning");
+          videoPlayer.load();
+
+          // 5秒后再次检查
+          setTimeout(function () {
+            addLog(
+              `5秒后再次检查 - 就绪状态: ${videoPlayer.readyState}, 网络状态: ${videoPlayer.networkState}`,
+              "info"
+            );
+
+            if (videoPlayer.readyState === 0) {
+              addLog("视频仍未加载,可能存在以下问题:", "error");
+              addLog("1. iOS需要用户交互才能加载视频(尝试点击视频)", "warning");
+              addLog("2. 视频URL可能无法访问或CORS限制", "warning");
+              addLog("3. 网络连接问题", "warning");
+              addLog("4. 视频格式不被当前设备支持", "warning");
+
+              // 在iOS上,尝试通过代码触发一次播放来激活视频
+              if (isIOS) {
+                addLog("检测到iOS设备,建议点击视频进行播放", "warning");
+              }
+            }
+          }, 5000);
+        }
+      });
+
+      // 页面卸载时清理资源
+      window.addEventListener("beforeunload", function () {
+        if (currentVideoFile) {
+          URL.revokeObjectURL(currentVideoFile);
+        }
+      });
+    </script>
+    <script src="../../shared/scripts/common.js"></script>
+    <script src="../../shared/scripts/theme.js"></script>
+  </body>
+</html>

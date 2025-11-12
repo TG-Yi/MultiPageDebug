@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>加解密工具 - 开发工具箱</title>
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- CryptoJS 加密库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1e3a5f 0%,
+          #3d5a80 20%,
+          #ee6c4d 50%,
+          #f4a261 75%,
+          #e9c46a 100%
+        );
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .title {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        margin: 20px 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* 工具栏 */
+      .toolbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .toolbar-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .toolbar-label {
+        font-weight: 600;
+        color: var(--text-color);
+        white-space: nowrap;
+      }
+
+      .crypto-select {
+        padding: 8px 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        min-width: 150px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        user-select: none;
+      }
+
+      .btn i {
+        font-size: 1.1em;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #ee6c4d, #f4a261);
+        color: white;
+        box-shadow: 0 4px 12px rgba(238, 108, 77, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(238, 108, 77, 0.4);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: var(--text-color);
+        border: 2px solid var(--border-color);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn:active {
+        transform: scale(0.95);
+      }
+
+      /* 主工作区 */
+      .workspace {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .panel-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .panel-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: var(--bg-color);
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .icon-btn:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .editor-wrapper {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #282c34;
+        min-height: 300px;
+      }
+
+      .editor {
+        width: 100%;
+        height: 100%;
+        padding: 15px;
+        border: none;
+        background: #282c34;
+        color: #abb2bf;
+        font-family: "Monaco", "Menlo", "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        resize: none;
+        outline: none;
+      }
+
+      .editor::placeholder {
+        color: #5c6370;
+      }
+
+      /* 配置面板 */
+      .config-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        grid-column: 1 / -1;
+      }
+
+      .config-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+      }
+
+      .config-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .config-label {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 13px;
+      }
+
+      .config-input {
+        padding: 8px 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+
+      .config-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.1);
+      }
+
+      /* 快捷操作 */
+      .quick-actions {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        grid-column: 1 / -1;
+      }
+
+      .quick-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .quick-card {
+        background: var(--bg-color);
+        padding: 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .quick-card:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(238, 108, 77, 0.3);
+      }
+
+      .quick-card i {
+        font-size: 24px;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .quick-card-title {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      /* 状态提示 */
+      .status-box {
+        background: rgba(42, 157, 143, 0.1);
+        border-left: 4px solid var(--success-color);
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-top: 10px;
+        color: var(--success-color);
+        font-size: 13px;
+        display: none;
+      }
+
+      .status-box.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+      }
+
+      .status-box.error {
+        background: rgba(231, 111, 81, 0.1);
+        border-left-color: var(--error-color);
+        color: var(--error-color);
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 响应式 */
+      @media (max-width: 1200px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .editor-wrapper {
+          min-height: 250px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .title {
+          font-size: 20px;
+          margin: 10px 0 15px;
+        }
+
+        .main-container {
+          gap: 15px;
+        }
+
+        .toolbar {
+          padding: 12px;
+          gap: 8px;
+        }
+
+        .toolbar-group {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .toolbar-label {
+          font-size: 12px;
+        }
+
+        .crypto-select {
+          font-size: 12px;
+          padding: 6px 10px;
+          min-width: 120px;
+        }
+
+        .btn {
+          padding: 8px 14px;
+          font-size: 12px;
+          flex: 1;
+        }
+
+        .btn .btn-text {
+          display: none;
+        }
+
+        .panel {
+          padding: 12px;
+        }
+
+        .panel-title {
+          font-size: 16px;
+        }
+
+        .icon-btn {
+          width: 32px;
+          height: 32px;
+          font-size: 14px;
+        }
+
+        .editor-wrapper {
+          min-height: 200px;
+        }
+
+        .editor {
+          padding: 10px;
+          font-size: 12px;
+        }
+
+        .config-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .quick-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .toolbar-group {
+          flex-direction: column;
+        }
+
+        .crypto-select {
+          width: 100%;
+        }
+
+        .btn {
+          padding: 10px;
+          font-size: 16px;
+          min-width: 44px;
+        }
+
+        .quick-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* 主题切换按钮 */
+      .theme-toggle-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        font-size: 26px;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .theme-toggle-btn:hover {
+        transform: scale(1.1) rotate(15deg);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      @media (max-width: 768px) {
+        .theme-toggle-btn {
+          width: 48px;
+          height: 48px;
+          font-size: 22px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 主题设置按钮 -->
+    <button
+      class="theme-toggle-btn"
+      onclick="openThemeSelector()"
+      title="主题设置"
+    >
+      🎨
+    </button>
+
+    <a href="../../index.html" class="back-home-btn">返回首页</a>
+
+    <div class="main-container">
+      <h1 class="title"><i class="fa-solid fa-shield-halved"></i> 加解密工具</h1>
+
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label class="toolbar-label"><i class="fa-solid fa-layer-group"></i> 加密算法:</label>
+          <select class="crypto-select" id="cryptoType">
+            <optgroup label="对称加密">
+              <option value="AES" selected>AES (推荐)</option>
+              <option value="DES">DES</option>
+              <option value="TripleDES">3DES</option>
+              <option value="RC4">RC4</option>
+              <option value="Rabbit">Rabbit</option>
+            </optgroup>
+            <optgroup label="哈希/摘要">
+              <option value="MD5">MD5</option>
+              <option value="SHA1">SHA-1</option>
+              <option value="SHA256">SHA-256</option>
+              <option value="SHA512">SHA-512</option>
+              <option value="RIPEMD160">RIPEMD-160</option>
+            </optgroup>
+            <optgroup label="编码">
+              <option value="Base64">Base64</option>
+              <option value="Hex">Hex</option>
+              <option value="UTF8">UTF-8</option>
+            </optgroup>
+            <optgroup label="其他">
+              <option value="HMAC">HMAC</option>
+              <option value="PBKDF2">PBKDF2</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="toolbar-group">
+          <button class="btn btn-primary" id="encryptBtn">
+            <i class="fa-solid fa-lock"></i><span class="btn-text">加密</span>
+          </button>
+          <button class="btn btn-primary" id="decryptBtn">
+            <i class="fa-solid fa-lock-open"></i><span class="btn-text">解密</span>
+          </button>
+          <button class="btn btn-secondary" id="clearBtn">
+            <i class="fa-solid fa-eraser"></i><span class="btn-text">清空</span>
+          </button>
+          <button class="btn btn-secondary" id="swapBtn">
+            <i class="fa-solid fa-right-left"></i><span class="btn-text">交换</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 配置面板 -->
+      <div class="config-panel" id="configPanel">
+        <div class="config-grid">
+          <div class="config-item" id="keyConfig">
+            <label class="config-label"><i class="fa-solid fa-key"></i> 密钥 (必填)</label>
+            <input type="text" class="config-input" id="secretKey" placeholder="请输入密钥" />
+          </div>
+          <div class="config-item" id="ivConfig" style="display: none;">
+            <label class="config-label"><i class="fa-solid fa-cube"></i> 初始向量 IV (可选)</label>
+            <input type="text" class="config-input" id="ivInput" placeholder="留空则自动生成" />
+          </div>
+          <div class="config-item" id="saltConfig" style="display: none;">
+            <label class="config-label"><i class="fa-solid fa-droplet"></i> 盐值 Salt (可选)</label>
+            <input type="text" class="config-input" id="saltInput" placeholder="增强安全性" />
+          </div>
+          <div class="config-item" id="iterationsConfig" style="display: none;">
+            <label class="config-label"><i class="fa-solid fa-rotate"></i> 迭代次数</label>
+            <input type="number" class="config-input" id="iterationsInput" value="1000" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 主工作区 -->
+      <div class="workspace">
+        <!-- 输入面板 -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fa-solid fa-file-import"></i>
+              <span>原始数据</span>
+            </div>
+            <div class="panel-actions">
+              <button class="icon-btn" id="pasteBtn" title="粘贴"><i class="fa-solid fa-paste"></i></button>
+              <button class="icon-btn" id="clearInputBtn" title="清空"><i class="fa-solid fa-eraser"></i></button>
+            </div>
+          </div>
+          <div class="editor-wrapper">
+            <textarea
+              class="editor"
+              id="inputEditor"
+              placeholder="请输入要加密/解密的数据...
+
+示例:
+Hello World!
+或粘贴任意文本数据"
+              spellcheck="false"
+            ></textarea>
+          </div>
+          <div class="status-box" id="inputStatus"></div>
+        </div>
+
+        <!-- 输出面板 -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fa-solid fa-file-export"></i>
+              <span>加密结果</span>
+            </div>
+            <div class="panel-actions">
+              <button class="icon-btn" id="copyOutputBtn" title="复制"><i class="fa-solid fa-copy"></i></button>
+              <button class="icon-btn" id="clearOutputBtn" title="清空"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+          </div>
+          <div class="editor-wrapper">
+            <textarea
+              class="editor"
+              id="outputEditor"
+              placeholder="加密/解密结果将显示在这里..."
+              spellcheck="false"
+              readonly
+            ></textarea>
+          </div>
+          <div class="status-box" id="outputStatus"></div>
+        </div>
+      </div>
+
+      <!-- 快捷操作 -->
+      <div class="quick-actions">
+        <div class="quick-title">
+          <i class="fa-solid fa-bolt"></i>
+          常用场景
+        </div>
+        <div class="quick-grid">
+          <div class="quick-card" onclick="quickAction('password')">
+            <i class="fa-solid fa-user-lock"></i>
+            <div class="quick-card-title">密码加密</div>
+          </div>
+          <div class="quick-card" onclick="quickAction('token')">
+            <i class="fa-solid fa-ticket"></i>
+            <div class="quick-card-title">Token 生成</div>
+          </div>
+          <div class="quick-card" onclick="quickAction('file')">
+            <i class="fa-solid fa-file-shield"></i>
+            <div class="quick-card-title">文件校验</div>
+          </div>
+          <div class="quick-card" onclick="quickAction('url')">
+            <i class="fa-solid fa-link-slash"></i>
+            <div class="quick-card-title">URL 加密</div>
+          </div>
+          <div class="quick-card" onclick="quickAction('api')">
+            <i class="fa-solid fa-code"></i>
+            <div class="quick-card-title">API 签名</div>
+          </div>
+          <div class="quick-card" onclick="quickAction('random')">
+            <i class="fa-solid fa-dice"></i>
+            <div class="quick-card-title">随机密钥</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../shared/scripts/common.js"></script>
+    <script src="../../shared/scripts/theme.js"></script>
+    <script>
+      // DOM 元素
+      const cryptoType = document.getElementById('cryptoType');
+      const secretKey = document.getElementById('secretKey');
+      const ivInput = document.getElementById('ivInput');
+      const saltInput = document.getElementById('saltInput');
+      const iterationsInput = document.getElementById('iterationsInput');
+      const inputEditor = document.getElementById('inputEditor');
+      const outputEditor = document.getElementById('outputEditor');
+      const inputStatus = document.getElementById('inputStatus');
+      const outputStatus = document.getElementById('outputStatus');
+      const keyConfig = document.getElementById('keyConfig');
+      const ivConfig = document.getElementById('ivConfig');
+      const saltConfig = document.getElementById('saltConfig');
+      const iterationsConfig = document.getElementById('iterationsConfig');
+
+      // 初始化
+      function init() {
+        // 绑定事件
+        document.getElementById('encryptBtn').addEventListener('click', encrypt);
+        document.getElementById('decryptBtn').addEventListener('click', decrypt);
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+        document.getElementById('swapBtn').addEventListener('click', swapContent);
+        document.getElementById('pasteBtn').addEventListener('click', pasteFromClipboard);
+        document.getElementById('clearInputBtn').addEventListener('click', () => inputEditor.value = '');
+        document.getElementById('copyOutputBtn').addEventListener('click', copyOutput);
+        document.getElementById('clearOutputBtn').addEventListener('click', () => outputEditor.value = '');
+
+        // 算法类型变更
+        cryptoType.addEventListener('change', updateConfigPanel);
+
+        updateConfigPanel();
+      }
+
+      // 更新配置面板
+      function updateConfigPanel() {
+        const type = cryptoType.value;
+
+        // 默认隐藏所有配置
+        keyConfig.style.display = 'none';
+        ivConfig.style.display = 'none';
+        saltConfig.style.display = 'none';
+        iterationsConfig.style.display = 'none';
+
+        // 根据算法类型显示配置
+        if (['AES', 'DES', 'TripleDES', 'RC4', 'Rabbit'].includes(type)) {
+          // 对称加密需要密钥和IV
+          keyConfig.style.display = 'flex';
+          ivConfig.style.display = 'flex';
+        } else if (['MD5', 'SHA1', 'SHA256', 'SHA512', 'RIPEMD160'].includes(type)) {
+          // 哈希算法不需要密钥
+          keyConfig.style.display = 'none';
+        } else if (type === 'HMAC') {
+          keyConfig.style.display = 'flex';
+        } else if (type === 'PBKDF2') {
+          keyConfig.style.display = 'flex';
+          saltConfig.style.display = 'flex';
+          iterationsConfig.style.display = 'flex';
+        } else if (['Base64', 'Hex', 'UTF8'].includes(type)) {
+          // 编码不需要密钥
+          keyConfig.style.display = 'none';
+        }
+      }
+
+      // 加密
+      function encrypt() {
+        try {
+          const input = inputEditor.value;
+          if (!input) {
+            showStatus(inputStatus, '请输入要加密的数据', 'error');
+            return;
+          }
+
+          const type = cryptoType.value;
+          const key = secretKey.value;
+          let result = '';
+
+          switch (type) {
+            case 'AES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.AES.encrypt(input, key).toString();
+              break;
+            case 'DES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.DES.encrypt(input, key).toString();
+              break;
+            case 'TripleDES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.TripleDES.encrypt(input, key).toString();
+              break;
+            case 'RC4':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.RC4.encrypt(input, key).toString();
+              break;
+            case 'Rabbit':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.Rabbit.encrypt(input, key).toString();
+              break;
+            case 'MD5':
+              result = CryptoJS.MD5(input).toString();
+              break;
+            case 'SHA1':
+              result = CryptoJS.SHA1(input).toString();
+              break;
+            case 'SHA256':
+              result = CryptoJS.SHA256(input).toString();
+              break;
+            case 'SHA512':
+              result = CryptoJS.SHA512(input).toString();
+              break;
+            case 'RIPEMD160':
+              result = CryptoJS.RIPEMD160(input).toString();
+              break;
+            case 'Base64':
+              result = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(input));
+              break;
+            case 'Hex':
+              result = CryptoJS.enc.Hex.stringify(CryptoJS.enc.Utf8.parse(input));
+              break;
+            case 'HMAC':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              result = CryptoJS.HmacSHA256(input, key).toString();
+              break;
+            case 'PBKDF2':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const salt = saltInput.value || CryptoJS.lib.WordArray.random(128/8).toString();
+              const iterations = parseInt(iterationsInput.value) || 1000;
+              result = CryptoJS.PBKDF2(key, salt, { keySize: 256/32, iterations: iterations }).toString();
+              break;
+            default:
+              showStatus(inputStatus, '不支持的算法类型', 'error');
+              return;
+          }
+
+          outputEditor.value = result;
+          showStatus(outputStatus, '✅ 加密成功', 'success');
+        } catch (error) {
+          showStatus(outputStatus, `❌ 加密失败: ${error.message}`, 'error');
+        }
+      }
+
+      // 解密
+      function decrypt() {
+        try {
+          const input = inputEditor.value;
+          if (!input) {
+            showStatus(inputStatus, '请输入要解密的数据', 'error');
+            return;
+          }
+
+          const type = cryptoType.value;
+          const key = secretKey.value;
+          let result = '';
+
+          switch (type) {
+            case 'AES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const bytesAES = CryptoJS.AES.decrypt(input, key);
+              result = bytesAES.toString(CryptoJS.enc.Utf8);
+              break;
+            case 'DES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const bytesDES = CryptoJS.DES.decrypt(input, key);
+              result = bytesDES.toString(CryptoJS.enc.Utf8);
+              break;
+            case 'TripleDES':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const bytes3DES = CryptoJS.TripleDES.decrypt(input, key);
+              result = bytes3DES.toString(CryptoJS.enc.Utf8);
+              break;
+            case 'RC4':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const bytesRC4 = CryptoJS.RC4.decrypt(input, key);
+              result = bytesRC4.toString(CryptoJS.enc.Utf8);
+              break;
+            case 'Rabbit':
+              if (!key) {
+                showStatus(inputStatus, '请输入密钥', 'error');
+                return;
+              }
+              const bytesRabbit = CryptoJS.Rabbit.decrypt(input, key);
+              result = bytesRabbit.toString(CryptoJS.enc.Utf8);
+              break;
+            case 'Base64':
+              result = CryptoJS.enc.Base64.parse(input).toString(CryptoJS.enc.Utf8);
+              break;
+            case 'Hex':
+              result = CryptoJS.enc.Hex.parse(input).toString(CryptoJS.enc.Utf8);
+              break;
+            default:
+              showStatus(inputStatus, '该算法不支持解密', 'error');
+              return;
+          }
+
+          if (!result) {
+            showStatus(outputStatus, '❌ 解密失败: 密钥错误或数据损坏', 'error');
+            return;
+          }
+
+          outputEditor.value = result;
+          showStatus(outputStatus, '✅ 解密成功', 'success');
+        } catch (error) {
+          showStatus(outputStatus, `❌ 解密失败: ${error.message}`, 'error');
+        }
+      }
+
+      // 清空所有
+      function clearAll() {
+        inputEditor.value = '';
+        outputEditor.value = '';
+        hideStatus(inputStatus);
+        hideStatus(outputStatus);
+      }
+
+      // 交换内容
+      function swapContent() {
+        const temp = inputEditor.value;
+        inputEditor.value = outputEditor.value;
+        outputEditor.value = temp;
+      }
+
+      // 粘贴
+      async function pasteFromClipboard() {
+        try {
+          const text = await navigator.clipboard.readText();
+          inputEditor.value = text;
+          showStatus(inputStatus, '✅ 已粘贴', 'success');
+        } catch (error) {
+          showStatus(inputStatus, '❌ 粘贴失败', 'error');
+        }
+      }
+
+      // 复制输出
+      function copyOutput() {
+        const text = outputEditor.value;
+        if (!text) {
+          showStatus(outputStatus, '没有可复制的内容', 'error');
+          return;
+        }
+
+        navigator.clipboard.writeText(text).then(() => {
+          showStatus(outputStatus, '✅ 已复制到剪贴板', 'success');
+        }).catch(() => {
+          showStatus(outputStatus, '❌ 复制失败', 'error');
+        });
+      }
+
+      // 快捷操作
+      function quickAction(action) {
+        switch (action) {
+          case 'password':
+            cryptoType.value = 'SHA256';
+            inputEditor.value = '请输入您的密码';
+            showStatus(inputStatus, '💡 建议使用 SHA-256 或 PBKDF2 加密密码', 'success');
+            break;
+          case 'token':
+            cryptoType.value = 'AES';
+            secretKey.value = generateRandomKey();
+            inputEditor.value = JSON.stringify({
+              userId: '12345',
+              timestamp: Date.now(),
+              random: Math.random().toString(36)
+            }, null, 2);
+            showStatus(inputStatus, '✅ 已生成示例 Token 数据', 'success');
+            break;
+          case 'file':
+            cryptoType.value = 'SHA256';
+            inputEditor.value = '文件内容...';
+            showStatus(inputStatus, '💡 使用 SHA-256 计算文件校验和', 'success');
+            break;
+          case 'url':
+            cryptoType.value = 'Base64';
+            inputEditor.value = 'https://example.com/path?param=value';
+            showStatus(inputStatus, '✅ 使用 Base64 编码 URL', 'success');
+            break;
+          case 'api':
+            cryptoType.value = 'HMAC';
+            secretKey.value = 'your-api-secret-key';
+            inputEditor.value = 'GET/api/users?page=1&limit=10';
+            showStatus(inputStatus, '✅ 使用 HMAC 生成 API 签名', 'success');
+            break;
+          case 'random':
+            const randomKey = generateRandomKey(32);
+            secretKey.value = randomKey;
+            showStatus(inputStatus, '✅ 已生成随机密钥', 'success');
+            break;
+        }
+        updateConfigPanel();
+      }
+
+      // 生成随机密钥
+      function generateRandomKey(length = 16) {
+        return CryptoJS.lib.WordArray.random(length).toString();
+      }
+
+      // 显示状态
+      function showStatus(element, message, type = 'success') {
+        element.textContent = message;
+        element.className = `status-box show ${type}`;
+        setTimeout(() => hideStatus(element), 3000);
+      }
+
+      // 隐藏状态
+      function hideStatus(element) {
+        element.classList.remove('show');
+      }
+
+      // 初始化应用
+      init();
+    </script>
+  </body>
+</html>
