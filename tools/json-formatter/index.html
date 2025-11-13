@@ -68,6 +68,17 @@
         flex-wrap: wrap;
       }
 
+
+      /* 工具栏分组标签 */
+      .toolbar-group-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        margin-right: 4px;
+        white-space: nowrap;
+        align-self: center;
+      }
+
       .toolbar-divider {
         width: 1px;
         height: 36px;
@@ -131,6 +142,18 @@
         transform: scale(0.95);
       }
 
+
+      /* Tab切换按钮样式 */
+      .tab-switch-btn.active {
+        background: linear-gradient(135deg, #ee6c4d, #f4a261);
+        color: white;
+        border-color: transparent;
+      }
+
+      .tab-switch-btn.active:hover {
+        transform: translateY(-2px);
+      }
+
       .btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -156,7 +179,9 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
-        min-height: 600px;
+        height: 70vh;  /* 固定高度为视口高度的70% */
+        min-height: 500px;  /* 最小高度保证小屏幕可用 */
+        max-height: 900px;  /* 最大高度避免大屏幕过高 */
       }
 
       .panel {
@@ -167,6 +192,8 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
+        height: 100%;  /* 填满 workspace 的高度 */
+        overflow: hidden;  /* 防止内容溢出 */
       }
 
       .panel-header {
@@ -222,6 +249,8 @@
         overflow: hidden;
         border-radius: 10px;
         background: #282c34;
+        border: 2px solid #21252b;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       }
 
       .editor {
@@ -323,15 +352,54 @@
         margin-bottom: 4px;
       }
 
+
+      /* 树形视图包裹容器 */
+      .tree-view-wrapper {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #ffffff;
+        border: 2px solid #e1e4e8;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        display: flex;
+        flex-direction: column;
+      }
       /* 树形视图 */
       .tree-view {
         font-family: "Monaco", "Menlo", "Courier New", monospace;
         font-size: 13px;
         line-height: 1.8;
-        color: var(--text-color);
-        overflow: auto;
-        max-height: 100%;
-        padding: 10px;
+        color: #2c3e50;
+        overflow-y: auto;
+        overflow-x: auto;
+        flex: 1;
+        padding: 15px;
+        background: #ffffff;
+        /* 移动端触摸滚动优化 */
+        -webkit-overflow-scrolling: touch;
+        /* WebKit滚动条样式 */
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e0 #f7fafc;
+      }
+
+      .tree-view::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .tree-view::-webkit-scrollbar-track {
+        background: #f7fafc;
+        border-radius: 4px;
+      }
+
+      .tree-view::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+      }
+
+      .tree-view::-webkit-scrollbar-thumb:hover {
+        background: #a0aec0;
       }
 
       .tree-node {
@@ -379,14 +447,51 @@
       /* 选项卡 */
       .tabs {
         display: flex;
-        gap: 8px;
-        margin-bottom: 15px;
+        gap: 4px;
+        margin-bottom: 0;
         border-bottom: 2px solid var(--border-color);
-        padding-bottom: 10px;
+        padding: 15px 15px 0 15px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 16px 16px 0 0;
+      }
+
+
+
+      /* Tab分隔符 */
+      .tab-divider {
+        width: 2px;
+        height: 24px;
+        background: var(--border-color);
+        margin: 0 8px;
+        align-self: center;
+      }
+
+      /* 动态标题栏 */
+      .panel-dynamic-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: white;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .panel-dynamic-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .panel-dynamic-actions {
+        display: flex;
+        gap: 8px;
       }
 
       .tab {
-        padding: 8px 16px;
+        padding: 10px 18px;
         background: transparent;
         border: none;
         border-bottom: 3px solid transparent;
@@ -395,21 +500,26 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        margin-bottom: -2px;
       }
 
       .tab:hover {
         color: var(--primary-color);
+        background: rgba(238, 108, 77, 0.05);
       }
 
       .tab.active {
         color: var(--primary-color);
         border-bottom-color: var(--primary-color);
+        background: white;
       }
 
       .tab-content {
         display: none;
         flex: 1;
-        overflow: auto;
+        overflow: hidden;
+        min-height: 0;
       }
 
       .tab-content.active {
@@ -421,6 +531,8 @@
       @media (max-width: 1200px) {
         .workspace {
           grid-template-columns: 1fr;
+          height: auto;  /* 移动端使用自动高度 */
+          min-height: 500px;
         }
 
         .toolbar {
@@ -579,6 +691,81 @@
           margin-bottom: 6px;
         }
 
+      /* 转换面板样式 */
+      .convert-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+
+      .convert-option-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 15px 10px;
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      .convert-option-btn i {
+        font-size: 24px;
+        color: var(--primary-color);
+      }
+
+      .convert-option-btn:hover {
+        border-color: var(--primary-color);
+        background: rgba(238, 108, 77, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(238, 108, 77, 0.2);
+      }
+
+      .convert-option-btn:active {
+        transform: translateY(0);
+      }
+
+      .convert-result-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .convert-result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .convert-result-label {
+        font-weight: 600;
+        color: var(--success-color);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .convert-result-hint {
+        font-size: 12px;
+        color: var(--text-light);
+        font-style: italic;
+      }
+
+
         .convert-option .btn {
           width: 100%;
         }
@@ -586,6 +773,11 @@
         .tree-view {
           font-size: 11px;
           padding: 8px;
+          line-height: 1.6;
+        }
+
+        .tree-view-wrapper {
+          border-width: 1px;
         }
       }
 
@@ -726,8 +918,10 @@
 
       /* 转换面板 */
       .convert-panel {
-        display: grid;
-        gap: 15px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        gap: 0;
       }
 
       .convert-option {
@@ -741,6 +935,9 @@
         font-weight: 600;
         color: var(--text-color);
       }
+
+
+      
 
       /* 统计卡片 */
       .stats-grid {
@@ -785,8 +982,9 @@
     <div class="main-container">
       <h1 class="title">🔧 JSON 格式化工具</h1>
 
-      <!-- 工具栏 -->
+      <!-- 工具栏 - 仅JSON处理和视图功能 -->
       <div class="toolbar">
+        <!-- JSON处理 -->
         <div class="toolbar-group">
           <button class="btn btn-primary" id="formatBtn" title="格式化 JSON">
             <i class="fa-solid fa-wand-magic-sparkles"></i><span class="btn-text">格式化</span>
@@ -800,11 +998,6 @@
           <button class="btn btn-secondary" id="sortBtn" title="排序键">
             <i class="fa-solid fa-arrow-down-a-z"></i><span class="btn-text">排序</span>
           </button>
-        </div>
-
-        <div class="toolbar-divider"></div>
-
-        <div class="toolbar-group">
           <label class="indent-label"><i class="fa-solid fa-indent"></i> 缩进:</label>
           <select class="indent-select" id="indentSize">
             <option value="2" selected>2空格</option>
@@ -815,24 +1008,54 @@
 
         <div class="toolbar-divider"></div>
 
+        <!-- 查看模式 -->
         <div class="toolbar-group">
-          <button class="btn btn-secondary" id="clearBtn" title="清空">
-            <i class="fa-solid fa-trash-can"></i><span class="btn-text">清空</span>
+          <button class="btn btn-secondary tab-switch-btn active" data-tab="formatted" title="格式化视图">
+            <i class="fa-solid fa-align-left"></i><span class="btn-text">格式化</span>
           </button>
-          <button class="btn btn-secondary" id="copyBtn" title="复制">
-            <i class="fa-solid fa-copy"></i><span class="btn-text">复制</span>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="tree" title="树形视图">
+            <i class="fa-solid fa-sitemap"></i><span class="btn-text">树形</span>
           </button>
-          <button class="btn btn-secondary" id="downloadBtn" title="下载">
-            <i class="fa-solid fa-download"></i><span class="btn-text">下载</span>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="stats" title="数据统计">
+            <i class="fa-solid fa-chart-simple"></i><span class="btn-text">统计</span>
           </button>
         </div>
 
         <div class="toolbar-divider"></div>
 
+        <!-- 数据格式转换 -->
         <div class="toolbar-group">
-          <input type="file" id="fileInput" accept=".json" style="display: none;" />
-          <button class="btn btn-secondary" id="loadFileBtn" title="加载文件">
-            <i class="fa-solid fa-folder-open"></i><span class="btn-text">加载</span>
+          <span class="toolbar-group-label">转为:</span>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-xml" title="转换为XML">
+            <i class="fa-solid fa-code"></i><span class="btn-text">XML</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-yaml" title="转换为YAML">
+            <i class="fa-solid fa-file-lines"></i><span class="btn-text">YAML</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-csv" title="转换为CSV">
+            <i class="fa-solid fa-table"></i><span class="btn-text">CSV</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-url" title="转换为URL参数">
+            <i class="fa-solid fa-link"></i><span class="btn-text">URL</span>
+          </button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- JS相关转换 -->
+        <div class="toolbar-group">
+          <span class="toolbar-group-label">JS:</span>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-jsobj" title="JSON转JS对象">
+            <i class="fa-brands fa-js"></i><span class="btn-text">→对象</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-json2js" title="JS对象转JSON">
+            <i class="fa-solid fa-bracket-curly"></i><span class="btn-text">对象→</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-stringify" title="JSON字符串化">
+            <i class="fa-solid fa-quote-left"></i><span class="btn-text">→字符串</span>
+          </button>
+          <button class="btn btn-secondary tab-switch-btn" data-tab="convert-parse" title="解析JSON字符串">
+            <i class="fa-solid fa-quote-right"></i><span class="btn-text">字符串→</span>
           </button>
         </div>
       </div>
@@ -847,6 +1070,8 @@
               <span>输入 JSON</span>
             </div>
             <div class="panel-actions">
+              <input type="file" id="fileInput" accept=".json" style="display: none;" />
+              <button class="icon-btn" id="loadFileBtn" title="加载文件"><i class="fa-solid fa-folder-open"></i></button>
               <button class="icon-btn" id="pasteBtn" title="粘贴"><i class="fa-solid fa-paste"></i></button>
               <button class="icon-btn" id="clearInputBtn" title="清空"><i class="fa-solid fa-eraser"></i></button>
             </div>
@@ -881,23 +1106,23 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
 
         <!-- 输出面板 -->
         <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">
-              <i class="fa-solid fa-file-export"></i>
-              <span>输出结果</span>
+          <!-- 动态标题栏(联动显示当前Tab内容) -->
+          <div class="panel-dynamic-header">
+            <div class="panel-dynamic-title">
+              <i class="fa-solid fa-file-code" id="dynamicIcon"></i>
+              <span id="dynamicTitle">格式化输出</span>
             </div>
-            <div class="panel-actions">
-              <button class="icon-btn" id="copyOutputBtn" title="复制"><i class="fa-solid fa-copy"></i></button>
-              <button class="icon-btn" id="clearOutputBtn" title="清空"><i class="fa-solid fa-xmark"></i></button>
+            <div class="panel-dynamic-actions">
+              <button class="icon-btn" id="downloadBtn" title="下载">
+                <i class="fa-solid fa-download"></i>
+              </button>
+              <button class="icon-btn" id="copyOutputBtn" title="复制">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+              <button class="icon-btn" id="clearOutputBtn" title="清空">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
             </div>
-          </div>
-
-          <!-- 选项卡 -->
-          <div class="tabs">
-            <button class="tab active" data-tab="formatted"><i class="fa-solid fa-align-left"></i> 格式化</button>
-            <button class="tab" data-tab="tree"><i class="fa-solid fa-sitemap"></i> 树形视图</button>
-            <button class="tab" data-tab="convert"><i class="fa-solid fa-arrows-rotate"></i> 格式转换</button>
-            <button class="tab" data-tab="stats"><i class="fa-solid fa-chart-simple"></i> 数据统计</button>
           </div>
 
           <!-- 格式化输出 -->
@@ -915,57 +1140,116 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
 
           <!-- 树形视图 -->
           <div class="tab-content" data-content="tree">
-            <div class="tree-view" id="treeView">
-              <div style="color: #999; text-align: center; padding: 40px;">
-                暂无数据
+            <div class="tree-view-wrapper">
+              <div class="tree-view" id="treeView">
+                <div style="color: #999; text-align: center; padding: 40px;">
+                  暂无数据
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 格式转换 -->
-          <div class="tab-content" data-content="convert">
-            <div class="convert-panel">
-              <div class="convert-option">
-                <label><i class="fa-solid fa-code"></i> 转换为 XML:</label>
-                <button class="btn btn-secondary btn-sm" id="toXmlBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-file-lines"></i> 转换为 YAML:</label>
-                <button class="btn btn-secondary btn-sm" id="toYamlBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-table"></i> 转换为 CSV:</label>
-                <button class="btn btn-secondary btn-sm" id="toCsvBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-link"></i> 转换为 URL 参数:</label>
-                <button class="btn btn-secondary btn-sm" id="toUrlParamsBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-brands fa-js"></i> 转换为 JS 对象:</label>
-                <button class="btn btn-secondary btn-sm" id="toJsObjBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-bracket-curly"></i> JS 对象转 JSON:</label>
-                <button class="btn btn-secondary btn-sm" id="jsObjToJsonBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-quote-left"></i> 转为 JSON 字符串:</label>
-                <button class="btn btn-secondary btn-sm" id="toJsonStringBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="convert-option">
-                <label><i class="fa-solid fa-quote-right"></i> JSON 字符串转对象:</label>
-                <button class="btn btn-secondary btn-sm" id="jsonStringToObjBtn"><i class="fa-solid fa-right-left"></i> 转换</button>
-              </div>
-              <div class="editor-wrapper" style="margin-top: 10px;">
-                <textarea
-                  class="editor"
-                  id="convertOutput"
-                  placeholder="转换结果将显示在这里..."
-                  spellcheck="false"
-                  readonly
-                ></textarea>
-              </div>
+          <!-- XML转换 -->
+          <div class="tab-content" data-content="convert-xml">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="convertOutput"
+                placeholder="XML格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- YAML转换 -->
+          <div class="tab-content" data-content="convert-yaml">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="yamlOutput"
+                placeholder="YAML格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- CSV转换 -->
+          <div class="tab-content" data-content="convert-csv">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="csvOutput"
+                placeholder="CSV格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- URL参数转换 -->
+          <div class="tab-content" data-content="convert-url">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="urlOutput"
+                placeholder="URL参数格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- JS对象转换 -->
+          <div class="tab-content" data-content="convert-jsobj">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="jsobjOutput"
+                placeholder="JavaScript对象格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- JS→JSON转换 -->
+          <div class="tab-content" data-content="convert-json2js">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="json2jsOutput"
+                placeholder="JSON格式结果将显示在这里(从JS对象转换)..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 字符串化转换 -->
+          <div class="tab-content" data-content="convert-stringify">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="stringifyOutput"
+                placeholder="JSON字符串格式结果将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 解析字符串转换 -->
+          <div class="tab-content" data-content="convert-parse">
+            <div class="editor-wrapper">
+              <textarea
+                class="editor"
+                id="parseOutput"
+                placeholder="解析后的JSON对象将显示在这里..."
+                spellcheck="false"
+                readonly
+              ></textarea>
             </div>
           </div>
 
@@ -1056,17 +1340,17 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
         document.getElementById("compressBtn").addEventListener("click", compressJson);
         document.getElementById("validateBtn").addEventListener("click", validateJson);
         document.getElementById("sortBtn").addEventListener("click", sortKeys);
-        document.getElementById("clearBtn").addEventListener("click", clearAll);
-        document.getElementById("copyBtn").addEventListener("click", copyOutput);
+
+        // 文件操作和编辑按钮（现在在面板中）
         document.getElementById("downloadBtn").addEventListener("click", downloadJson);
         document.getElementById("pasteBtn").addEventListener("click", pasteFromClipboard);
         document.getElementById("clearInputBtn").addEventListener("click", clearInput);
         document.getElementById("copyOutputBtn").addEventListener("click", copyOutput);
         document.getElementById("clearOutputBtn").addEventListener("click", clearOutput);
-        document.getElementById("fileInput").addEventListener("change", loadFile);
         document.getElementById("loadFileBtn").addEventListener("click", () => {
           document.getElementById("fileInput").click();
         });
+        document.getElementById("fileInput").addEventListener("change", loadFile);
 
         // 缩进选择
         indentSelect.addEventListener("change", (e) => {
@@ -1082,23 +1366,53 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
           autoValidate();
         }, 300));
 
-        // 选项卡切换
-        document.querySelectorAll(".tab").forEach((tab) => {
-          tab.addEventListener("click", () => {
-            const targetTab = tab.dataset.tab;
+        // 选项卡切换 - 绑定工具栏的Tab按钮
+        document.querySelectorAll(".tab-switch-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const targetTab = btn.dataset.tab;
+
+            // 更新按钮激活状态
+            document.querySelectorAll(".tab-switch-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            // 切换内容
             switchTab(targetTab);
           });
         });
 
-        // 转换按钮
-        document.getElementById("toXmlBtn").addEventListener("click", convertToXml);
-        document.getElementById("toYamlBtn").addEventListener("click", convertToYaml);
-        document.getElementById("toCsvBtn").addEventListener("click", convertToCsv);
-        document.getElementById("toUrlParamsBtn").addEventListener("click", convertToUrlParams);
-        document.getElementById("toJsObjBtn").addEventListener("click", convertToJsObject);
-        document.getElementById("jsObjToJsonBtn").addEventListener("click", convertJsObjectToJson);
-        document.getElementById("toJsonStringBtn").addEventListener("click", convertToJsonString);
-        document.getElementById("jsonStringToObjBtn").addEventListener("click", convertJsonStringToObject);
+        // Tab切换时自动执行转换(不需要单独的按钮事件)
+      }
+
+      // 处理转换Tab切换
+      function handleConvertTab(tabName) {
+        const type = tabName.replace("convert-", "");
+
+        switch(type) {
+          case "xml":
+            convertToXml("convertOutput");
+            break;
+          case "yaml":
+            convertToYaml("yamlOutput");
+            break;
+          case "csv":
+            convertToCsv("csvOutput");
+            break;
+          case "url":
+            convertToUrlParams("urlOutput");
+            break;
+          case "jsobj":
+            convertToJsObject("jsobjOutput");
+            break;
+          case "json2js":
+            convertJsObjectToJson("json2jsOutput");
+            break;
+          case "stringify":
+            convertToJsonString("stringifyOutput");
+            break;
+          case "parse":
+            convertJsonStringToObject("parseOutput");
+            break;
+        }
       }
 
       // 防抖函数
@@ -1302,10 +1616,48 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
           content.classList.toggle("active", content.dataset.content === tabName);
         });
 
+        // 更新动态标题
+        updateDynamicTitle(tabName);
+
+        // 特殊处理
         if (tabName === "tree") {
           updateTreeView();
         } else if (tabName === "stats") {
           updateDataStats();
+        } else if (tabName.startsWith("convert-")) {
+          // 自动执行转换
+          handleConvertTab(tabName);
+        }
+      }
+
+      // 更新动态标题
+      function updateDynamicTitle(tabName) {
+        const titleEl = document.getElementById("dynamicTitle");
+        const iconEl = document.getElementById("dynamicIcon");
+
+        const titles = {
+          formatted: { text: "格式化输出", icon: "fa-file-code" },
+          tree: { text: "树形视图", icon: "fa-sitemap" },
+          stats: { text: "数据统计", icon: "fa-chart-simple" },
+          "convert-xml": { text: "转换为 XML", icon: "fa-code" },
+          "convert-yaml": { text: "转换为 YAML", icon: "fa-file-lines" },
+          "convert-csv": { text: "转换为 CSV", icon: "fa-table" },
+          "convert-url": { text: "转换为 URL参数", icon: "fa-link" },
+          "convert-jsobj": { text: "转换为 JS对象", icon: "fa-brands fa-js" },
+          "convert-json2js": { text: "JS对象转JSON", icon: "fa-bracket-curly" },
+          "convert-stringify": { text: "JSON字符串化", icon: "fa-quote-left" },
+          "convert-parse": { text: "解析JSON字符串", icon: "fa-quote-right" }
+        };
+
+        const config = titles[tabName];
+        if (config) {
+          titleEl.textContent = config.text;
+          // 处理fa-brands
+          if (config.icon.includes("fa-brands")) {
+            iconEl.className = config.icon;
+          } else {
+            iconEl.className = `fa-solid ${config.icon}`;
+          }
         }
       }
 
@@ -1394,16 +1746,26 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
       }
 
       // 格式转换
-      function convertToXml() {
+      function convertToXml(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           const xml = jsonToXml(currentJson);
-          convertOutput.value = xml;
-          switchTab("convert");
+          document.getElementById(outputId).value = xml;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
@@ -1437,16 +1799,26 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
         return xml;
       }
 
-      function convertToYaml() {
+      function convertToYaml(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           const yaml = jsonToYaml(currentJson);
-          convertOutput.value = yaml;
-          switchTab("convert");
+          document.getElementById(outputId).value = yaml;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
@@ -1479,16 +1851,26 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
         return yaml;
       }
 
-      function convertToCsv() {
+      function convertToCsv(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           const csv = jsonToCsv(currentJson);
-          convertOutput.value = csv;
-          switchTab("convert");
+          document.getElementById(outputId).value = csv;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
@@ -1520,16 +1902,26 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
         return csv;
       }
 
-      function convertToUrlParams() {
+      function convertToUrlParams(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           const params = jsonToUrlParams(currentJson);
-          convertOutput.value = params;
-          switchTab("convert");
+          document.getElementById(outputId).value = params;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
@@ -1557,17 +1949,27 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
       }
 
       // JSON 转 JavaScript 对象字面量
-      function convertToJsObject() {
+      function convertToJsObject(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           // 使用 JSON.stringify 的 replacer 和 space 参数生成格式化的 JS 对象
           const jsCode = `const obj = ${formatAsJsObject(currentJson, currentIndent)};`;
-          convertOutput.value = jsCode;
-          switchTab("convert");
+          document.getElementById(outputId).value = jsCode;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
@@ -1612,7 +2014,7 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
       }
 
       // JavaScript 对象字面量转 JSON
-      function convertJsObjectToJson() {
+      function convertJsObjectToJson(outputId = "convertOutput") {
         try {
           const input = inputEditor.value.trim();
           if (!input) {
@@ -1635,7 +2037,7 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
 
           // 转换为 JSON
           const jsonStr = JSON.stringify(parsed, null, currentIndent);
-          convertOutput.value = jsonStr;
+          document.getElementById(outputId).value = jsonStr;
 
           // 同时更新到输出编辑器
           currentJson = parsed;
@@ -1643,7 +2045,7 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
 
           hideError();
           setStatus("valid", "转换成功");
-          switchTab("convert");
+          
         } catch (error) {
           showError(`转换失败: ${error.message}`);
           alert(`❌ JavaScript 对象解析失败:\n\n${error.message}\n\n请确保输入的是有效的 JavaScript 对象字面量`);
@@ -1651,11 +2053,22 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
       }
 
       // JSON 对象转 JSON 字符串
-      function convertToJsonString() {
+      function convertToJsonString(outputId = "convertOutput") {
         if (!currentJson) {
-          alert("请先格式化 JSON");
+        // 如果没有格式化过，尝试自动格式化输入内容
+        const input = inputEditor.value.trim();
+        if (input) {
+          try {
+            currentJson = JSON.parse(input);
+          } catch (e) {
+            alert("请先格式化 JSON 或输入有效的 JSON");
+            return;
+          }
+        } else {
+          alert("请先输入 JSON 数据");
           return;
         }
+      }
 
         try {
           // 将 JSON 对象转换为字符串形式(带转义)
@@ -1663,15 +2076,14 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
           // 再将这个字符串本身转为 JSON 字符串(添加引号和转义)
           const escapedStr = JSON.stringify(jsonStr);
 
-          convertOutput.value = escapedStr;
-          switchTab("convert");
+          document.getElementById(outputId).value = escapedStr;
         } catch (error) {
           alert(`转换失败: ${error.message}`);
         }
       }
 
       // JSON 字符串转 JSON 对象
-      function convertJsonStringToObject() {
+      function convertJsonStringToObject(outputId = "convertOutput") {
         try {
           const input = inputEditor.value.trim();
           if (!input) {
@@ -1693,7 +2105,7 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
             const jsonObj = JSON.parse(jsonString);
             const formatted = JSON.stringify(jsonObj, null, currentIndent);
 
-            convertOutput.value = formatted;
+            document.getElementById(outputId).value = formatted;
 
             // 同时更新到输出编辑器和当前 JSON
             currentJson = jsonObj;
@@ -1701,18 +2113,17 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
 
             hideError();
             setStatus("valid", "转换成功");
-            switchTab("convert");
+            
           } else {
             // 如果已经是对象,直接格式化显示
             const formatted = JSON.stringify(jsonString, null, currentIndent);
-            convertOutput.value = formatted;
+            document.getElementById(outputId).value = formatted;
 
             currentJson = jsonString;
             outputEditor.value = formatted;
 
             hideError();
             setStatus("valid", "已是 JSON 对象");
-            switchTab("convert");
           }
         } catch (error) {
           showError(`转换失败: ${error.message}`);
@@ -1737,11 +2148,26 @@ JSON 字符串示例(用于"JSON 字符串转对象"):
         updateStats();
         hideError();
         setStatus("valid", "就绪");
+        // 清空输入时也清空输出和转换结果
+        currentJson = null;
+        clearOutput();
       }
 
       function clearOutput() {
+        // 清空所有输出区域
         outputEditor.value = "";
-        convertOutput.value = "";
+        document.getElementById("convertOutput").value = "";
+        document.getElementById("yamlOutput").value = "";
+        document.getElementById("csvOutput").value = "";
+        document.getElementById("urlOutput").value = "";
+        document.getElementById("jsobjOutput").value = "";
+        document.getElementById("json2jsOutput").value = "";
+        document.getElementById("stringifyOutput").value = "";
+        document.getElementById("parseOutput").value = "";
+        // 清空树形视图
+        treeView.innerHTML = '<div style="color: #999; text-align: center; padding: 40px;">暂无数据</div>';
+        // 清空统计
+        document.querySelectorAll('.stat-value').forEach(el => el.textContent = '0');
       }
 
       function copyOutput() {

@@ -31,7 +31,7 @@
           #e9c46a 100%
         );
         min-height: 100vh;
-        padding: 20px;
+        padding: 15px;
       }
 
       .main-container {
@@ -39,29 +39,38 @@
         margin: 0 auto;
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
       }
 
       .title {
         color: white;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 700;
         text-align: center;
-        margin: 20px 0;
+        margin: 15px 0;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* 统一控制面板 */
+      .control-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
       }
 
       /* 工具栏 */
       .toolbar {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--border-color);
       }
 
       .toolbar-group {
@@ -88,10 +97,10 @@
       }
 
       .btn {
-        padding: 10px 20px;
+        padding: 8px 16px;
         border: none;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -142,6 +151,9 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
+        height: 60vh;  /* 固定高度 */
+        min-height: 400px;
+        max-height: 700px;
       }
 
       .panel {
@@ -152,6 +164,8 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
+        height: 100%;  /* 填满workspace高度 */
+        overflow: hidden;  /* 防止内容溢出 */
       }
 
       .panel-header {
@@ -203,12 +217,14 @@
         overflow: hidden;
         border-radius: 10px;
         background: #282c34;
-        min-height: 300px;
+        min-height: 0;  /* 允许flexbox正确收缩 */
+        display: flex;
+        flex-direction: column;
       }
 
       .editor {
         width: 100%;
-        height: 100%;
+        flex: 1;  /* 填满wrapper空间 */
         padding: 15px;
         border: none;
         background: #282c34;
@@ -218,45 +234,56 @@
         line-height: 1.6;
         resize: none;
         outline: none;
+        overflow-y: auto;  /* 垂直滚动 */
+        overflow-x: auto;  /* 水平滚动 */
+        -webkit-overflow-scrolling: touch;  /* 移动端优化 */
       }
 
       .editor::placeholder {
         color: #5c6370;
       }
 
-      /* 配置面板 */
-      .config-panel {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        grid-column: 1 / -1;
+      /* 配置区域 */
+      .config-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .config-section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
 
       .config-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
       }
 
       .config-item {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
       .config-label {
         font-weight: 600;
         color: var(--text-color);
-        font-size: 13px;
+        font-size: 12px;
       }
 
       .config-input {
-        padding: 8px 12px;
+        padding: 6px 10px;
         border: 2px solid var(--border-color);
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 13px;
         outline: none;
         transition: all 0.3s ease;
       }
@@ -266,39 +293,36 @@
         box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.1);
       }
 
-      /* 快捷操作 */
-      .quick-actions {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        grid-column: 1 / -1;
+      /* 快捷场景 */
+      .quick-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
 
       .quick-title {
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 600;
         color: var(--text-color);
-        margin-bottom: 15px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
       }
 
       .quick-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
       }
 
       .quick-card {
         background: var(--bg-color);
-        padding: 15px;
-        border-radius: 10px;
+        padding: 10px 8px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
+        border: 2px solid transparent;
       }
 
       .quick-card:hover {
@@ -306,50 +330,228 @@
         color: white;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(238, 108, 77, 0.3);
+        border-color: var(--primary-color);
       }
 
       .quick-card i {
-        font-size: 24px;
-        margin-bottom: 8px;
+        font-size: 18px;
+        margin-bottom: 4px;
         display: block;
       }
 
       .quick-card-title {
         font-weight: 600;
-        font-size: 14px;
+        font-size: 11px;
       }
 
-      /* 状态提示 */
-      .status-box {
-        background: rgba(42, 157, 143, 0.1);
-        border-left: 4px solid var(--success-color);
+      /* Toast通知容器 */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 350px;
+        pointer-events: none;
+      }
+
+      /* Toast通知项 */
+      .toast {
+        background: white;
         border-radius: 8px;
-        padding: 12px 15px;
-        margin-top: 10px;
-        color: var(--success-color);
+        padding: 12px 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
         font-size: 13px;
-        display: none;
+        pointer-events: auto;
+        transform: translateX(420px) scale(0.9);
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    opacity 0.3s ease,
+                    box-shadow 0.3s ease;
+        will-change: transform, opacity;
       }
 
-      .status-box.show {
-        display: block;
-        animation: slideDown 0.3s ease;
+      .toast.show {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+        animation: toast-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
 
-      .status-box.error {
-        background: rgba(231, 111, 81, 0.1);
-        border-left-color: var(--error-color);
-        color: var(--error-color);
+      .toast.hide {
+        transform: translateX(420px) scale(0.9);
+        opacity: 0;
+        transition: transform 0.35s cubic-bezier(0.6, -0.28, 0.74, 0.05),
+                    opacity 0.25s ease;
       }
 
-      @keyframes slideDown {
-        from {
+      /* Toast弹入动画 */
+      @keyframes toast-bounce {
+        0% {
+          transform: translateX(420px) scale(0.9);
           opacity: 0;
-          transform: translateY(-10px);
         }
+        50% {
+          transform: translateX(-10px) scale(1.02);
+          opacity: 1;
+        }
+        70% {
+          transform: translateX(5px) scale(0.98);
+        }
+        100% {
+          transform: translateX(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .toast-icon {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        animation: toast-icon-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes toast-icon-pop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .toast-content {
+        flex: 1;
+        color: var(--text-color);
+        line-height: 1.4;
+        animation: toast-content-slide 0.4s ease 0.1s both;
+      }
+
+      @keyframes toast-content-slide {
+        0% {
+          transform: translateX(10px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .toast-close {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: transparent;
+        color: #999;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        font-size: 16px;
+        opacity: 0;
+        animation: toast-close-fadein 0.3s ease 0.3s forwards;
+      }
+
+      @keyframes toast-close-fadein {
         to {
           opacity: 1;
-          transform: translateY(0);
+        }
+      }
+
+      .toast-close:hover {
+        background: var(--bg-color);
+        color: var(--text-color);
+        transform: scale(1.2) rotate(90deg);
+      }
+
+      .toast-close:active {
+        transform: scale(0.9) rotate(90deg);
+      }
+
+      .toast.success {
+        border-left: 4px solid var(--success-color);
+        animation: toast-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                   toast-success-glow 2s ease-in-out infinite;
+      }
+
+      @keyframes toast-success-glow {
+        0%, 100% {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        50% {
+          box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+        }
+      }
+
+      .toast.success .toast-icon {
+        color: var(--success-color);
+      }
+
+      .toast.error {
+        border-left: 4px solid var(--error-color);
+        animation: toast-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                   toast-error-shake 0.5s ease-in-out;
+      }
+
+      @keyframes toast-error-shake {
+        0%, 100% {
+          transform: translateX(0) scale(1);
+        }
+        10%, 30%, 50%, 70%, 90% {
+          transform: translateX(-5px) scale(1);
+        }
+        20%, 40%, 60%, 80% {
+          transform: translateX(5px) scale(1);
+        }
+      }
+
+      .toast.error .toast-icon {
+        color: var(--error-color);
+        animation: toast-icon-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                   toast-error-pulse 0.8s ease-in-out;
+      }
+
+      @keyframes toast-error-pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      .toast.info {
+        border-left: 4px solid #3498db;
+        animation: toast-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .toast.info .toast-icon {
+        color: #3498db;
+      }
+
+      @media (max-width: 768px) {
+        .toast-container {
+          left: 10px;
+          right: 10px;
+          top: 10px;
+          max-width: none;
         }
       }
 
@@ -357,6 +559,13 @@
       @media (max-width: 1200px) {
         .workspace {
           grid-template-columns: 1fr;
+          height: auto;  /* 移动端自适应高度 */
+          min-height: auto;
+        }
+
+        .panel {
+          height: auto;
+          min-height: 350px;
         }
 
         .editor-wrapper {
@@ -378,8 +587,13 @@
           gap: 15px;
         }
 
+        .control-panel {
+          padding: 15px;
+          gap: 15px;
+        }
+
         .toolbar {
-          padding: 12px;
+          padding-bottom: 15px;
           gap: 8px;
         }
 
@@ -408,6 +622,18 @@
           display: none;
         }
 
+        .config-section {
+          padding-bottom: 15px;
+        }
+
+        .config-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .quick-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
         .panel {
           padding: 12px;
         }
@@ -430,14 +656,6 @@
           padding: 10px;
           font-size: 12px;
         }
-
-        .config-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .quick-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
       }
 
       @media (max-width: 480px) {
@@ -456,7 +674,7 @@
         }
 
         .quick-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, 1fr);
         }
       }
 
@@ -511,71 +729,110 @@
     <div class="main-container">
       <h1 class="title"><i class="fa-solid fa-shield-halved"></i> 加解密工具</h1>
 
-      <!-- 工具栏 -->
-      <div class="toolbar">
-        <div class="toolbar-group">
-          <label class="toolbar-label"><i class="fa-solid fa-layer-group"></i> 加密算法:</label>
-          <select class="crypto-select" id="cryptoType">
-            <optgroup label="对称加密">
-              <option value="AES" selected>AES (推荐)</option>
-              <option value="DES">DES</option>
-              <option value="TripleDES">3DES</option>
-              <option value="RC4">RC4</option>
-              <option value="Rabbit">Rabbit</option>
-            </optgroup>
-            <optgroup label="哈希/摘要">
-              <option value="MD5">MD5</option>
-              <option value="SHA1">SHA-1</option>
-              <option value="SHA256">SHA-256</option>
-              <option value="SHA512">SHA-512</option>
-              <option value="RIPEMD160">RIPEMD-160</option>
-            </optgroup>
-            <optgroup label="编码">
-              <option value="Base64">Base64</option>
-              <option value="Hex">Hex</option>
-              <option value="UTF8">UTF-8</option>
-            </optgroup>
-            <optgroup label="其他">
-              <option value="HMAC">HMAC</option>
-              <option value="PBKDF2">PBKDF2</option>
-            </optgroup>
-          </select>
+      <!-- 统一控制面板 -->
+      <div class="control-panel">
+        <!-- 工具栏 -->
+        <div class="toolbar">
+          <div class="toolbar-group">
+            <label class="toolbar-label"><i class="fa-solid fa-layer-group"></i> 加密算法:</label>
+            <select class="crypto-select" id="cryptoType">
+              <optgroup label="对称加密">
+                <option value="AES" selected>AES (推荐)</option>
+                <option value="DES">DES</option>
+                <option value="TripleDES">3DES</option>
+                <option value="RC4">RC4</option>
+                <option value="Rabbit">Rabbit</option>
+              </optgroup>
+              <optgroup label="哈希/摘要">
+                <option value="MD5">MD5</option>
+                <option value="SHA1">SHA-1</option>
+                <option value="SHA256">SHA-256</option>
+                <option value="SHA512">SHA-512</option>
+                <option value="RIPEMD160">RIPEMD-160</option>
+              </optgroup>
+              <optgroup label="编码">
+                <option value="Base64">Base64</option>
+                <option value="Hex">Hex</option>
+                <option value="UTF8">UTF-8</option>
+              </optgroup>
+              <optgroup label="其他">
+                <option value="HMAC">HMAC</option>
+                <option value="PBKDF2">PBKDF2</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="toolbar-group">
+            <button class="btn btn-primary" id="encryptBtn">
+              <i class="fa-solid fa-lock"></i><span class="btn-text">加密</span>
+            </button>
+            <button class="btn btn-primary" id="decryptBtn">
+              <i class="fa-solid fa-lock-open"></i><span class="btn-text">解密</span>
+            </button>
+            <button class="btn btn-secondary" id="clearBtn">
+              <i class="fa-solid fa-eraser"></i><span class="btn-text">清空</span>
+            </button>
+            <button class="btn btn-secondary" id="swapBtn">
+              <i class="fa-solid fa-right-left"></i><span class="btn-text">交换</span>
+            </button>
+          </div>
         </div>
 
-        <div class="toolbar-group">
-          <button class="btn btn-primary" id="encryptBtn">
-            <i class="fa-solid fa-lock"></i><span class="btn-text">加密</span>
-          </button>
-          <button class="btn btn-primary" id="decryptBtn">
-            <i class="fa-solid fa-lock-open"></i><span class="btn-text">解密</span>
-          </button>
-          <button class="btn btn-secondary" id="clearBtn">
-            <i class="fa-solid fa-eraser"></i><span class="btn-text">清空</span>
-          </button>
-          <button class="btn btn-secondary" id="swapBtn">
-            <i class="fa-solid fa-right-left"></i><span class="btn-text">交换</span>
-          </button>
+        <!-- 配置区域 -->
+        <div class="config-section" id="configSection">
+          <div class="config-section-title">
+            <i class="fa-solid fa-sliders"></i> 配置参数
+          </div>
+          <div class="config-grid">
+            <div class="config-item" id="keyConfig">
+              <label class="config-label"><i class="fa-solid fa-key"></i> 密钥 (必填)</label>
+              <input type="text" class="config-input" id="secretKey" placeholder="请输入密钥" />
+            </div>
+            <div class="config-item" id="ivConfig" style="display: none;">
+              <label class="config-label"><i class="fa-solid fa-cube"></i> 初始向量 IV (可选)</label>
+              <input type="text" class="config-input" id="ivInput" placeholder="留空则自动生成" />
+            </div>
+            <div class="config-item" id="saltConfig" style="display: none;">
+              <label class="config-label"><i class="fa-solid fa-droplet"></i> 盐值 Salt (可选)</label>
+              <input type="text" class="config-input" id="saltInput" placeholder="增强安全性" />
+            </div>
+            <div class="config-item" id="iterationsConfig" style="display: none;">
+              <label class="config-label"><i class="fa-solid fa-rotate"></i> 迭代次数</label>
+              <input type="number" class="config-input" id="iterationsInput" value="1000" />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- 配置面板 -->
-      <div class="config-panel" id="configPanel">
-        <div class="config-grid">
-          <div class="config-item" id="keyConfig">
-            <label class="config-label"><i class="fa-solid fa-key"></i> 密钥 (必填)</label>
-            <input type="text" class="config-input" id="secretKey" placeholder="请输入密钥" />
+        <!-- 快捷场景 -->
+        <div class="quick-section">
+          <div class="quick-title">
+            <i class="fa-solid fa-bolt"></i> 常用场景
           </div>
-          <div class="config-item" id="ivConfig" style="display: none;">
-            <label class="config-label"><i class="fa-solid fa-cube"></i> 初始向量 IV (可选)</label>
-            <input type="text" class="config-input" id="ivInput" placeholder="留空则自动生成" />
-          </div>
-          <div class="config-item" id="saltConfig" style="display: none;">
-            <label class="config-label"><i class="fa-solid fa-droplet"></i> 盐值 Salt (可选)</label>
-            <input type="text" class="config-input" id="saltInput" placeholder="增强安全性" />
-          </div>
-          <div class="config-item" id="iterationsConfig" style="display: none;">
-            <label class="config-label"><i class="fa-solid fa-rotate"></i> 迭代次数</label>
-            <input type="number" class="config-input" id="iterationsInput" value="1000" />
+          <div class="quick-grid">
+            <div class="quick-card" onclick="quickAction('password')">
+              <i class="fa-solid fa-user-lock"></i>
+              <div class="quick-card-title">密码加密</div>
+            </div>
+            <div class="quick-card" onclick="quickAction('token')">
+              <i class="fa-solid fa-ticket"></i>
+              <div class="quick-card-title">Token 生成</div>
+            </div>
+            <div class="quick-card" onclick="quickAction('file')">
+              <i class="fa-solid fa-file-shield"></i>
+              <div class="quick-card-title">文件校验</div>
+            </div>
+            <div class="quick-card" onclick="quickAction('url')">
+              <i class="fa-solid fa-link-slash"></i>
+              <div class="quick-card-title">URL 加密</div>
+            </div>
+            <div class="quick-card" onclick="quickAction('api')">
+              <i class="fa-solid fa-code"></i>
+              <div class="quick-card-title">API 签名</div>
+            </div>
+            <div class="quick-card" onclick="quickAction('random')">
+              <i class="fa-solid fa-dice"></i>
+              <div class="quick-card-title">随机密钥</div>
+            </div>
           </div>
         </div>
       </div>
@@ -606,7 +863,6 @@ Hello World!
               spellcheck="false"
             ></textarea>
           </div>
-          <div class="status-box" id="inputStatus"></div>
         </div>
 
         <!-- 输出面板 -->
@@ -630,44 +886,12 @@ Hello World!
               readonly
             ></textarea>
           </div>
-          <div class="status-box" id="outputStatus"></div>
-        </div>
-      </div>
-
-      <!-- 快捷操作 -->
-      <div class="quick-actions">
-        <div class="quick-title">
-          <i class="fa-solid fa-bolt"></i>
-          常用场景
-        </div>
-        <div class="quick-grid">
-          <div class="quick-card" onclick="quickAction('password')">
-            <i class="fa-solid fa-user-lock"></i>
-            <div class="quick-card-title">密码加密</div>
-          </div>
-          <div class="quick-card" onclick="quickAction('token')">
-            <i class="fa-solid fa-ticket"></i>
-            <div class="quick-card-title">Token 生成</div>
-          </div>
-          <div class="quick-card" onclick="quickAction('file')">
-            <i class="fa-solid fa-file-shield"></i>
-            <div class="quick-card-title">文件校验</div>
-          </div>
-          <div class="quick-card" onclick="quickAction('url')">
-            <i class="fa-solid fa-link-slash"></i>
-            <div class="quick-card-title">URL 加密</div>
-          </div>
-          <div class="quick-card" onclick="quickAction('api')">
-            <i class="fa-solid fa-code"></i>
-            <div class="quick-card-title">API 签名</div>
-          </div>
-          <div class="quick-card" onclick="quickAction('random')">
-            <i class="fa-solid fa-dice"></i>
-            <div class="quick-card-title">随机密钥</div>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Toast通知容器 -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="../../shared/scripts/common.js"></script>
     <script src="../../shared/scripts/theme.js"></script>
@@ -680,12 +904,64 @@ Hello World!
       const iterationsInput = document.getElementById('iterationsInput');
       const inputEditor = document.getElementById('inputEditor');
       const outputEditor = document.getElementById('outputEditor');
-      const inputStatus = document.getElementById('inputStatus');
-      const outputStatus = document.getElementById('outputStatus');
+      const toastContainer = document.getElementById('toastContainer');
       const keyConfig = document.getElementById('keyConfig');
       const ivConfig = document.getElementById('ivConfig');
       const saltConfig = document.getElementById('saltConfig');
       const iterationsConfig = document.getElementById('iterationsConfig');
+
+      // Toast通知系统
+      let toastQueue = [];
+      let toastIdCounter = 0;
+
+      function showToast(message, type = 'success', duration = 3000) {
+        const toastId = ++toastIdCounter;
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.dataset.id = toastId;
+
+        const iconMap = {
+          success: 'fa-circle-check',
+          error: 'fa-circle-xmark',
+          info: 'fa-circle-info'
+        };
+
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="fa-solid ${iconMap[type] || iconMap.success}"></i>
+          </div>
+          <div class="toast-content">${message}</div>
+          <button class="toast-close" aria-label="关闭">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // 添加关闭按钮事件
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.addEventListener('click', () => hideToast(toast));
+
+        // 延迟显示(触发动画)
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        // 自动关闭
+        if (duration > 0) {
+          setTimeout(() => hideToast(toast), duration);
+        }
+
+        return toast;
+      }
+
+      function hideToast(toast) {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      }
 
       // 初始化
       function init() {
@@ -695,9 +971,9 @@ Hello World!
         document.getElementById('clearBtn').addEventListener('click', clearAll);
         document.getElementById('swapBtn').addEventListener('click', swapContent);
         document.getElementById('pasteBtn').addEventListener('click', pasteFromClipboard);
-        document.getElementById('clearInputBtn').addEventListener('click', () => inputEditor.value = '');
+        document.getElementById('clearInputBtn').addEventListener('click', clearInput);
         document.getElementById('copyOutputBtn').addEventListener('click', copyOutput);
-        document.getElementById('clearOutputBtn').addEventListener('click', () => outputEditor.value = '');
+        document.getElementById('clearOutputBtn').addEventListener('click', clearOutput);
 
         // 算法类型变更
         cryptoType.addEventListener('change', updateConfigPanel);
@@ -708,6 +984,9 @@ Hello World!
       // 更新配置面板
       function updateConfigPanel() {
         const type = cryptoType.value;
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const outputTitle = document.querySelector('.panel:last-of-type .panel-title span');
 
         // 默认隐藏所有配置
         keyConfig.style.display = 'none';
@@ -715,23 +994,53 @@ Hello World!
         saltConfig.style.display = 'none';
         iterationsConfig.style.display = 'none';
 
-        // 根据算法类型显示配置
+        // 默认显示所有按钮
+        encryptBtn.style.display = 'inline-flex';
+        decryptBtn.style.display = 'inline-flex';
+
+        // 根据算法类型显示配置和调整按钮
         if (['AES', 'DES', 'TripleDES', 'RC4', 'Rabbit'].includes(type)) {
           // 对称加密需要密钥和IV
           keyConfig.style.display = 'flex';
           ivConfig.style.display = 'flex';
+          encryptBtn.innerHTML = '<i class="fa-solid fa-lock"></i><span class="btn-text">加密</span>';
+          decryptBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i><span class="btn-text">解密</span>';
+          outputTitle.textContent = '加密结果';
         } else if (['MD5', 'SHA1', 'SHA256', 'SHA512', 'RIPEMD160'].includes(type)) {
-          // 哈希算法不需要密钥
+          // 哈希算法不需要密钥,不可逆
           keyConfig.style.display = 'none';
+          decryptBtn.style.display = 'none';  // 隐藏解密按钮
+          encryptBtn.innerHTML = '<i class="fa-solid fa-hashtag"></i><span class="btn-text">计算哈希</span>';
+          outputTitle.textContent = '哈希值';
         } else if (type === 'HMAC') {
           keyConfig.style.display = 'flex';
+          decryptBtn.style.display = 'none';  // HMAC不可逆
+          encryptBtn.innerHTML = '<i class="fa-solid fa-signature"></i><span class="btn-text">生成签名</span>';
+          outputTitle.textContent = 'HMAC签名';
         } else if (type === 'PBKDF2') {
           keyConfig.style.display = 'flex';
           saltConfig.style.display = 'flex';
           iterationsConfig.style.display = 'flex';
+          decryptBtn.style.display = 'none';  // PBKDF2不可逆
+          encryptBtn.innerHTML = '<i class="fa-solid fa-key"></i><span class="btn-text">派生密钥</span>';
+          outputTitle.textContent = '派生密钥';
         } else if (['Base64', 'Hex', 'UTF8'].includes(type)) {
           // 编码不需要密钥
           keyConfig.style.display = 'none';
+          encryptBtn.innerHTML = '<i class="fa-solid fa-code"></i><span class="btn-text">编码</span>';
+          decryptBtn.innerHTML = '<i class="fa-solid fa-file-code"></i><span class="btn-text">解码</span>';
+          outputTitle.textContent = '编码结果';
+        }
+
+        // 清空之前的配置值(避免混淆)
+        if (keyConfig.style.display === 'none') {
+          secretKey.value = '';
+        }
+        if (ivConfig.style.display === 'none') {
+          ivInput.value = '';
+        }
+        if (saltConfig.style.display === 'none') {
+          saltInput.value = '';
         }
       }
 
@@ -740,7 +1049,7 @@ Hello World!
         try {
           const input = inputEditor.value;
           if (!input) {
-            showStatus(inputStatus, '请输入要加密的数据', 'error');
+            showToast('请输入要加密的数据', 'error');
             return;
           }
 
@@ -751,35 +1060,35 @@ Hello World!
           switch (type) {
             case 'AES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.AES.encrypt(input, key).toString();
               break;
             case 'DES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.DES.encrypt(input, key).toString();
               break;
             case 'TripleDES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.TripleDES.encrypt(input, key).toString();
               break;
             case 'RC4':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.RC4.encrypt(input, key).toString();
               break;
             case 'Rabbit':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.Rabbit.encrypt(input, key).toString();
@@ -807,14 +1116,14 @@ Hello World!
               break;
             case 'HMAC':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               result = CryptoJS.HmacSHA256(input, key).toString();
               break;
             case 'PBKDF2':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const salt = saltInput.value || CryptoJS.lib.WordArray.random(128/8).toString();
@@ -822,14 +1131,14 @@ Hello World!
               result = CryptoJS.PBKDF2(key, salt, { keySize: 256/32, iterations: iterations }).toString();
               break;
             default:
-              showStatus(inputStatus, '不支持的算法类型', 'error');
+              showToast('不支持的算法类型', 'error');
               return;
           }
 
           outputEditor.value = result;
-          showStatus(outputStatus, '✅ 加密成功', 'success');
+          showToast('✅ 加密成功');
         } catch (error) {
-          showStatus(outputStatus, `❌ 加密失败: ${error.message}`, 'error');
+          showToast(`❌ 加密失败: ${error.message}`, 'error');
         }
       }
 
@@ -838,7 +1147,7 @@ Hello World!
         try {
           const input = inputEditor.value;
           if (!input) {
-            showStatus(inputStatus, '请输入要解密的数据', 'error');
+            showToast('请输入要解密的数据', 'error');
             return;
           }
 
@@ -849,7 +1158,7 @@ Hello World!
           switch (type) {
             case 'AES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const bytesAES = CryptoJS.AES.decrypt(input, key);
@@ -857,7 +1166,7 @@ Hello World!
               break;
             case 'DES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const bytesDES = CryptoJS.DES.decrypt(input, key);
@@ -865,7 +1174,7 @@ Hello World!
               break;
             case 'TripleDES':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const bytes3DES = CryptoJS.TripleDES.decrypt(input, key);
@@ -873,7 +1182,7 @@ Hello World!
               break;
             case 'RC4':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const bytesRC4 = CryptoJS.RC4.decrypt(input, key);
@@ -881,7 +1190,7 @@ Hello World!
               break;
             case 'Rabbit':
               if (!key) {
-                showStatus(inputStatus, '请输入密钥', 'error');
+                showToast('请输入密钥', 'error');
                 return;
               }
               const bytesRabbit = CryptoJS.Rabbit.decrypt(input, key);
@@ -894,28 +1203,40 @@ Hello World!
               result = CryptoJS.enc.Hex.parse(input).toString(CryptoJS.enc.Utf8);
               break;
             default:
-              showStatus(inputStatus, '该算法不支持解密', 'error');
+              showToast('该算法不支持解密', 'error');
               return;
           }
 
           if (!result) {
-            showStatus(outputStatus, '❌ 解密失败: 密钥错误或数据损坏', 'error');
+            showToast('❌ 解密失败: 密钥错误或数据损坏', 'error');
             return;
           }
 
           outputEditor.value = result;
-          showStatus(outputStatus, '✅ 解密成功', 'success');
+          showToast('✅ 解密成功');
         } catch (error) {
-          showStatus(outputStatus, `❌ 解密失败: ${error.message}`, 'error');
+          showToast(`❌ 解密失败: ${error.message}`, 'error');
         }
+      }
+
+      // 清空输入
+      function clearInput() {
+        inputEditor.value = '';
+        clearOutput();
+      }
+
+      // 清空输出
+      function clearOutput() {
+        outputEditor.value = '';
       }
 
       // 清空所有
       function clearAll() {
         inputEditor.value = '';
         outputEditor.value = '';
-        hideStatus(inputStatus);
-        hideStatus(outputStatus);
+        secretKey.value = '';
+        ivInput.value = '';
+        saltInput.value = '';
       }
 
       // 交换内容
@@ -930,9 +1251,9 @@ Hello World!
         try {
           const text = await navigator.clipboard.readText();
           inputEditor.value = text;
-          showStatus(inputStatus, '✅ 已粘贴', 'success');
+          showToast('✅ 已粘贴');
         } catch (error) {
-          showStatus(inputStatus, '❌ 粘贴失败', 'error');
+          showToast('❌ 粘贴失败', 'error');
         }
       }
 
@@ -940,14 +1261,14 @@ Hello World!
       function copyOutput() {
         const text = outputEditor.value;
         if (!text) {
-          showStatus(outputStatus, '没有可复制的内容', 'error');
+          showToast('没有可复制的内容', 'error');
           return;
         }
 
         navigator.clipboard.writeText(text).then(() => {
-          showStatus(outputStatus, '✅ 已复制到剪贴板', 'success');
+          showToast('✅ 已复制到剪贴板');
         }).catch(() => {
-          showStatus(outputStatus, '❌ 复制失败', 'error');
+          showToast('❌ 复制失败', 'error');
         });
       }
 
@@ -957,7 +1278,7 @@ Hello World!
           case 'password':
             cryptoType.value = 'SHA256';
             inputEditor.value = '请输入您的密码';
-            showStatus(inputStatus, '💡 建议使用 SHA-256 或 PBKDF2 加密密码', 'success');
+            showToast('💡 建议使用 SHA-256 或 PBKDF2 加密密码', 'info');
             break;
           case 'token':
             cryptoType.value = 'AES';
@@ -967,28 +1288,28 @@ Hello World!
               timestamp: Date.now(),
               random: Math.random().toString(36)
             }, null, 2);
-            showStatus(inputStatus, '✅ 已生成示例 Token 数据', 'success');
+            showToast('✅ 已生成示例 Token 数据');
             break;
           case 'file':
             cryptoType.value = 'SHA256';
             inputEditor.value = '文件内容...';
-            showStatus(inputStatus, '💡 使用 SHA-256 计算文件校验和', 'success');
+            showToast('💡 使用 SHA-256 计算文件校验和', 'info');
             break;
           case 'url':
             cryptoType.value = 'Base64';
             inputEditor.value = 'https://example.com/path?param=value';
-            showStatus(inputStatus, '✅ 使用 Base64 编码 URL', 'success');
+            showToast('✅ 使用 Base64 编码 URL');
             break;
           case 'api':
             cryptoType.value = 'HMAC';
             secretKey.value = 'your-api-secret-key';
             inputEditor.value = 'GET/api/users?page=1&limit=10';
-            showStatus(inputStatus, '✅ 使用 HMAC 生成 API 签名', 'success');
+            showToast('✅ 使用 HMAC 生成 API 签名');
             break;
           case 'random':
             const randomKey = generateRandomKey(32);
             secretKey.value = randomKey;
-            showStatus(inputStatus, '✅ 已生成随机密钥', 'success');
+            showToast('✅ 已生成随机密钥');
             break;
         }
         updateConfigPanel();
@@ -997,18 +1318,6 @@ Hello World!
       // 生成随机密钥
       function generateRandomKey(length = 16) {
         return CryptoJS.lib.WordArray.random(length).toString();
-      }
-
-      // 显示状态
-      function showStatus(element, message, type = 'success') {
-        element.textContent = message;
-        element.className = `status-box show ${type}`;
-        setTimeout(() => hideStatus(element), 3000);
-      }
-
-      // 隐藏状态
-      function hideStatus(element) {
-        element.classList.remove('show');
       }
 
       // 初始化应用
