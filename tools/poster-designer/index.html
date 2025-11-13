@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>海报设计工具 - 开发工具箱</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+    <link rel="alternate icon" href="../../favicon.ico" />
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1e3a5f 0%,
+          #3d5a80 20%,
+          #ee6c4d 50%,
+          #f4a261 75%,
+          #e9c46a 100%
+        );
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .main-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(260px, 280px) 1fr minmax(260px, 280px);
+        gap: 20px;
+        min-height: 600px;
+        width: 100%;
+        overflow: visible;
+      }
+
+      /* 左侧工具栏 */
+      .toolbar {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-height: calc(100vh - 220px);
+        overflow-y: auto;
+        min-width: 0;
+      }
+
+      .tool-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tool-section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tool-btn {
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        min-height: 44px; /* 确保触摸目标足够大 */
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .tool-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(238, 108, 77, 0.3);
+      }
+
+      .tool-btn:active {
+        transform: scale(0.97);
+        box-shadow: 0 2px 10px rgba(238, 108, 77, 0.3);
+      }
+
+      .tool-btn.secondary {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--text-color);
+      }
+
+      .tool-btn.secondary:hover {
+        background: rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .preset-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .preset-btn {
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.03);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 12px;
+        text-align: center;
+        min-height: 44px; /* 确保触摸目标足够大 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .preset-btn:hover {
+        background: rgba(238, 108, 77, 0.1);
+        border-color: #ee6c4d;
+        transform: translateY(-1px);
+      }
+
+      .preset-btn:active {
+        transform: scale(0.97);
+        background: rgba(238, 108, 77, 0.15);
+      }
+
+      .preset-btn.active {
+        background: rgba(238, 108, 77, 0.2);
+        border-color: #ee6c4d;
+        font-weight: 600;
+      }
+
+      /* 中间画布区域 */
+      .canvas-area {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        min-height: 600px;
+        overflow: auto;
+        min-width: 0;
+      }
+
+      .canvas-wrapper {
+        position: relative;
+        background: white;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        max-width: 100%;
+        max-height: calc(100vh - 280px);
+      }
+
+      #posterCanvas {
+        display: block;
+        cursor: crosshair;
+        max-width: 100%;
+        height: auto;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        touch-action: none;
+      }
+
+      #posterCanvas.dragging {
+        cursor: grabbing !important;
+      }
+
+      #posterCanvas.resizing {
+        cursor: nwse-resize !important;
+      }
+
+      .canvas-controls {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 100;
+      }
+
+      .canvas-control-btn {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid rgba(238, 108, 77, 0.1);
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .canvas-control-btn:hover {
+        background: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        border-color: rgba(238, 108, 77, 0.3);
+      }
+
+      .canvas-control-btn:active {
+        transform: scale(0.92);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 预览模态框 */
+      .preview-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 10002; /* 比抽屉更高 */
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .preview-modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .preview-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        position: relative;
+        animation: zoomIn 0.3s ease;
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .preview-canvas {
+        max-width: 100%;
+        max-height: 90vh;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+      }
+
+      .preview-close {
+        position: absolute;
+        top: -50px;
+        right: 0;
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--text-color);
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .preview-close:hover {
+        background: white;
+        transform: scale(1.1) rotate(90deg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .preview-close:active {
+        transform: scale(1) rotate(90deg);
+      }
+
+      /* 右侧属性面板 */
+      .properties-panel {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-height: calc(100vh - 220px);
+        overflow-y: auto;
+        min-width: 0;
+      }
+
+      .property-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .property-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 4px;
+      }
+
+      .property-input {
+        padding: 10px 12px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        width: 100%;
+      }
+
+      .property-input:focus {
+        outline: none;
+        border-color: #ee6c4d;
+        box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.1);
+      }
+
+      .property-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .color-picker-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .color-picker {
+        width: 50px;
+        height: 40px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .font-size-input {
+        width: 80px;
+      }
+
+      .layer-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .layer-item {
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.03);
+        border: 2px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .layer-item:hover {
+        background: rgba(238, 108, 77, 0.1);
+        border-color: #ee6c4d;
+      }
+
+      .layer-item.active {
+        background: rgba(238, 108, 77, 0.2);
+        border-color: #ee6c4d;
+        font-weight: 600;
+      }
+
+      .layer-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .layer-action-btn {
+        width: 28px;
+        height: 28px;
+        background: rgba(0, 0, 0, 0.05);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .layer-action-btn:hover {
+        background: rgba(238, 108, 77, 0.2);
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text-light);
+        padding: 30px;
+        font-size: 14px;
+      }
+
+      /* 移动端悬浮按钮 */
+      .mobile-fab {
+        display: none;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+        flex-direction: row;
+        gap: 10px;
+      }
+
+      .fab-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(238, 108, 77, 0.4);
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: auto;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+      }
+
+      .fab-btn:active {
+        transform: scale(0.92);
+        box-shadow: 0 2px 8px rgba(238, 108, 77, 0.4);
+      }
+
+      .fab-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(238, 108, 77, 0.5);
+      }
+
+      /* 移动端抽屉面板 */
+      .drawer-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000; /* 比返回首页按钮(9999)更高 */
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .drawer-overlay.active {
+        display: block;
+        opacity: 1;
+      }
+
+      .drawer {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0; /* 默认从右侧滑出 */
+        height: 100vh;
+        width: 85%;
+        max-width: 360px;
+        background: white;
+        z-index: 10001; /* 在遮罩层之上 */
+        overflow-y: auto;
+        padding: 20px;
+        padding-bottom: 40px; /* 底部留白，避免内容被遮挡 */
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .drawer.active {
+        display: block;
+        animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* 禁止页面滚动（当抽屉打开时） */
+      body.drawer-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      .drawer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .drawer-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-color);
+      }
+
+      .drawer-close {
+        width: 36px;
+        height: 36px;
+        border: none;
+        background: rgba(238, 108, 77, 0.1);
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: var(--primary-color);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .drawer-close:hover {
+        background: rgba(238, 108, 77, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .drawer-close:active {
+        background: rgba(238, 108, 77, 0.3);
+        transform: rotate(90deg) scale(0.95);
+      }
+
+      /* 抽屉内的移动端工具按钮 */
+      .drawer .tool-btn {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .drawer .tool-section {
+        margin-bottom: 20px;
+      }
+
+      .drawer .tool-section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* 移动端属性面板优化 */
+      .drawer .property-group {
+        margin-bottom: 16px;
+        padding: 16px;
+        background: rgba(238, 108, 77, 0.03);
+        border-radius: 12px;
+        border: 1px solid rgba(238, 108, 77, 0.08);
+      }
+
+      .drawer .property-group:last-child {
+        margin-bottom: 0;
+      }
+
+      /* 嵌套的 property-group 不需要背景 */
+      .drawer .property-group .property-group {
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin-bottom: 12px;
+      }
+
+      .drawer .property-group .property-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .drawer .property-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .drawer .property-input {
+        padding: 12px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        font-size: 15px;
+        width: 100%;
+        min-height: 44px; /* 确保触摸目标足够大 */
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.3s ease;
+      }
+
+      .drawer .property-input:focus {
+        outline: none;
+        border-color: #ee6c4d;
+        box-shadow: 0 0 0 3px rgba(238, 108, 77, 0.1);
+      }
+
+      .drawer .property-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .drawer .property-row:last-child {
+        margin-bottom: 0;
+      }
+
+      /* 移动端颜色选择器优化 */
+      .drawer .color-picker-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .drawer .color-picker {
+        width: 60px;
+        height: 44px;
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        flex-shrink: 0;
+      }
+
+      .drawer .color-picker-wrapper .property-input {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* 移动端图层列表优化 */
+      .drawer .layer-list {
+        max-height: 250px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: -8px; /* 抵消内部 margin */
+        padding: 8px;
+      }
+
+      .drawer .layer-list::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .drawer .layer-list::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+      }
+
+      .drawer .layer-list::-webkit-scrollbar-thumb {
+        background: rgba(238, 108, 77, 0.3);
+        border-radius: 2px;
+      }
+
+      .drawer .layer-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(238, 108, 77, 0.5);
+      }
+
+      .drawer .layer-item {
+        padding: 14px;
+        margin-bottom: 8px;
+        background: rgba(0, 0, 0, 0.03);
+        border: 2px solid transparent;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 44px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .drawer .layer-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .drawer .layer-item:active {
+        transform: scale(0.98);
+      }
+
+      .drawer .layer-item.active {
+        background: rgba(238, 108, 77, 0.15);
+        border-color: #ee6c4d;
+        font-weight: 600;
+      }
+
+      .drawer .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--text-light);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* 移动端 select 下拉框优化 */
+      .drawer select.property-input {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px;
+        padding-right: 36px;
+      }
+
+      /* 移动端数字输入框优化 */
+      .drawer input[type="number"].property-input {
+        -moz-appearance: textfield;
+      }
+
+      .drawer input[type="number"].property-input::-webkit-outer-spin-button,
+      .drawer input[type="number"].property-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* 移动端删除按钮优化 */
+      .drawer .tool-btn.secondary {
+        background: linear-gradient(135deg, #e76f51 0%, #f4a261 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 2px 8px rgba(231, 111, 81, 0.3);
+      }
+
+      .drawer .tool-btn.secondary:active {
+        transform: scale(0.97);
+        box-shadow: 0 1px 4px rgba(231, 111, 81, 0.3);
+      }
+
+      /* 移动端图层操作按钮优化 */
+      .drawer .layer-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .drawer .layer-action-btn {
+        width: 36px;
+        height: 36px;
+        background: rgba(238, 108, 77, 0.1);
+        border: 2px solid rgba(238, 108, 77, 0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+        flex-shrink: 0;
+      }
+
+      .drawer .layer-action-btn:active {
+        transform: scale(0.9);
+        background: rgba(238, 108, 77, 0.2);
+      }
+
+      .drawer .layer-info {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .drawer .layer-name {
+        font-size: 14px;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 1400px) {
+        .workspace {
+          grid-template-columns: 240px 1fr 240px;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .workspace {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto;
+          gap: 15px;
+        }
+
+        .toolbar,
+        .properties-panel {
+          max-height: none;
+          overflow-y: visible;
+        }
+
+        .canvas-wrapper {
+          max-height: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 0;
+        }
+
+        .header {
+          padding: 15px 10px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .header p {
+          font-size: 13px;
+        }
+
+        .main-container {
+          gap: 0;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr;
+          gap: 0;
+          min-height: calc(100vh - 100px);
+        }
+
+        /* 隐藏桌面版侧边栏 */
+        .toolbar,
+        .properties-panel {
+          display: none !important;
+        }
+
+        /* 显示移动端控件 */
+        .mobile-fab {
+          display: flex;
+        }
+
+        /* 画布区域全屏显示 */
+        .canvas-area {
+          padding: 10px;
+          border-radius: 0;
+          min-height: calc(100vh - 100px);
+          grid-column: 1;
+          grid-row: 1;
+          position: relative;
+          overflow: visible;
+        }
+
+        .canvas-wrapper {
+          max-height: calc(100vh - 120px);
+        }
+
+        #posterCanvas {
+          max-width: 100%;
+        }
+
+        .preset-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+
+        .preset-btn {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+
+        /* 移动端画布控制按钮调整 */
+        .canvas-controls {
+          top: 10px;
+          left: 10px;
+        }
+
+        .mobile-fab {
+          top: 10px;
+          right: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 20px;
+        }
+
+        .header p {
+          font-size: 12px;
+        }
+
+        .drawer {
+          width: 90%;
+          max-width: 100%;
+        }
+
+        .canvas-control-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
+
+        .fab-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .canvas-controls {
+          top: 8px;
+          left: 8px;
+          gap: 8px;
+        }
+
+        .mobile-fab {
+          top: 8px;
+          right: 8px;
+          gap: 8px;
+        }
+      }
+
+      /* 滚动条样式 */
+      .toolbar::-webkit-scrollbar,
+      .properties-panel::-webkit-scrollbar,
+      .layer-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .toolbar::-webkit-scrollbar-track,
+      .properties-panel::-webkit-scrollbar-track,
+      .layer-list::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
+      }
+
+      .toolbar::-webkit-scrollbar-thumb,
+      .properties-panel::-webkit-scrollbar-thumb,
+      .layer-list::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+      }
+
+      /* 输入文件隐藏 */
+      .file-input {
+        display: none;
+      }
+
+      /* 提示信息 */
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease;
+      }
+
+      .toast.show {
+        display: flex;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .toast.success {
+        border-left: 4px solid #2a9d8f;
+      }
+
+      .toast.error {
+        border-left: 4px solid #e76f51;
+      }
+
+      .toast-icon {
+        font-size: 24px;
+      }
+
+      .toast-message {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+    </style>
+  </head>
+  <body>
+    <a href="../../index.html" class="back-home-btn">返回首页</a>
+
+    <!-- 提示信息 -->
+    <div class="toast" id="toast">
+      <span class="toast-icon" id="toastIcon">✅</span>
+      <span class="toast-message" id="toastMessage">操作成功</span>
+    </div>
+
+    <div class="main-container">
+      <!-- 头部 -->
+      <div class="header">
+        <h1>🎨 海报设计工具</h1>
+        <p>在线设计海报，支持文本、图片、形状等元素，导出高清图片</p>
+      </div>
+
+      <!-- 工作区 -->
+      <div class="workspace">
+        <!-- 左侧工具栏 -->
+        <div class="toolbar">
+          <div class="tool-section">
+            <div class="tool-section-title">📐 画布尺寸</div>
+            <div class="preset-grid">
+              <div class="preset-btn" data-size="800,600">800×600</div>
+              <div class="preset-btn active" data-size="1080,1920">1080×1920<br/><small>竖屏</small></div>
+              <div class="preset-btn" data-size="1920,1080">1920×1080<br/><small>横屏</small></div>
+              <div class="preset-btn" data-size="1080,1080">1080×1080<br/><small>方形</small></div>
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">🎨 背景设置</div>
+            <button class="tool-btn" id="setBgColor">
+              <span>🎨</span>
+              <span>纯色背景</span>
+            </button>
+            <button class="tool-btn" id="uploadBgImage">
+              <span>🖼️</span>
+              <span>图片背景</span>
+            </button>
+            <input type="file" class="file-input" id="bgImageInput" accept="image/*" />
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">➕ 添加元素</div>
+            <button class="tool-btn" id="addText">
+              <span>📝</span>
+              <span>添加文本</span>
+            </button>
+            <button class="tool-btn" id="uploadImage">
+              <span>🖼️</span>
+              <span>上传图片</span>
+            </button>
+            <input type="file" class="file-input" id="imageInput" accept="image/*" />
+            <button class="tool-btn" id="addRect">
+              <span>⬜</span>
+              <span>添加矩形</span>
+            </button>
+            <button class="tool-btn" id="addCircle">
+              <span>⭕</span>
+              <span>添加圆形</span>
+            </button>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">💾 文件操作</div>
+            <button class="tool-btn secondary" id="clearCanvas">
+              <span>🗑️</span>
+              <span>清空画布</span>
+            </button>
+            <button class="tool-btn" id="exportPNG">
+              <span>⬇️</span>
+              <span>导出PNG</span>
+            </button>
+            <button class="tool-btn" id="exportJPG">
+              <span>⬇️</span>
+              <span>导出JPG</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 中间画布 -->
+        <div class="canvas-area">
+          <div class="canvas-controls">
+            <button class="canvas-control-btn" id="undoBtn" title="撤销">↶</button>
+            <button class="canvas-control-btn" id="redoBtn" title="重做">↷</button>
+            <button class="canvas-control-btn" id="previewBtn" title="预览">👁️</button>
+          </div>
+          <!-- 移动端悬浮按钮 -->
+          <div class="mobile-fab">
+            <button class="fab-btn" id="mobileFabTools" title="工具">🛠️</button>
+            <button class="fab-btn" id="mobileFabProps" title="属性">⚙️</button>
+          </div>
+          <div class="canvas-wrapper" id="canvasWrapper">
+            <canvas id="posterCanvas" width="1080" height="1920"></canvas>
+          </div>
+        </div>
+
+        <!-- 右侧属性面板 -->
+        <div class="properties-panel">
+          <div class="property-group">
+            <div class="tool-section-title">📋 图层列表</div>
+            <div class="layer-list" id="layerList">
+              <div class="empty-state">暂无图层<br/>添加元素开始设计</div>
+            </div>
+          </div>
+
+          <div class="property-group" id="elementProps" style="display: none;">
+            <div class="tool-section-title">✏️ 元素属性</div>
+
+            <div id="textProps" style="display: none;">
+              <div class="property-group">
+                <label class="property-label">文本内容</label>
+                <input type="text" class="property-input" id="textContent" placeholder="输入文本" />
+              </div>
+
+              <div class="property-row">
+                <div>
+                  <label class="property-label">字体大小</label>
+                  <input type="number" class="property-input font-size-input" id="fontSize" value="40" min="12" max="200" />
+                </div>
+                <div>
+                  <label class="property-label">字体粗细</label>
+                  <select class="property-input" id="fontWeight">
+                    <option value="normal">正常</option>
+                    <option value="bold">粗体</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="property-group">
+                <label class="property-label">文本颜色</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker" id="textColor" value="#000000" />
+                  <input type="text" class="property-input" id="textColorHex" value="#000000" />
+                </div>
+              </div>
+            </div>
+
+            <div id="shapeProps" style="display: none;">
+              <div class="property-group">
+                <label class="property-label">填充颜色</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker" id="fillColor" value="#ee6c4d" />
+                  <input type="text" class="property-input" id="fillColorHex" value="#ee6c4d" />
+                </div>
+              </div>
+
+              <div class="property-group">
+                <label class="property-label">边框宽度</label>
+                <input type="number" class="property-input" id="strokeWidth" value="0" min="0" max="20" />
+              </div>
+
+              <div class="property-group">
+                <label class="property-label">边框颜色</label>
+                <div class="color-picker-wrapper">
+                  <input type="color" class="color-picker" id="strokeColor" value="#000000" />
+                  <input type="text" class="property-input" id="strokeColorHex" value="#000000" />
+                </div>
+              </div>
+            </div>
+
+            <div class="property-group">
+              <label class="property-label">不透明度</label>
+              <input type="range" class="property-input" id="opacity" min="0" max="100" value="100" />
+            </div>
+
+            <div class="property-row">
+              <div>
+                <label class="property-label">宽度</label>
+                <input type="number" class="property-input" id="elementWidth" min="10" />
+              </div>
+              <div>
+                <label class="property-label">高度</label>
+                <input type="number" class="property-input" id="elementHeight" min="10" />
+              </div>
+            </div>
+
+            <div class="property-row">
+              <div>
+                <label class="property-label">X 位置</label>
+                <input type="number" class="property-input" id="elementX" />
+              </div>
+              <div>
+                <label class="property-label">Y 位置</label>
+                <input type="number" class="property-input" id="elementY" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 预览模态框 -->
+    <div class="preview-modal" id="previewModal">
+      <div class="preview-content">
+        <button class="preview-close" id="previewClose">×</button>
+        <canvas class="preview-canvas" id="previewCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- 左侧抽屉 - 工具栏 -->
+    <div class="drawer" id="toolDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title">🛠️ 工具箱</div>
+        <button class="drawer-close" id="closeToolDrawer">×</button>
+      </div>
+      <!-- 工具栏内容（复制自toolbar） -->
+      <div class="tool-section">
+        <div class="tool-section-title">📐 画布尺寸</div>
+        <div class="preset-grid">
+          <div class="preset-btn mobile-preset" data-size="800,600">800×600</div>
+          <div class="preset-btn mobile-preset active" data-size="1080,1920">1080×1920<br/><small>竖屏</small></div>
+          <div class="preset-btn mobile-preset" data-size="1920,1080">1920×1080<br/><small>横屏</small></div>
+          <div class="preset-btn mobile-preset" data-size="1080,1080">1080×1080<br/><small>方形</small></div>
+        </div>
+      </div>
+
+      <div class="tool-section">
+        <div class="tool-section-title">🎨 背景设置</div>
+        <button class="tool-btn mobile-tool" id="mobileBgColor">
+          <span>🎨</span>
+          <span>纯色背景</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileUploadBg">
+          <span>🖼️</span>
+          <span>图片背景</span>
+        </button>
+      </div>
+
+      <div class="tool-section">
+        <div class="tool-section-title">➕ 添加元素</div>
+        <button class="tool-btn mobile-tool" id="mobileAddText">
+          <span>📝</span>
+          <span>添加文本</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileUploadImage">
+          <span>🖼️</span>
+          <span>上传图片</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileAddRect">
+          <span>⬜</span>
+          <span>添加矩形</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileAddCircle">
+          <span>⭕</span>
+          <span>添加圆形</span>
+        </button>
+      </div>
+
+      <div class="tool-section">
+        <div class="tool-section-title">💾 文件操作</div>
+        <button class="tool-btn secondary mobile-tool" id="mobileClear">
+          <span>🗑️</span>
+          <span>清空画布</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileExportPNG">
+          <span>⬇️</span>
+          <span>导出PNG</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileExportJPG">
+          <span>⬇️</span>
+          <span>导出JPG</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 右侧抽屉 - 属性面板 -->
+    <div class="drawer" id="propsDrawer">
+      <div class="drawer-header">
+        <div class="drawer-title">⚙️ 属性面板</div>
+        <button class="drawer-close" id="closePropsDrawer">×</button>
+      </div>
+      <!-- 属性面板内容（复制自properties-panel） -->
+      <div class="property-group">
+        <div class="tool-section-title">📋 图层列表</div>
+        <div class="layer-list" id="mobileLayerList">
+          <div class="empty-state">暂无图层<br/>添加元素开始设计</div>
+        </div>
+      </div>
+
+      <div class="property-group" id="mobileElementProps" style="display: none;">
+        <div class="tool-section-title">✏️ 元素属性</div>
+
+        <div id="mobileTextProps" style="display: none;">
+          <div class="property-group">
+            <label class="property-label">文本内容</label>
+            <input type="text" class="property-input" id="mobileTextContent" placeholder="输入文本" />
+          </div>
+
+          <div class="property-row">
+            <div>
+              <label class="property-label">字体大小</label>
+              <input type="number" class="property-input font-size-input" id="mobileFontSize" value="40" min="12" max="200" />
+            </div>
+            <div>
+              <label class="property-label">字体粗细</label>
+              <select class="property-input" id="mobileFontWeight">
+                <option value="normal">正常</option>
+                <option value="bold">粗体</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label class="property-label">文本颜色</label>
+            <div class="color-picker-wrapper">
+              <input type="color" class="color-picker" id="mobileTextColor" value="#000000" />
+              <input type="text" class="property-input" id="mobileTextColorHex" value="#000000" />
+            </div>
+          </div>
+        </div>
+
+        <div id="mobileShapeProps" style="display: none;">
+          <div class="property-group">
+            <label class="property-label">填充颜色</label>
+            <div class="color-picker-wrapper">
+              <input type="color" class="color-picker" id="mobileFillColor" value="#ee6c4d" />
+              <input type="text" class="property-input" id="mobileFillColorHex" value="#ee6c4d" />
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label class="property-label">边框颜色</label>
+            <div class="color-picker-wrapper">
+              <input type="color" class="color-picker" id="mobileStrokeColor" value="#000000" />
+              <input type="text" class="property-input" id="mobileStrokeColorHex" value="#000000" />
+            </div>
+          </div>
+
+          <div class="property-group">
+            <label class="property-label">边框宽度</label>
+            <input type="number" class="property-input" id="mobileStrokeWidth" value="0" min="0" max="20" />
+          </div>
+        </div>
+
+        <div class="property-row">
+          <div>
+            <label class="property-label">宽度</label>
+            <input type="number" class="property-input" id="mobileElementWidth" min="10" />
+          </div>
+          <div>
+            <label class="property-label">高度</label>
+            <input type="number" class="property-input" id="mobileElementHeight" min="10" />
+          </div>
+        </div>
+
+        <div class="property-row">
+          <div>
+            <label class="property-label">X 位置</label>
+            <input type="number" class="property-input" id="mobileElementX" />
+          </div>
+          <div>
+            <label class="property-label">Y 位置</label>
+            <input type="number" class="property-input" id="mobileElementY" />
+          </div>
+        </div>
+
+        <div class="property-group">
+          <button class="tool-btn secondary" id="mobileDeleteElement" style="width: 100%;">
+            <span>🗑️</span>
+            <span>删除元素</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../shared/scripts/common.js"></script>
+    <script src="../../shared/scripts/theme.js"></script>
+    <script>
+      // Canvas 和上下文
+      const canvas = document.getElementById('posterCanvas');
+      const ctx = canvas.getContext('2d');
+
+      // 元素数组和选中状态
+      let elements = [];
+      let selectedElement = null;
+      let isDragging = false;
+      let isResizing = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let resizeHandle = null;
+
+      // 历史记录（用于撤销/重做）
+      let history = [];
+      let historyIndex = -1;
+      const MAX_HISTORY = 50;
+
+      // 背景设置
+      let backgroundColor = '#ffffff';
+      let backgroundImage = null;
+
+      // 元素类型定义
+      class Element {
+        constructor(type, x, y, width, height) {
+          this.id = Date.now() + Math.random();
+          this.type = type;
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.opacity = 1;
+          this.rotation = 0;
+        }
+
+        draw(ctx) {
+          ctx.save();
+          ctx.globalAlpha = this.opacity;
+          ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+          ctx.rotate(this.rotation * Math.PI / 180);
+          ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
+
+          this.drawContent(ctx);
+
+          ctx.restore();
+
+          // 绘制选中框
+          if (this === selectedElement) {
+            this.drawSelectionBox(ctx);
+          }
+        }
+
+        drawContent(ctx) {
+          // 由子类实现
+        }
+
+        drawSelectionBox(ctx) {
+          ctx.strokeStyle = '#ee6c4d';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+          ctx.strokeRect(this.x, this.y, this.width, this.height);
+          ctx.setLineDash([]);
+
+          // 绘制调整手柄
+          const handles = this.getResizeHandles();
+          ctx.fillStyle = '#ee6c4d';
+          handles.forEach(handle => {
+            ctx.fillRect(handle.x - 4, handle.y - 4, 8, 8);
+          });
+        }
+
+        getResizeHandles() {
+          return [
+            { x: this.x, y: this.y, cursor: 'nw-resize', handle: 'nw' },
+            { x: this.x + this.width, y: this.y, cursor: 'ne-resize', handle: 'ne' },
+            { x: this.x, y: this.y + this.height, cursor: 'sw-resize', handle: 'sw' },
+            { x: this.x + this.width, y: this.y + this.height, cursor: 'se-resize', handle: 'se' }
+          ];
+        }
+
+        contains(x, y) {
+          return x >= this.x && x <= this.x + this.width &&
+                 y >= this.y && y <= this.y + this.height;
+        }
+
+        getResizeHandleAt(x, y) {
+          const handles = this.getResizeHandles();
+          for (let handle of handles) {
+            const distance = Math.sqrt(Math.pow(x - handle.x, 2) + Math.pow(y - handle.y, 2));
+            if (distance < 10) {
+              return handle;
+            }
+          }
+          return null;
+        }
+      }
+
+      class TextElement extends Element {
+        constructor(x, y, text = '双击编辑文本') {
+          super('text', x, y, 200, 50);
+          this.text = text;
+          this.fontSize = 40;
+          this.fontWeight = 'normal';
+          this.color = '#000000';
+          this.fontFamily = 'Arial, sans-serif';
+        }
+
+        drawContent(ctx) {
+          ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
+          ctx.fillStyle = this.color;
+          ctx.textBaseline = 'top';
+
+          // 自动调整宽度以适应文本
+          const metrics = ctx.measureText(this.text);
+          this.width = Math.max(metrics.width + 20, 100);
+          this.height = this.fontSize + 10;
+
+          ctx.fillText(this.text, this.x, this.y);
+        }
+      }
+
+      class ImageElement extends Element {
+        constructor(x, y, image) {
+          super('image', x, y, image.width, image.height);
+          this.image = image;
+
+          // 限制图片大小
+          const maxSize = 500;
+          if (this.width > maxSize || this.height > maxSize) {
+            const ratio = Math.min(maxSize / this.width, maxSize / this.height);
+            this.width *= ratio;
+            this.height *= ratio;
+          }
+        }
+
+        drawContent(ctx) {
+          ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+      }
+
+      class RectElement extends Element {
+        constructor(x, y) {
+          super('rect', x, y, 200, 150);
+          this.fillColor = '#ee6c4d';
+          this.strokeWidth = 0;
+          this.strokeColor = '#000000';
+        }
+
+        drawContent(ctx) {
+          ctx.fillStyle = this.fillColor;
+          ctx.fillRect(this.x, this.y, this.width, this.height);
+
+          if (this.strokeWidth > 0) {
+            ctx.strokeStyle = this.strokeColor;
+            ctx.lineWidth = this.strokeWidth;
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+          }
+        }
+      }
+
+      class CircleElement extends Element {
+        constructor(x, y) {
+          super('circle', x, y, 150, 150);
+          this.fillColor = '#f4a261';
+          this.strokeWidth = 0;
+          this.strokeColor = '#000000';
+        }
+
+        drawContent(ctx) {
+          const centerX = this.x + this.width / 2;
+          const centerY = this.y + this.height / 2;
+          const radiusX = this.width / 2;
+          const radiusY = this.height / 2;
+
+          ctx.beginPath();
+          ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+          ctx.fillStyle = this.fillColor;
+          ctx.fill();
+
+          if (this.strokeWidth > 0) {
+            ctx.strokeStyle = this.strokeColor;
+            ctx.lineWidth = this.strokeWidth;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 初始化
+      function init() {
+        adjustCanvasSize();
+        render();
+        updateLayerList();
+        bindEvents();
+
+        // 窗口大小变化时调整画布显示
+        window.addEventListener('resize', adjustCanvasSize);
+      }
+
+      // 调整画布显示大小（保持实际分辨率不变）
+      function adjustCanvasSize() {
+        const wrapper = document.getElementById('canvasWrapper');
+        const maxWidth = wrapper.parentElement.clientWidth - 60;
+        const maxHeight = window.innerHeight - 280;
+
+        // 计算缩放比例
+        const scaleX = maxWidth / canvas.width;
+        const scaleY = maxHeight / canvas.height;
+        const scale = Math.min(scaleX, scaleY, 1); // 最大不超过1（不放大）
+
+        // 设置显示尺寸
+        if (scale < 1) {
+          canvas.style.width = (canvas.width * scale) + 'px';
+          canvas.style.height = (canvas.height * scale) + 'px';
+        } else {
+          canvas.style.width = canvas.width + 'px';
+          canvas.style.height = canvas.height + 'px';
+        }
+      }
+
+      // 渲染画布
+      function render() {
+        // 清空画布
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 绘制背景
+        if (backgroundImage) {
+          ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        } else {
+          ctx.fillStyle = backgroundColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 绘制所有元素
+        elements.forEach(element => {
+          element.draw(ctx);
+        });
+      }
+
+      // 添加文本
+      document.getElementById('addText').addEventListener('click', () => {
+        const text = new TextElement(canvas.width / 2 - 100, canvas.height / 2 - 25);
+        elements.push(text);
+        selectElement(text);
+        saveHistory();
+        render();
+        updateLayerList();
+        showToast('已添加文本元素', 'success');
+      });
+
+      // 上传图片
+      document.getElementById('uploadImage').addEventListener('click', () => {
+        document.getElementById('imageInput').click();
+      });
+
+      document.getElementById('imageInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              const imageElement = new ImageElement(50, 50, img);
+              elements.push(imageElement);
+              selectElement(imageElement);
+              saveHistory();
+              render();
+              updateLayerList();
+              showToast('已添加图片', 'success');
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        e.target.value = '';
+      });
+
+      // 添加矩形
+      document.getElementById('addRect').addEventListener('click', () => {
+        const rect = new RectElement(canvas.width / 2 - 100, canvas.height / 2 - 75);
+        elements.push(rect);
+        selectElement(rect);
+        saveHistory();
+        render();
+        updateLayerList();
+        showToast('已添加矩形', 'success');
+      });
+
+      // 添加圆形
+      document.getElementById('addCircle').addEventListener('click', () => {
+        const circle = new CircleElement(canvas.width / 2 - 75, canvas.height / 2 - 75);
+        elements.push(circle);
+        selectElement(circle);
+        saveHistory();
+        render();
+        updateLayerList();
+        showToast('已添加圆形', 'success');
+      });
+
+      // 设置背景颜色
+      document.getElementById('setBgColor').addEventListener('click', () => {
+        const color = prompt('请输入背景颜色 (如: #ffffff 或 white):', backgroundColor);
+        if (color) {
+          backgroundColor = color;
+          backgroundImage = null;
+          saveHistory();
+          render();
+          showToast('背景颜色已更新', 'success');
+        }
+      });
+
+      // 上传背景图片
+      document.getElementById('uploadBgImage').addEventListener('click', () => {
+        document.getElementById('bgImageInput').click();
+      });
+
+      document.getElementById('bgImageInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              backgroundImage = img;
+              saveHistory();
+              render();
+              showToast('背景图片已设置', 'success');
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        e.target.value = '';
+      });
+
+      // 清空画布
+      document.getElementById('clearCanvas').addEventListener('click', () => {
+        if (confirm('确定要清空画布吗？此操作不可撤销。')) {
+          elements = [];
+          selectedElement = null;
+          backgroundColor = '#ffffff';
+          backgroundImage = null;
+          history = [];
+          historyIndex = -1;
+          render();
+          updateLayerList();
+          updateProperties();
+          showToast('画布已清空', 'success');
+        }
+      });
+
+      // 导出PNG
+      document.getElementById('exportPNG').addEventListener('click', () => {
+        exportImage('png');
+      });
+
+      // 导出JPG
+      document.getElementById('exportJPG').addEventListener('click', () => {
+        exportImage('jpeg');
+      });
+
+      function exportImage(format) {
+        // 临时取消选中状态
+        const tempSelected = selectedElement;
+        selectedElement = null;
+        render();
+
+        // 导出
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `poster_${Date.now()}.${format === 'jpeg' ? 'jpg' : 'png'}`;
+          a.click();
+          URL.revokeObjectURL(url);
+
+          // 恢复选中状态
+          selectedElement = tempSelected;
+          render();
+
+          showToast(`已导出${format.toUpperCase()}图片`, 'success');
+        }, `image/${format}`, 0.95);
+      }
+
+      // 画布尺寸预设
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const [width, height] = this.dataset.size.split(',').map(Number);
+          canvas.width = width;
+          canvas.height = height;
+
+          document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+
+          adjustCanvasSize();
+          render();
+          showToast(`画布尺寸已调整为 ${width}×${height}`, 'success');
+        });
+      });
+
+      // 选中元素
+      function selectElement(element) {
+        selectedElement = element;
+        updateProperties();
+        updateLayerList();
+        render();
+      }
+
+      // 更新属性面板
+      function updateProperties() {
+        const propsPanel = document.getElementById('elementProps');
+        const textProps = document.getElementById('textProps');
+        const shapeProps = document.getElementById('shapeProps');
+
+        // 移动端面板
+        const mobilePropsPanel = document.getElementById('mobileElementProps');
+        const mobileTextProps = document.getElementById('mobileTextProps');
+        const mobileShapeProps = document.getElementById('mobileShapeProps');
+
+        if (!selectedElement) {
+          propsPanel.style.display = 'none';
+          mobilePropsPanel.style.display = 'none';
+          return;
+        }
+
+        propsPanel.style.display = 'block';
+        mobilePropsPanel.style.display = 'block';
+
+        // 通用属性 - 桌面端
+        document.getElementById('opacity').value = selectedElement.opacity * 100;
+        document.getElementById('elementWidth').value = Math.round(selectedElement.width);
+        document.getElementById('elementHeight').value = Math.round(selectedElement.height);
+        document.getElementById('elementX').value = Math.round(selectedElement.x);
+        document.getElementById('elementY').value = Math.round(selectedElement.y);
+
+        // 通用属性 - 移动端
+        document.getElementById('mobileElementWidth').value = Math.round(selectedElement.width);
+        document.getElementById('mobileElementHeight').value = Math.round(selectedElement.height);
+        document.getElementById('mobileElementX').value = Math.round(selectedElement.x);
+        document.getElementById('mobileElementY').value = Math.round(selectedElement.y);
+
+        // 文本属性
+        if (selectedElement.type === 'text') {
+          textProps.style.display = 'block';
+          shapeProps.style.display = 'none';
+          mobileTextProps.style.display = 'block';
+          mobileShapeProps.style.display = 'none';
+
+          // 桌面端
+          document.getElementById('textContent').value = selectedElement.text;
+          document.getElementById('fontSize').value = selectedElement.fontSize;
+          document.getElementById('fontWeight').value = selectedElement.fontWeight;
+          document.getElementById('textColor').value = selectedElement.color;
+          document.getElementById('textColorHex').value = selectedElement.color;
+
+          // 移动端
+          document.getElementById('mobileTextContent').value = selectedElement.text;
+          document.getElementById('mobileFontSize').value = selectedElement.fontSize;
+          document.getElementById('mobileFontWeight').value = selectedElement.fontWeight;
+          document.getElementById('mobileTextColor').value = selectedElement.color;
+          document.getElementById('mobileTextColorHex').value = selectedElement.color;
+        } else {
+          textProps.style.display = 'none';
+          mobileTextProps.style.display = 'none';
+        }
+
+        // 形状属性
+        if (selectedElement.type === 'rect' || selectedElement.type === 'circle') {
+          shapeProps.style.display = 'block';
+          mobileShapeProps.style.display = 'block';
+
+          // 桌面端
+          document.getElementById('fillColor').value = selectedElement.fillColor;
+          document.getElementById('fillColorHex').value = selectedElement.fillColor;
+          document.getElementById('strokeWidth').value = selectedElement.strokeWidth;
+          document.getElementById('strokeColor').value = selectedElement.strokeColor;
+          document.getElementById('strokeColorHex').value = selectedElement.strokeColor;
+
+          // 移动端
+          document.getElementById('mobileFillColor').value = selectedElement.fillColor;
+          document.getElementById('mobileFillColorHex').value = selectedElement.fillColor;
+          document.getElementById('mobileStrokeWidth').value = selectedElement.strokeWidth;
+          document.getElementById('mobileStrokeColor').value = selectedElement.strokeColor;
+          document.getElementById('mobileStrokeColorHex').value = selectedElement.strokeColor;
+        } else {
+          shapeProps.style.display = 'none';
+          mobileShapeProps.style.display = 'none';
+        }
+      }
+
+      // 更新图层列表
+      function updateLayerList() {
+        const layerList = document.getElementById('layerList');
+        const mobileLayerList = document.getElementById('mobileLayerList');
+
+        function renderLayerList(container) {
+          if (elements.length === 0) {
+            container.innerHTML = '<div class="empty-state">暂无图层<br/>添加元素开始设计</div>';
+            return;
+          }
+
+          container.innerHTML = '';
+
+          // 反向显示（最上层在最前）
+          [...elements].reverse().forEach((element, index) => {
+            const actualIndex = elements.length - 1 - index;
+            const layerItem = document.createElement('div');
+            layerItem.className = 'layer-item';
+            if (element === selectedElement) {
+              layerItem.classList.add('active');
+            }
+
+            let icon = '📄';
+            let name = '元素';
+            if (element.type === 'text') {
+              icon = '📝';
+              name = element.text.substring(0, 10);
+            } else if (element.type === 'image') {
+              icon = '🖼️';
+              name = '图片';
+            } else if (element.type === 'rect') {
+              icon = '⬜';
+              name = '矩形';
+            } else if (element.type === 'circle') {
+              icon = '⭕';
+              name = '圆形';
+            }
+
+            layerItem.innerHTML = `
+              <span>${icon} ${name}</span>
+              <div class="layer-actions">
+                <button class="layer-action-btn move-up" data-index="${actualIndex}" title="上移">↑</button>
+                <button class="layer-action-btn move-down" data-index="${actualIndex}" title="下移">↓</button>
+                <button class="layer-action-btn delete-layer" data-index="${actualIndex}" title="删除">🗑️</button>
+              </div>
+            `;
+
+            // 选中图层事件（双事件绑定）
+            const selectHandler = (e) => {
+              if (!e.target.classList.contains('layer-action-btn')) {
+                selectElement(element);
+              }
+            };
+            layerItem.addEventListener('click', selectHandler);
+            layerItem.addEventListener('touchstart', selectHandler, { passive: false });
+
+            // 绑定图层操作按钮事件
+            const moveUpBtn = layerItem.querySelector('.move-up');
+            const moveDownBtn = layerItem.querySelector('.move-down');
+            const deleteBtn = layerItem.querySelector('.delete-layer');
+
+            if (moveUpBtn) {
+              const moveUpHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                moveLayer(actualIndex, -1);
+              };
+              moveUpBtn.addEventListener('click', moveUpHandler);
+              moveUpBtn.addEventListener('touchstart', moveUpHandler, { passive: false });
+            }
+
+            if (moveDownBtn) {
+              const moveDownHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                moveLayer(actualIndex, 1);
+              };
+              moveDownBtn.addEventListener('click', moveDownHandler);
+              moveDownBtn.addEventListener('touchstart', moveDownHandler, { passive: false });
+            }
+
+            if (deleteBtn) {
+              const deleteHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteLayer(actualIndex);
+              };
+              deleteBtn.addEventListener('click', deleteHandler);
+              deleteBtn.addEventListener('touchstart', deleteHandler, { passive: false });
+            }
+
+            container.appendChild(layerItem);
+          });
+        }
+
+        // 同时更新桌面端和移动端
+        renderLayerList(layerList);
+        renderLayerList(mobileLayerList);
+      }
+
+      // 移动图层
+      window.moveLayer = function(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= elements.length) return;
+
+        [elements[index], elements[newIndex]] = [elements[newIndex], elements[index]];
+        saveHistory();
+        render();
+        updateLayerList();
+      };
+
+      // 删除图层
+      window.deleteLayer = function(index) {
+        if (confirm('确定要删除此图层吗？')) {
+          if (elements[index] === selectedElement) {
+            selectedElement = null;
+            updateProperties();
+          }
+          elements.splice(index, 1);
+          saveHistory();
+          render();
+          updateLayerList();
+          showToast('图层已删除', 'success');
+        }
+      };
+
+      // 绑定事件
+      function bindEvents() {
+        // 鼠标事件 - 绑定到window以支持拖拽到画布外
+        canvas.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseLeave);
+        canvas.addEventListener('dblclick', handleDoubleClick);
+
+        // 触摸事件支持
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('touchend', handleTouchEnd);
+
+        // 属性更新事件
+        bindPropertyEvents();
+
+        // 撤销/重做
+        const undoHandler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          undo();
+        };
+        document.getElementById('undoBtn').addEventListener('click', undoHandler);
+        document.getElementById('undoBtn').addEventListener('touchstart', undoHandler, { passive: false });
+
+        const redoHandler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          redo();
+        };
+        document.getElementById('redoBtn').addEventListener('click', redoHandler);
+        document.getElementById('redoBtn').addEventListener('touchstart', redoHandler, { passive: false });
+
+        // 预览
+        const previewHandler = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openPreview();
+        };
+        document.getElementById('previewBtn').addEventListener('click', previewHandler);
+        document.getElementById('previewBtn').addEventListener('touchstart', previewHandler, { passive: false });
+
+        // 键盘事件
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Delete' && selectedElement) {
+            const index = elements.indexOf(selectedElement);
+            if (index !== -1) {
+              deleteLayer(index);
+            }
+          }
+          if (e.ctrlKey && e.key === 'z') {
+            e.preventDefault();
+            undo();
+          }
+          if (e.ctrlKey && e.key === 'y') {
+            e.preventDefault();
+            redo();
+          }
+        });
+      }
+
+      // 将屏幕坐标转换为画布坐标
+      function getCanvasCoordinates(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        return {
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top) * scaleY
+        };
+      }
+
+      function handleMouseDown(e) {
+        const { x, y } = getCanvasCoordinates(e);
+
+        // 检查是否点击了调整手柄
+        if (selectedElement) {
+          const handle = selectedElement.getResizeHandleAt(x, y);
+          if (handle) {
+            isResizing = true;
+            resizeHandle = handle;
+            canvas.classList.add('resizing');
+            return;
+          }
+        }
+
+        // 检查是否点击了元素（从上到下检查）
+        for (let i = elements.length - 1; i >= 0; i--) {
+          if (elements[i].contains(x, y)) {
+            selectElement(elements[i]);
+            isDragging = true;
+            dragStartX = x - selectedElement.x;
+            dragStartY = y - selectedElement.y;
+            canvas.classList.add('dragging');
+            return;
+          }
+        }
+
+        // 点击空白处取消选中
+        selectedElement = null;
+        updateProperties();
+        updateLayerList();
+        render();
+      }
+
+      function handleMouseMove(e) {
+        // 如果正在拖拽或调整大小，即使鼠标离开画布也要处理
+        if (isDragging || isResizing) {
+          const { x, y } = getCanvasCoordinates(e);
+
+          if (isResizing && selectedElement && resizeHandle) {
+            // 调整大小
+            const handle = resizeHandle.handle;
+            if (handle === 'se') {
+              selectedElement.width = Math.max(20, x - selectedElement.x);
+              selectedElement.height = Math.max(20, y - selectedElement.y);
+            } else if (handle === 'sw') {
+              const newWidth = Math.max(20, selectedElement.x + selectedElement.width - x);
+              selectedElement.x = x;
+              selectedElement.width = newWidth;
+              selectedElement.height = Math.max(20, y - selectedElement.y);
+            } else if (handle === 'ne') {
+              selectedElement.width = Math.max(20, x - selectedElement.x);
+              const newHeight = Math.max(20, selectedElement.y + selectedElement.height - y);
+              selectedElement.y = y;
+              selectedElement.height = newHeight;
+            } else if (handle === 'nw') {
+              const newWidth = Math.max(20, selectedElement.x + selectedElement.width - x);
+              const newHeight = Math.max(20, selectedElement.y + selectedElement.height - y);
+              selectedElement.x = x;
+              selectedElement.y = y;
+              selectedElement.width = newWidth;
+              selectedElement.height = newHeight;
+            }
+            updateProperties();
+            render();
+          } else if (isDragging && selectedElement) {
+            // 拖动 - 允许拖动到画布外但限制在边界
+            selectedElement.x = Math.max(0, Math.min(canvas.width - selectedElement.width, x - dragStartX));
+            selectedElement.y = Math.max(0, Math.min(canvas.height - selectedElement.height, y - dragStartY));
+            updateProperties();
+            render();
+          }
+        } else {
+          // 仅在画布内时更新鼠标样式
+          const rect = canvas.getBoundingClientRect();
+          if (e.clientX >= rect.left && e.clientX <= rect.right &&
+              e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            const { x, y } = getCanvasCoordinates(e);
+
+            if (selectedElement) {
+              const handle = selectedElement.getResizeHandleAt(x, y);
+              canvas.style.cursor = handle ? handle.cursor : (selectedElement.contains(x, y) ? 'move' : 'crosshair');
+            } else {
+              canvas.style.cursor = 'crosshair';
+            }
+          }
+        }
+      }
+
+      function handleMouseUp(e) {
+        if (isDragging || isResizing) {
+          saveHistory();
+        }
+        isDragging = false;
+        isResizing = false;
+        resizeHandle = null;
+        canvas.classList.remove('dragging', 'resizing');
+        canvas.style.cursor = 'crosshair';
+      }
+
+      function handleMouseLeave(e) {
+        // 鼠标离开画布时，如果没有在拖拽，重置样式
+        if (!isDragging && !isResizing) {
+          canvas.style.cursor = 'crosshair';
+        }
+      }
+
+      // 触摸事件支持
+      function handleTouchStart(e) {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          const mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+          });
+          handleMouseDown(mouseEvent);
+        }
+      }
+
+      function handleTouchMove(e) {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          const mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+          });
+          handleMouseMove(mouseEvent);
+        }
+      }
+
+      function handleTouchEnd(e) {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup', {});
+        handleMouseUp(mouseEvent);
+      }
+
+      function handleDoubleClick(e) {
+        if (selectedElement && selectedElement.type === 'text') {
+          const newText = prompt('请输入文本内容:', selectedElement.text);
+          if (newText !== null) {
+            selectedElement.text = newText;
+            document.getElementById('textContent').value = newText;
+            saveHistory();
+            render();
+            updateLayerList();
+          }
+        }
+      }
+
+      // 绑定属性更新事件
+      function bindPropertyEvents() {
+        // 文本内容
+        document.getElementById('textContent').addEventListener('input', (e) => {
+          if (selectedElement && selectedElement.type === 'text') {
+            selectedElement.text = e.target.value;
+            render();
+            updateLayerList();
+          }
+        });
+
+        // 字体大小
+        document.getElementById('fontSize').addEventListener('input', (e) => {
+          if (selectedElement && selectedElement.type === 'text') {
+            selectedElement.fontSize = parseInt(e.target.value);
+            render();
+          }
+        });
+
+        // 字体粗细
+        document.getElementById('fontWeight').addEventListener('change', (e) => {
+          if (selectedElement && selectedElement.type === 'text') {
+            selectedElement.fontWeight = e.target.value;
+            render();
+          }
+        });
+
+        // 文本颜色
+        document.getElementById('textColor').addEventListener('input', (e) => {
+          if (selectedElement && selectedElement.type === 'text') {
+            selectedElement.color = e.target.value;
+            document.getElementById('textColorHex').value = e.target.value;
+            render();
+          }
+        });
+
+        document.getElementById('textColorHex').addEventListener('input', (e) => {
+          if (selectedElement && selectedElement.type === 'text') {
+            selectedElement.color = e.target.value;
+            document.getElementById('textColor').value = e.target.value;
+            render();
+          }
+        });
+
+        // 填充颜色
+        document.getElementById('fillColor').addEventListener('input', (e) => {
+          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+            selectedElement.fillColor = e.target.value;
+            document.getElementById('fillColorHex').value = e.target.value;
+            render();
+          }
+        });
+
+        document.getElementById('fillColorHex').addEventListener('input', (e) => {
+          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+            selectedElement.fillColor = e.target.value;
+            document.getElementById('fillColor').value = e.target.value;
+            render();
+          }
+        });
+
+        // 边框
+        document.getElementById('strokeWidth').addEventListener('input', (e) => {
+          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+            selectedElement.strokeWidth = parseInt(e.target.value);
+            render();
+          }
+        });
+
+        document.getElementById('strokeColor').addEventListener('input', (e) => {
+          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+            selectedElement.strokeColor = e.target.value;
+            document.getElementById('strokeColorHex').value = e.target.value;
+            render();
+          }
+        });
+
+        document.getElementById('strokeColorHex').addEventListener('input', (e) => {
+          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+            selectedElement.strokeColor = e.target.value;
+            document.getElementById('strokeColor').value = e.target.value;
+            render();
+          }
+        });
+
+        // 不透明度
+        document.getElementById('opacity').addEventListener('input', (e) => {
+          if (selectedElement) {
+            selectedElement.opacity = parseInt(e.target.value) / 100;
+            render();
+          }
+        });
+
+        // 尺寸和位置
+        ['elementWidth', 'elementHeight', 'elementX', 'elementY'].forEach(id => {
+          document.getElementById(id).addEventListener('change', (e) => {
+            if (!selectedElement) return;
+            const value = parseInt(e.target.value);
+            if (id === 'elementWidth') selectedElement.width = value;
+            if (id === 'elementHeight') selectedElement.height = value;
+            if (id === 'elementX') selectedElement.x = value;
+            if (id === 'elementY') selectedElement.y = value;
+            render();
+          });
+        });
+      }
+
+      // 历史记录
+      function saveHistory() {
+        // 移除当前位置之后的所有历史记录
+        history = history.slice(0, historyIndex + 1);
+
+        // 保存当前状态
+        const state = {
+          elements: JSON.parse(JSON.stringify(elements.map(e => ({
+            ...e,
+            imageData: e.type === 'image' ? e.image.src : null
+          })))),
+          backgroundColor,
+          backgroundImageData: backgroundImage ? backgroundImage.src : null
+        };
+
+        history.push(state);
+        historyIndex++;
+
+        // 限制历史记录数量
+        if (history.length > MAX_HISTORY) {
+          history.shift();
+          historyIndex--;
+        }
+      }
+
+      function undo() {
+        if (historyIndex > 0) {
+          historyIndex--;
+          restoreHistory();
+          showToast('已撤销', 'success');
+        }
+      }
+
+      function redo() {
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          restoreHistory();
+          showToast('已重做', 'success');
+        }
+      }
+
+      function restoreHistory() {
+        const state = history[historyIndex];
+        if (!state) return;
+
+        // 恢复元素（简化版，实际需要根据类型重建对象）
+        elements = state.elements.map(e => {
+          if (e.type === 'text') {
+            const text = new TextElement(e.x, e.y, e.text);
+            Object.assign(text, e);
+            return text;
+          } else if (e.type === 'rect') {
+            const rect = new RectElement(e.x, e.y);
+            Object.assign(rect, e);
+            return rect;
+          } else if (e.type === 'circle') {
+            const circle = new CircleElement(e.x, e.y);
+            Object.assign(circle, e);
+            return circle;
+          }
+          return e;
+        });
+
+        backgroundColor = state.backgroundColor;
+
+        // 恢复背景图片
+        if (state.backgroundImageData) {
+          const img = new Image();
+          img.onload = () => {
+            backgroundImage = img;
+            render();
+          };
+          img.src = state.backgroundImageData;
+        } else {
+          backgroundImage = null;
+        }
+
+        selectedElement = null;
+        render();
+        updateLayerList();
+        updateProperties();
+      }
+
+      // 显示提示信息
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+        const messageEl = document.getElementById('toastMessage');
+
+        toast.className = 'toast show ' + type;
+        icon.textContent = type === 'success' ? '✅' : '❌';
+        messageEl.textContent = message;
+
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // ========== 预览功能 ==========
+      function openPreview() {
+        const previewModal = document.getElementById('previewModal');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const previewCtx = previewCanvas.getContext('2d');
+
+        // 设置预览画布尺寸
+        previewCanvas.width = canvas.width;
+        previewCanvas.height = canvas.height;
+
+        // 复制主画布内容到预览画布
+        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+        // 绘制背景
+        if (backgroundImage) {
+          previewCtx.drawImage(backgroundImage, 0, 0, previewCanvas.width, previewCanvas.height);
+        } else {
+          previewCtx.fillStyle = backgroundColor;
+          previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+        }
+
+        // 绘制所有元素（不绘制选中框）
+        elements.forEach(element => {
+          element.draw(previewCtx);
+        });
+
+        // 显示预览模态框
+        previewModal.classList.add('active');
+      }
+
+      function closePreview() {
+        const previewModal = document.getElementById('previewModal');
+        previewModal.classList.remove('active');
+      }
+
+      // 绑定预览关闭事件
+      const previewCloseHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closePreview();
+      };
+      document.getElementById('previewClose').addEventListener('click', previewCloseHandler);
+      document.getElementById('previewClose').addEventListener('touchstart', previewCloseHandler, { passive: false });
+
+      const previewModalHandler = (e) => {
+        if (e.target.id === 'previewModal') {
+          e.preventDefault();
+          closePreview();
+        }
+      };
+      document.getElementById('previewModal').addEventListener('click', previewModalHandler);
+      document.getElementById('previewModal').addEventListener('touchstart', previewModalHandler, { passive: false });
+
+      // ESC键关闭预览
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closePreview();
+        }
+      });
+
+      // ========== 移动端抽屉控制 ==========
+      function initMobileDrawers() {
+        const toolDrawer = document.getElementById('toolDrawer');
+        const propsDrawer = document.getElementById('propsDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+        const mobileFabTools = document.getElementById('mobileFabTools');
+        const mobileFabProps = document.getElementById('mobileFabProps');
+        const closeToolDrawer = document.getElementById('closeToolDrawer');
+        const closePropsDrawer = document.getElementById('closePropsDrawer');
+
+        // 打开工具抽屉
+        if (mobileFabTools) {
+          const openToolDrawer = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toolDrawer.classList.add('active');
+            overlay.classList.add('active');
+            document.body.classList.add('drawer-open');
+          };
+
+          mobileFabTools.addEventListener('click', openToolDrawer);
+          mobileFabTools.addEventListener('touchstart', openToolDrawer, { passive: false });
+        }
+
+        // 打开属性抽屉
+        if (mobileFabProps) {
+          const openPropsDrawer = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            propsDrawer.classList.add('active');
+            overlay.classList.add('active');
+            document.body.classList.add('drawer-open');
+          };
+
+          mobileFabProps.addEventListener('click', openPropsDrawer);
+          mobileFabProps.addEventListener('touchstart', openPropsDrawer, { passive: false });
+        }
+
+        // 关闭抽屉的函数
+        function closeDrawers(e) {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          toolDrawer.classList.remove('active');
+          propsDrawer.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.classList.remove('drawer-open');
+        }
+
+        // 关闭工具抽屉
+        if (closeToolDrawer) {
+          const closeToolHandler = (e) => closeDrawers(e);
+          closeToolDrawer.addEventListener('click', closeToolHandler);
+          closeToolDrawer.addEventListener('touchstart', closeToolHandler, { passive: false });
+        }
+
+        // 关闭属性抽屉
+        if (closePropsDrawer) {
+          const closePropsHandler = (e) => closeDrawers(e);
+          closePropsDrawer.addEventListener('click', closePropsHandler);
+          closePropsDrawer.addEventListener('touchstart', closePropsHandler, { passive: false });
+        }
+
+        // 点击遮罩层关闭
+        if (overlay) {
+          const overlayHandler = (e) => closeDrawers(e);
+          overlay.addEventListener('click', overlayHandler);
+          overlay.addEventListener('touchstart', overlayHandler, { passive: false });
+        }
+
+        // 绑定移动端工具按钮事件（复用桌面端逻辑）
+        bindMobileToolEvents();
+      }
+
+      // 绑定移动端工具按钮事件
+      function bindMobileToolEvents() {
+        // 获取关闭抽屉函数的引用
+        const toolDrawer = document.getElementById('toolDrawer');
+        const propsDrawer = document.getElementById('propsDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        const closeAllDrawers = () => {
+          toolDrawer.classList.remove('active');
+          propsDrawer.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.classList.remove('drawer-open');
+        };
+
+        // 辅助函数：为按钮绑定 click 和 touchstart 事件
+        const bindButtonEvents = (id, handler) => {
+          const btn = document.getElementById(id);
+          if (btn) {
+            const wrappedHandler = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handler(e);
+            };
+            btn.addEventListener('click', wrappedHandler);
+            btn.addEventListener('touchstart', wrappedHandler, { passive: false });
+          }
+        };
+
+        // 画布尺寸预设
+        const mobilePresets = document.querySelectorAll('.mobile-preset');
+        mobilePresets.forEach((btn, index) => {
+          const handler = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const [width, height] = this.dataset.size.split(',').map(Number);
+            canvas.width = width;
+            canvas.height = height;
+            document.querySelectorAll('.mobile-preset').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            adjustCanvasSize();
+            render();
+            showToast(`画布尺寸已调整为 ${width}×${height}`, 'success');
+            closeAllDrawers();
+          };
+          btn.addEventListener('click', handler);
+          btn.addEventListener('touchstart', handler, { passive: false });
+        });
+
+        // 背景设置
+        bindButtonEvents('mobileBgColor', () => {
+          document.getElementById('setBgColor').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileUploadBg', () => {
+          document.getElementById('uploadBgImage').click();
+          closeAllDrawers();
+        });
+
+        // 添加元素
+        bindButtonEvents('mobileAddText', () => {
+          document.getElementById('addText').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileUploadImage', () => {
+          document.getElementById('uploadImage').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileAddRect', () => {
+          document.getElementById('addRect').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileAddCircle', () => {
+          document.getElementById('addCircle').click();
+          closeAllDrawers();
+        });
+
+        // 文件操作
+        bindButtonEvents('mobileClear', () => {
+          document.getElementById('clearCanvas').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileExportPNG', () => {
+          document.getElementById('exportPNG').click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents('mobileExportJPG', () => {
+          document.getElementById('exportJPG').click();
+          closeAllDrawers();
+        });
+
+        // 删除元素
+        bindButtonEvents('mobileDeleteElement', () => {
+          if (selectedElement) {
+            const index = elements.indexOf(selectedElement);
+            if (index !== -1) {
+              deleteLayer(index);
+              closeAllDrawers();
+            }
+          } else {
+            showToast('请先选择要删除的元素', 'warning');
+          }
+        });
+
+
+        // 移动端属性输入绑定（同步到桌面端）
+        syncMobileProperties();
+      }
+
+      // 同步移动端和桌面端属性输入
+      function syncMobileProperties() {
+        // 辅助函数：为输入框绑定双事件
+        const bindInputSync = (mobileId, desktopId, eventType = 'input') => {
+          const mobileEl = document.getElementById(mobileId);
+          const desktopEl = document.getElementById(desktopId);
+
+          if (!mobileEl || !desktopEl) {
+            console.warn(`元素未找到: ${mobileId} 或 ${desktopId}`);
+            return;
+          }
+
+          const handler = () => {
+            desktopEl.value = mobileEl.value;
+            desktopEl.dispatchEvent(new Event(eventType));
+          };
+
+          mobileEl.addEventListener(eventType, handler);
+          // 为某些可能需要的元素添加 change 事件
+          if (eventType === 'input' && (mobileEl.type === 'number' || mobileEl.type === 'color')) {
+            mobileEl.addEventListener('change', handler);
+          }
+        };
+
+        // 辅助函数：为颜色选择器绑定双事件
+        const bindColorPickerSync = (mobileId, desktopId) => {
+          const mobileEl = document.getElementById(mobileId);
+          const desktopEl = document.getElementById(desktopId);
+
+          if (!mobileEl || !desktopEl) {
+            console.warn(`颜色选择器未找到: ${mobileId} 或 ${desktopId}`);
+            return;
+          }
+
+          const handler = () => {
+            desktopEl.value = mobileEl.value;
+            desktopEl.dispatchEvent(new Event('input'));
+          };
+
+          mobileEl.addEventListener('input', handler);
+          mobileEl.addEventListener('change', handler);
+        };
+
+        // 文本属性
+        bindInputSync('mobileTextContent', 'textContent', 'input');
+        bindInputSync('mobileFontSize', 'fontSize', 'input');
+        bindInputSync('mobileFontWeight', 'fontWeight', 'change');
+        bindColorPickerSync('mobileTextColor', 'textColor');
+
+        // 形状属性
+        bindColorPickerSync('mobileFillColor', 'fillColor');
+        bindColorPickerSync('mobileStrokeColor', 'strokeColor');
+        bindInputSync('mobileStrokeWidth', 'strokeWidth', 'input');
+
+        // 通用属性
+        bindInputSync('mobileElementWidth', 'elementWidth', 'input');
+        bindInputSync('mobileElementHeight', 'elementHeight', 'input');
+        bindInputSync('mobileElementX', 'elementX', 'input');
+        bindInputSync('mobileElementY', 'elementY', 'input');
+      }
+
+      // 启动应用
+      init();
+      initMobileDrawers();
+    </script>
+  </body>
+</html>

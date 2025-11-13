@@ -66,6 +66,18 @@
       "tags": ["crypto", "encrypt", "decrypt", "hash", "security"],
       "version": "1.0.0",
       "author": "Toolbox"
+    },
+    {
+      "id": "poster-designer",
+      "name": "海报设计工具",
+      "icon": "🎨",
+      "description": "在线设计海报，支持文本、图片、形状编辑，自定义画布尺寸，导出高清PNG/JPG",
+      "category": "media",
+      "path": "./tools/poster-designer/index.html",
+      "featured": true,
+      "tags": ["design", "poster", "canvas", "image", "graphics"],
+      "version": "1.0.0",
+      "author": "Toolbox"
     }
   ]
 }

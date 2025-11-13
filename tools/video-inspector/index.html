@@ -247,6 +247,65 @@
         overflow: hidden;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         z-index: 1;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .video-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1e3a5f 0%, #3d5a80 50%, #1e3a5f 100%);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        z-index: 0;
+      }
+
+      .video-placeholder.hidden {
+        display: none;
+      }
+
+      .placeholder-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        opacity: 0.6;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .placeholder-text {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .placeholder-hint {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+      }
+
+      video {
+        position: relative;
+        z-index: 1;
       }
 
       .video-container:fullscreen {
@@ -1074,6 +1133,15 @@
 
       <div class="video-wrapper">
         <div class="video-container">
+          <!-- 无视频占位符 -->
+          <div class="video-placeholder" id="videoPlaceholder">
+            <div class="placeholder-icon">🎬</div>
+            <div class="placeholder-text">暂无视频加载</div>
+            <div class="placeholder-hint">
+              请从上方选择在线视频地址或本地视频文件
+            </div>
+          </div>
+
           <div class="video-title"></div>
 
           <div class="play-indicator" id="playIndicator"></div>
@@ -1155,6 +1223,7 @@
       const currentUrlSource = document.getElementById("currentUrlSource");
       const currentLocalSource = document.getElementById("currentLocalSource");
       const videoTitle = document.querySelector(".video-title");
+      const videoPlaceholder = document.getElementById("videoPlaceholder");
 
       let videoLogs = [];
       let currentVideoFile = null;
@@ -1238,12 +1307,25 @@
         });
       }
 
+      // 隐藏占位符，显示视频
+      function showVideo() {
+        videoPlaceholder.classList.add("hidden");
+        videoPlayer.style.display = "block";
+      }
+
+      // 显示占位符，隐藏视频
+      function showPlaceholder() {
+        videoPlaceholder.classList.remove("hidden");
+        videoPlayer.style.display = "none";
+      }
+
       // 加载在线视频
       loadUrlBtn.addEventListener("click", function () {
         const url = videoUrlInput.value.trim();
 
         if (!url) {
           alert("请输入视频URL地址");
+          addLog("用户未输入视频URL地址", "warning");
           return;
         }
 
@@ -1268,6 +1350,9 @@
         currentUrlSource.textContent = `当前: ${url}`;
         videoTitle.textContent = "在线视频";
 
+        // 显示视频区域
+        showVideo();
+
         addLog("新视频源已设置,开始加载...", "info");
 
         // 尝试加载
@@ -1281,6 +1366,10 @@
           );
           if (videoPlayer.networkState === 3) {
             addLog("检测到网络错误状态,可能是CORS或网络连接问题", "error");
+          }
+          if (videoPlayer.readyState === 0 && videoPlayer.networkState === 2) {
+            addLog("视频资源不可用或格式不支持", "error");
+            showPlaceholder();
           }
         }, 3000);
       });
@@ -1376,6 +1465,10 @@
         // 创建本地文件URL
         currentVideoFile = URL.createObjectURL(file);
         videoPlayer.src = currentVideoFile;
+
+        // 显示视频区域
+        showVideo();
+
         videoPlayer.load();
 
         const fileSize = (file.size / 1024 / 1024).toFixed(2);
@@ -1782,6 +1875,7 @@
         // 详细的错误信息
         let errorMsg = "视频加载失败";
         let errorDetail = "";
+        let shouldShowPlaceholder = false;
 
         if (videoPlayer.error) {
           const errorCode = videoPlayer.error.code;
@@ -1793,16 +1887,20 @@
               break;
             case 2:
               errorDetail = "MEDIA_ERR_NETWORK: 网络错误,视频下载失败";
+              shouldShowPlaceholder = true;
               break;
             case 3:
               errorDetail = "MEDIA_ERR_DECODE: 视频解码失败,可能格式不支持";
+              shouldShowPlaceholder = true;
               break;
             case 4:
               errorDetail =
                 "MEDIA_ERR_SRC_NOT_SUPPORTED: 视频格式或MIME类型不支持";
+              shouldShowPlaceholder = true;
               break;
             default:
               errorDetail = `未知错误 (代码: ${errorCode})`;
+              shouldShowPlaceholder = true;
           }
 
           addLog(`${errorMsg}: ${errorDetail}`, "error");
@@ -1811,6 +1909,7 @@
           }
         } else {
           addLog(errorMsg, "error");
+          shouldShowPlaceholder = true;
         }
 
         addLog(`视频URL: ${videoPlayer.src}`, "error");
@@ -1818,6 +1917,15 @@
         addLog(`当前就绪状态: ${videoPlayer.readyState}`, "error");
 
         loading.classList.remove("show");
+
+        // 严重错误时显示占位符
+        if (shouldShowPlaceholder) {
+          addLog("由于严重错误，已显示占位符提示", "warning");
+          // 延迟显示占位符，给用户时间看到错误信息
+          setTimeout(function() {
+            showPlaceholder();
+          }, 2000);
+        }
       });
 
       videoPlayer.addEventListener("waiting", function () {
@@ -1974,6 +2082,11 @@
 
       // 页面加载完成后添加初始日志和设备信息
       window.addEventListener("DOMContentLoaded", function () {
+        // 初始化时如果没有视频源，显示占位符
+        if (!videoPlayer.src) {
+          showPlaceholder();
+        }
+
         addLog("页面加载完成", "success");
 
         // 检测设备和浏览器信息
