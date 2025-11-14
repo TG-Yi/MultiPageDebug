@@ -1,0 +1,3309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>图片裁剪工具 - 在线图片编辑器</title>
+    <link rel="stylesheet" href="../../shared/styles/reset.css" />
+    <link rel="stylesheet" href="../../shared/styles/theme.css" />
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <style>
+      :root {
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --success-color: #10b981;
+        --text-color: #1f2937;
+        --text-light: #6b7280;
+        --bg-light: #f9fafb;
+        --border-color: #e5e7eb;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 50%,
+          #f093fb 100%
+        );
+        min-height: 100vh;
+        height: 100vh;
+        padding: 20px;
+        overflow: hidden;
+      }
+
+      .main-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: calc(100vh - 40px);
+        overflow: hidden;
+      }
+
+      /* 头部 */
+      .header {
+        text-align: center;
+        color: white;
+        padding: 10px 20px;
+        flex-shrink: 0;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      /* 工作区 */
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(280px, 320px) 1fr minmax(280px, 320px);
+        gap: 20px;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* 左侧工具栏 */
+      .toolbar {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .tool-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .tool-section-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-color);
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .tool-btn {
+        padding: 12px 16px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .tool-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+      }
+
+      .tool-btn:active {
+        transform: translateY(0);
+      }
+
+      .tool-btn.secondary {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      }
+
+      .tool-btn.secondary:hover {
+        box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
+      }
+
+      .tool-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      /* 裁剪比例按钮组 */
+      .ratio-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .ratio-btn {
+        padding: 10px;
+        background: rgba(139, 92, 246, 0.1);
+        border: 2px solid rgba(139, 92, 246, 0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-color);
+        text-align: center;
+      }
+
+      .ratio-btn:hover {
+        background: rgba(139, 92, 246, 0.2);
+        border-color: var(--primary-color);
+      }
+
+      .ratio-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      /* 滑块控制 */
+      .slider-control {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .slider-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--text-light);
+      }
+
+      .slider-value {
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: #e5e7eb;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+        border: none;
+      }
+
+      /* 滤镜按钮组 */
+      .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .filter-btn {
+        padding: 8px;
+        background: white;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 12px;
+        text-align: center;
+        color: var(--text-color);
+      }
+
+      .filter-btn:hover {
+        border-color: var(--primary-color);
+        background: rgba(139, 92, 246, 0.05);
+      }
+
+      .filter-btn.active {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+        color: white;
+      }
+
+      /* 中间画布区域 */
+      .canvas-area {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: auto;
+      }
+
+      /* 上传区域 */
+      .upload-area {
+        width: 100%;
+        max-width: 600px;
+        padding: 60px 40px;
+        border: 3px dashed var(--border-color);
+        border-radius: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--bg-light);
+      }
+
+      .upload-area:hover {
+        border-color: var(--primary-color);
+        background: rgba(139, 92, 246, 0.05);
+      }
+
+      .upload-area.dragging {
+        border-color: var(--primary-color);
+        background: rgba(139, 92, 246, 0.1);
+        transform: scale(1.02);
+      }
+
+      .upload-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      .upload-text {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 8px;
+      }
+
+      .upload-hint {
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      /* Canvas容器 */
+      .canvas-container {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .canvas-container.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .canvas-wrapper {
+        position: relative;
+        max-width: 100%;
+        max-height: 100%;
+        overflow: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      /* 裁剪框 */
+      .crop-box {
+        position: absolute;
+        border: 2px solid var(--primary-color);
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        cursor: move;
+        display: none;
+        z-index: 10;
+      }
+
+      .crop-box.active {
+        display: block;
+      }
+
+      /* 裁剪框九宫格参考线 (Rule of Thirds) */
+      /* 用于辅助构图,遵循摄影三分法则 */
+      .crop-box::before,
+      .crop-box::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+      }
+
+      /* 两条竖线 */
+      .crop-box::before {
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        background:
+          linear-gradient(90deg, transparent 33.33%, rgba(255, 255, 255, 0.3) 33.33%, rgba(255, 255, 255, 0.3) calc(33.33% + 1px), transparent calc(33.33% + 1px)),
+          linear-gradient(90deg, transparent 66.66%, rgba(255, 255, 255, 0.3) 66.66%, rgba(255, 255, 255, 0.3) calc(66.66% + 1px), transparent calc(66.66% + 1px));
+      }
+
+      /* 两条横线 */
+      .crop-box::after {
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background:
+          linear-gradient(0deg, transparent 33.33%, rgba(255, 255, 255, 0.3) 33.33%, rgba(255, 255, 255, 0.3) calc(33.33% + 1px), transparent calc(33.33% + 1px)),
+          linear-gradient(0deg, transparent 66.66%, rgba(255, 255, 255, 0.3) 66.66%, rgba(255, 255, 255, 0.3) calc(66.66% + 1px), transparent calc(66.66% + 1px));
+      }
+
+      .crop-handle {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: white;
+        border: 2px solid var(--primary-color);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+        z-index: 11;
+      }
+
+      .crop-handle:hover {
+        transform: scale(1.3);
+      }
+
+      .crop-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+      .crop-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+      .crop-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+      .crop-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+      .crop-handle.n { top: -6px; left: 50%; margin-left: -6px; cursor: n-resize; }
+      .crop-handle.s { bottom: -6px; left: 50%; margin-left: -6px; cursor: s-resize; }
+      .crop-handle.w { top: 50%; left: -6px; margin-top: -6px; cursor: w-resize; }
+      .crop-handle.e { top: 50%; right: -6px; margin-top: -6px; cursor: e-resize; }
+
+      /* 右侧信息面板 */
+      .info-panel {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 13px;
+      }
+
+      .info-label {
+        color: var(--text-light);
+      }
+
+      .info-value {
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 1200px) {
+        body {
+          overflow: auto;
+          height: auto;
+        }
+
+        .main-container {
+          height: auto;
+          overflow: visible;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+          overflow: visible;
+        }
+
+        .toolbar,
+        .info-panel {
+          max-height: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+          padding-bottom: 0; /* 移除固定padding */
+          height: 100vh;
+          overflow: hidden; /* 防止body滚动 */
+        }
+
+        .main-container {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+
+        .header {
+          flex-shrink: 0; /* 头部不收缩 */
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        .header p {
+          font-size: 13px;
+        }
+
+        .workspace {
+          flex: 1; /* 占据剩余空间 */
+          overflow: hidden;
+          position: relative;
+        }
+
+        .canvas-area {
+          padding: 15px;
+          /* 为工具栏预留足够空间,适配安全区域 */
+          padding-bottom: calc(260px + env(safe-area-inset-bottom, 0px));
+          padding-bottom: calc(260px + constant(safe-area-inset-bottom, 0px)); /* iOS 11.0-11.2 */
+          height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+          background: transparent; /* 移除背景,使用伪元素控制 */
+          position: relative;
+          z-index: 1; /* 确保在背景之上 */
+        }
+
+        /* 使用伪元素创建受控高度的背景,在工具栏上方结束 */
+        .workspace::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          /* 工具栏高度 + 圆角过渡区 + 安全区域缓冲 */
+          bottom: calc(200px + env(safe-area-inset-bottom, 0px) + 50px);
+          bottom: calc(200px + constant(safe-area-inset-bottom, 0px) + 50px); /* iOS 11.0-11.2 */
+          background: #f8f9fa;
+          z-index: 0; /* 置于内容下方 */
+          pointer-events: none;
+        }
+
+        .canvas-wrapper {
+          max-height: none; /* 允许自然高度 */
+          position: relative;
+        }
+
+        #canvas {
+          max-width: 100%;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+          margin: 0 auto;
+          display: block;
+        }
+
+        .canvas-container {
+          position: relative;
+        }
+
+        /* 底部渐变提示:提醒用户可以滚动,与背景区域对齐 */
+        .workspace::after {
+          content: '';
+          position: absolute;
+          /* 与背景结束位置对齐,适配安全区域 */
+          bottom: calc(200px + env(safe-area-inset-bottom, 0px) + 50px);
+          bottom: calc(200px + constant(safe-area-inset-bottom, 0px) + 50px); /* iOS 11.0-11.2 */
+          left: 0;
+          right: 0;
+          height: 60px;
+          background: linear-gradient(to top, rgba(248, 249, 250, 1), transparent);
+          pointer-events: none;
+          z-index: 2; /* 在 canvas-area 之上 */
+          transition: opacity 0.3s ease;
+        }
+
+        /* 滚动到底部时隐藏渐变 */
+        .workspace.scrolled-to-bottom::after {
+          opacity: 0;
+        }
+
+        .upload-area {
+          padding: 40px 20px;
+        }
+
+        .upload-icon {
+          font-size: 48px;
+        }
+
+        .upload-text {
+          font-size: 16px;
+        }
+
+        .toolbar,
+        .info-panel {
+          display: none;
+        }
+      }
+
+      /* Toast提示 */
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        max-width: 350px;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast-icon {
+        font-size: 20px;
+      }
+
+      .toast-message {
+        font-size: 14px;
+        color: var(--text-color);
+        font-weight: 500;
+      }
+
+      .toast.success {
+        border-left: 4px solid var(--success-color);
+      }
+
+      .toast.error {
+        border-left: 4px solid #ef4444;
+      }
+
+      .toast.warning {
+        border-left: 4px solid var(--accent-color);
+      }
+
+      .toast.info {
+        border-left: 4px solid var(--info-color);
+      }
+
+      /* 移动端工具栏 */
+      .mobile-toolbar {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        /* 移动端 Toast 优化 */
+        .toast {
+          top: auto;
+          bottom: calc(220px + env(safe-area-inset-bottom, 0px)); /* 在工具栏上方 */
+          bottom: calc(220px + constant(safe-area-inset-bottom, 0px));
+          left: 50%;
+          right: auto;
+          transform: translate(-50%, 100px); /* 居中并从下方隐藏 */
+          max-width: 280px; /* 固定最大宽度,更紧凑 */
+          width: auto; /* 自动宽度,根据内容 */
+          padding: 12px 18px; /* 减小内边距 */
+          gap: 10px; /* 更紧凑的图标和文字间距 */
+          border-radius: 16px; /* 更大的圆角 */
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          background: rgba(255, 255, 255, 0.95);
+          opacity: 0; /* 初始完全透明 */
+          pointer-events: none; /* 初始不接收点击 */
+        }
+
+        .toast.show {
+          transform: translate(-50%, 0); /* 居中并显示 */
+          opacity: 1; /* 完全不透明 */
+          pointer-events: auto; /* 可接收点击 */
+          animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* 弹性动画 */
+        }
+
+        /* Toast 滑入动画 */
+        @keyframes toastSlideIn {
+          0% {
+            transform: translate(-50%, 100px);
+            opacity: 0;
+          }
+          100% {
+            transform: translate(-50%, 0);
+            opacity: 1;
+          }
+        }
+
+        /* Toast 类型样式优化 */
+        .toast.success {
+          border-left: none;
+          background: linear-gradient(135deg, rgba(42, 157, 143, 0.95) 0%, rgba(42, 157, 143, 0.85) 100%);
+          color: white;
+        }
+
+        .toast.success .toast-message {
+          color: white;
+        }
+
+        .toast.error {
+          border-left: none;
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(239, 68, 68, 0.85) 100%);
+          color: white;
+        }
+
+        .toast.error .toast-message {
+          color: white;
+        }
+
+        .toast.warning {
+          border-left: none;
+          background: linear-gradient(135deg, rgba(255, 214, 0, 0.95) 0%, rgba(255, 193, 7, 0.85) 100%);
+          color: #333;
+        }
+
+        .toast.warning .toast-message {
+          color: #333;
+        }
+
+        .toast.info {
+          border-left: none;
+          background: linear-gradient(135deg, rgba(152, 193, 217, 0.95) 0%, rgba(152, 193, 217, 0.85) 100%);
+          color: white;
+        }
+
+        .toast.info .toast-message {
+          color: white;
+        }
+
+        .toast-icon {
+          font-size: 20px; /* 更小的图标 */
+          flex-shrink: 0; /* 图标不收缩 */
+        }
+
+        .toast-message {
+          font-size: 14px; /* 更小的字体 */
+          font-weight: 500; /* 减轻字重 */
+          line-height: 1.4; /* 更好的行高 */
+        }
+
+        /* Toast 触摸反馈 */
+        .toast:active {
+          transform: translate(-50%, 0) scale(0.98);
+          transition: transform 0.1s ease;
+        }
+
+        /* Toast 滑出动画 */
+        @keyframes toastSlideOut {
+          0% {
+            transform: translate(-50%, 0);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(-50%, 100px);
+            opacity: 0;
+          }
+        }
+      }
+
+      /* 小屏幕设备优化 */
+      @media (max-width: 480px) {
+        .toast {
+          max-width: 260px; /* 更小的最大宽度 */
+          width: auto;
+          padding: 10px 16px; /* 更紧凑的内边距 */
+        }
+
+        .toast-icon {
+          font-size: 18px; /* 更小的图标 */
+        }
+
+        .toast-message {
+          font-size: 13px; /* 更小的字体 */
+        }
+      }
+
+      @media (max-width: 768px) {
+        /* 移动端工具栏容器 - 调整层级顺序 */
+        .mobile-toolbar-wrapper {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          flex-direction: column-reverse; /* ✨ 反转:导航在下,内容在上 */
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+          z-index: 1000;
+          border-radius: 20px 20px 0 0; /* ✨ 顶部圆角 */
+          padding-bottom: env(safe-area-inset-bottom); /* ✨ iOS 安全区域适配 */
+          padding-bottom: constant(safe-area-inset-bottom); /* ✨ iOS 11.0-11.2 兼容 */
+        }
+
+        /* 标签页导航 - 横向滚动的扁平化导航 */
+        .mobile-tabs {
+          display: flex;
+          border-top: 1px solid #e9ecef;
+          background: #fff;
+          padding: 0;
+          padding-bottom: 8px; /* ✨ 底部额外间距 */
+          min-height: 44px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none; /* Firefox */
+        }
+
+        .mobile-tabs::-webkit-scrollbar {
+          display: none; /* Chrome/Safari */
+        }
+
+        .mobile-tab {
+          flex-shrink: 0; /* 不收缩 */
+          padding: 0 16px;
+          background: transparent;
+          border: none;
+          font-size: 14px;
+          font-weight: 500;
+          color: #6c757d;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          -webkit-tap-highlight-color: transparent;
+          position: relative;
+          white-space: nowrap; /* 不换行 */
+        }
+
+        /* 隐藏图标,纯文字导航 */
+        .mobile-tab i {
+          display: none;
+        }
+
+        .mobile-tab.active {
+          color: #ffd600;
+          font-weight: 600;
+        }
+
+        .mobile-tab.active::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 8px;
+          right: 8px;
+          height: 3px;
+          background: #ffd600;
+          border-radius: 3px 3px 0 0;
+        }
+
+        /* 标签页内容区 - 简化布局 */
+        .mobile-tab-content {
+          display: none;
+          padding: 16px 12px 12px 12px; /* 增加顶部内边距 */
+          background: #fff;
+          border-top: 1px solid #e9ecef;
+          min-height: 60px; /* 确保最小高度,防止内容太少时视觉不平衡 */
+        }
+
+        .mobile-tab-content.active {
+          display: block;
+          animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        /* 选项行 - 横向滚动的扁平化按钮 */
+        .mobile-option-row {
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none; /* Firefox */
+          padding-bottom: 2px; /* 防止按钮阴影被裁剪 */
+        }
+
+        .mobile-option-row::-webkit-scrollbar {
+          display: none; /* Chrome/Safari */
+        }
+
+        .mobile-option-btn {
+          flex-shrink: 0; /* 不收缩,保持按钮完整 */
+          min-width: 80px;
+          padding: 12px 16px;
+          background: #f8f9fa;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #495057;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          -webkit-tap-highlight-color: transparent;
+          white-space: nowrap; /* 文字不换行 */
+        }
+
+        .mobile-option-btn:active {
+          transform: scale(0.97);
+        }
+
+        .mobile-option-btn.active {
+          background: #ffd600;
+          border-color: #ffd600;
+          color: #333;
+          font-weight: 600;
+        }
+
+        .mobile-option-btn.mobile-reset-confirm {
+          background: #fff3cd;
+          border-color: #ffc107;
+          color: #856404;
+          flex: auto;
+        }
+
+        /* 滑块行 - 简化的滑块布局 */
+        .mobile-slider-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 8px 0;
+          width: 100%; /* 占满容器宽度 */
+        }
+
+        .mobile-slider-row input[type="range"] {
+          flex: 1;
+          height: 8px;
+          border-radius: 4px;
+          background: #e9ecef;
+          outline: none;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+
+        .mobile-slider-row input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #ffd600;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(255, 214, 0, 0.5);
+          border: 3px solid #fff;
+        }
+
+        .mobile-slider-row input[type="range"]::-moz-range-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #ffd600;
+          cursor: pointer;
+          border: 3px solid #fff;
+          box-shadow: 0 2px 8px rgba(255, 214, 0, 0.5);
+        }
+
+        .mobile-slider-row .mobile-slider-value {
+          flex-shrink: 0;
+          min-width: 54px;
+          text-align: right;
+          font-weight: 700;
+          color: #495057;
+          font-size: 16px;
+          font-variant-numeric: tabular-nums;
+        }
+
+        /* 基础工具栏 */
+        .mobile-toolbar {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 6px;
+        }
+
+        .mobile-toolbar .tool-btn {
+          padding: 8px 6px;
+          font-size: 11px;
+          flex-direction: column;
+          gap: 4px;
+          min-height: 52px;
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 8px;
+          color: #495057;
+        }
+
+        .mobile-toolbar .tool-btn:active {
+          background: #e9ecef;
+          transform: scale(0.98);
+        }
+
+        .mobile-toolbar .tool-btn span:first-child {
+          font-size: 18px;
+        }
+
+        /* 滤镜网格 */
+        .mobile-filter-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 6px;
+        }
+
+        .mobile-filter-grid .filter-btn {
+          padding: 8px 6px;
+          font-size: 11px;
+          text-align: center;
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          min-height: 52px;
+          color: #495057;
+        }
+
+        .mobile-filter-grid .filter-btn::before {
+          font-family: "Font Awesome 6 Free";
+          font-weight: 900;
+          font-size: 16px;
+          color: #6c757d;
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="none"]::before {
+          content: "\f03e"; /* image */
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="grayscale"]::before {
+          content: "\f53f"; /* moon */
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="sepia"]::before {
+          content: "\f70c"; /* history */
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="invert"]::before {
+          content: "\f362"; /* adjust */
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="blur"]::before {
+          content: "\f111"; /* circle */
+        }
+
+        .mobile-filter-grid .filter-btn[data-filter="saturate"]::before {
+          content: "\f5c3"; /* palette */
+        }
+
+        .mobile-filter-grid .filter-btn.active {
+          background: #ffd600;
+          color: #333;
+          border-color: #ffd600;
+          font-weight: 600;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-filter-grid .filter-btn.active::before {
+          color: #333;
+        }
+
+        .mobile-filter-grid .filter-btn:active {
+          transform: scale(0.98);
+        }
+
+        /* 调整滑块 - 优化单行布局 */
+        .mobile-slider-control {
+          margin-bottom: 14px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: #fff;
+          padding: 12px;
+          border-radius: 8px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-slider-control:last-child {
+          margin-bottom: 0;
+        }
+
+        .mobile-slider-label {
+          flex-shrink: 0;
+          min-width: 56px;
+          font-size: 13px;
+          color: #495057;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .mobile-slider-label::before {
+          font-family: "Font Awesome 6 Free";
+          font-weight: 900;
+          font-size: 14px;
+          color: #ffd600;
+        }
+
+        .mobile-slider-label[data-slider="brightness"]::before {
+          content: "\f185"; /* sun */
+        }
+
+        .mobile-slider-label[data-slider="contrast"]::before {
+          content: "\f042"; /* adjust */
+        }
+
+        .mobile-slider-label[data-slider="saturation"]::before {
+          content: "\f043"; /* tint */
+        }
+
+        .mobile-slider-control input[type="range"] {
+          flex: 1;
+          height: 6px;
+          border-radius: 3px;
+          background: #e9ecef;
+          outline: none;
+          -webkit-appearance: none;
+          appearance: none;
+        }
+
+        .mobile-slider-control input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #ffd600;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(255, 214, 0, 0.4);
+          border: 2px solid #fff;
+        }
+
+        .mobile-slider-control input[type="range"]::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #ffd600;
+          cursor: pointer;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 6px rgba(255, 214, 0, 0.4);
+        }
+
+        .mobile-slider-value {
+          flex-shrink: 0;
+          min-width: 48px;
+          text-align: right;
+          font-weight: 700;
+          color: #495057;
+          font-size: 13px;
+          font-variant-numeric: tabular-nums; /* 等宽数字 */
+        }
+
+        /* 导出按钮网格 */
+        .mobile-export-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .mobile-export-grid .tool-btn {
+          padding: 12px 8px;
+          font-size: 12px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          min-height: 52px;
+          background: #f8f9fa;
+          border: 1px solid #e9ecef;
+          border-radius: 8px;
+          color: #495057;
+        }
+
+        .mobile-export-grid .tool-btn:active {
+          background: #e9ecef;
+          transform: scale(0.98);
+        }
+
+        .mobile-export-grid .tool-btn i {
+          font-size: 16px;
+        }
+
+        /* 移动端裁剪工具栏 */
+        .mobile-crop-toolbar {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: rgba(255, 255, 255, 0.95);
+          padding: 12px;
+          padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); /* ✨ iOS 安全区域适配 */
+          padding-bottom: calc(12px + constant(safe-area-inset-bottom, 0px)); /* ✨ iOS 11.0-11.2 */
+          border-radius: 20px 20px 0 0; /* ✨ 统一圆角大小 */
+          box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+          z-index: 1001;
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+        }
+
+        .crop-ratio-selector {
+          display: flex;
+          gap: 6px;
+          margin-bottom: 10px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .crop-ratio-selector::-webkit-scrollbar {
+          height: 3px;
+        }
+
+        .crop-ratio-selector::-webkit-scrollbar-thumb {
+          background: rgba(139, 92, 246, 0.3);
+          border-radius: 2px;
+        }
+
+        .ratio-mini-btn {
+          flex-shrink: 0;
+          padding: 8px 16px;
+          background: rgba(139, 92, 246, 0.1);
+          border: 1.5px solid rgba(139, 92, 246, 0.3);
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-color);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+        }
+
+        .ratio-mini-btn.active {
+          background: var(--primary-color);
+          color: white;
+          border-color: var(--primary-color);
+        }
+
+        .crop-actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .crop-actions .tool-btn {
+          padding: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          flex-direction: row;
+        }
+
+        .crop-actions .tool-btn span:first-child {
+          font-size: 18px;
+        }
+
+        .crop-actions .tool-btn span:last-child {
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .crop-actions .tool-btn.secondary {
+          background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .crop-actions .tool-btn.primary {
+          background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        }
+      }
+
+      /* 移动端抽屉面板 */
+      .mobile-drawer {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10001;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+
+      .mobile-drawer.active {
+        transform: translateY(0);
+      }
+
+      .drawer-handle {
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .drawer-handle-bar {
+        width: 40px;
+        height: 4px;
+        background: var(--border-color);
+        border-radius: 2px;
+        margin: 0 auto;
+      }
+
+      .drawer-content {
+        padding: 0 15px 20px;
+      }
+
+      .drawer-section {
+        margin-bottom: 20px;
+      }
+
+      .drawer-section-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .drawer-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+      }
+
+      .drawer-overlay.active {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-drawer {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toast提示 -->
+    <div class="toast" id="toast">
+      <span class="toast-icon" id="toastIcon">✅</span>
+      <span class="toast-message" id="toastMessage">操作成功</span>
+    </div>
+
+    <!-- 返回首页按钮 -->
+    <a href="../../index.html" class="back-home-btn">返回首页</a>
+
+    <div class="main-container">
+      <!-- 头部 -->
+      <div class="header">
+        <h1>✂️ 图片裁剪工具</h1>
+        <p>在线图片编辑器 - 支持裁剪、旋转、滤镜等多种功能</p>
+      </div>
+
+      <!-- 工作区 -->
+      <div class="workspace">
+        <!-- 左侧工具栏 -->
+        <div class="toolbar">
+          <div class="tool-section">
+            <div class="tool-section-title">📤 图片操作</div>
+            <button class="tool-btn" id="uploadBtn">
+              <span>📁</span>
+              <span>选择图片</span>
+            </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <button class="tool-btn secondary" id="undoBtn" disabled>
+                <span>↶</span>
+                <span>撤销</span>
+              </button>
+              <button class="tool-btn secondary" id="redoBtn" disabled>
+                <span>↷</span>
+                <span>重做</span>
+              </button>
+            </div>
+            <button class="tool-btn secondary" id="resetBtn" disabled>
+              <span>🔄</span>
+              <span>重置</span>
+            </button>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">✂️ 裁剪比例</div>
+            <div class="ratio-grid">
+              <div class="ratio-btn active" data-ratio="free">自由</div>
+              <div class="ratio-btn" data-ratio="1:1">1:1</div>
+              <div class="ratio-btn" data-ratio="4:3">4:3</div>
+              <div class="ratio-btn" data-ratio="16:9">16:9</div>
+              <div class="ratio-btn" data-ratio="3:4">3:4</div>
+              <div class="ratio-btn" data-ratio="9:16">9:16</div>
+            </div>
+            <button class="tool-btn" id="applyCropBtn" disabled>
+              <span>✂️</span>
+              <span>应用裁剪</span>
+            </button>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">🔄 旋转翻转</div>
+            <button class="tool-btn" id="rotateLeftBtn" disabled>
+              <span>↶</span>
+              <span>左旋90°</span>
+            </button>
+            <button class="tool-btn" id="rotateRightBtn" disabled>
+              <span>↷</span>
+              <span>右旋90°</span>
+            </button>
+            <button class="tool-btn" id="flipHBtn" disabled>
+              <span>↔️</span>
+              <span>水平翻转</span>
+            </button>
+            <button class="tool-btn" id="flipVBtn" disabled>
+              <span>↕️</span>
+              <span>垂直翻转</span>
+            </button>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">🎨 滤镜效果</div>
+            <div class="filter-grid">
+              <div class="filter-btn active" data-filter="none">原图</div>
+              <div class="filter-btn" data-filter="grayscale">黑白</div>
+              <div class="filter-btn" data-filter="sepia">复古</div>
+              <div class="filter-btn" data-filter="invert">反色</div>
+              <div class="filter-btn" data-filter="blur">模糊</div>
+              <div class="filter-btn" data-filter="saturate">鲜艳</div>
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">⚡ 图片调整</div>
+            <div class="slider-control">
+              <div class="slider-label">
+                <span>亮度</span>
+                <span class="slider-value" id="brightnessValue">100%</span>
+              </div>
+              <input type="range" id="brightnessSlider" min="0" max="200" value="100" disabled />
+            </div>
+            <div class="slider-control">
+              <div class="slider-label">
+                <span>对比度</span>
+                <span class="slider-value" id="contrastValue">100%</span>
+              </div>
+              <input type="range" id="contrastSlider" min="0" max="200" value="100" disabled />
+            </div>
+            <div class="slider-control">
+              <div class="slider-label">
+                <span>饱和度</span>
+                <span class="slider-value" id="saturationValue">100%</span>
+              </div>
+              <input type="range" id="saturationSlider" min="0" max="200" value="100" disabled />
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">💾 导出图片</div>
+            <button class="tool-btn" id="downloadPNGBtn" disabled>
+              <span>⬇️</span>
+              <span>下载PNG</span>
+            </button>
+            <button class="tool-btn" id="downloadJPGBtn" disabled>
+              <span>⬇️</span>
+              <span>下载JPG</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 中间画布区域 -->
+        <div class="canvas-area">
+          <!-- 上传区域 -->
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">点击或拖拽上传图片</div>
+            <div class="upload-hint">支持 JPG、PNG、GIF 格式，最大 10MB</div>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" />
+
+          <!-- Canvas容器 -->
+          <div class="canvas-container" id="canvasContainer">
+            <div class="canvas-wrapper" id="canvasWrapper">
+              <canvas id="canvas"></canvas>
+              <div class="crop-box" id="cropBox">
+                <div class="crop-handle nw"></div>
+                <div class="crop-handle ne"></div>
+                <div class="crop-handle sw"></div>
+                <div class="crop-handle se"></div>
+                <div class="crop-handle n"></div>
+                <div class="crop-handle s"></div>
+                <div class="crop-handle w"></div>
+                <div class="crop-handle e"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 移动端工具栏 - 扁平化一级分类 -->
+          <div class="mobile-toolbar-wrapper" id="mobileToolbarWrapper">
+            <!-- 一级分类导航 - 可横向滚动 -->
+            <div class="mobile-tabs">
+              <button class="mobile-tab active" data-tab="rotate">旋转</button>
+              <button class="mobile-tab" data-tab="flip">翻转</button>
+              <button class="mobile-tab" data-tab="crop">裁剪</button>
+              <button class="mobile-tab" data-tab="filter">滤镜</button>
+              <button class="mobile-tab" data-tab="brightness">亮度</button>
+              <button class="mobile-tab" data-tab="contrast">对比度</button>
+              <button class="mobile-tab" data-tab="saturation">饱和度</button>
+              <button class="mobile-tab" data-tab="history">还原</button>
+              <button class="mobile-tab" data-tab="export">导出</button>
+            </div>
+
+            <!-- 旋转 -->
+            <div class="mobile-tab-content active" id="tabRotate">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn" id="mobileRotateLeftBtn" disabled>左旋 90°</button>
+                <button class="mobile-option-btn" id="mobileRotateRightBtn" disabled>右旋 90°</button>
+              </div>
+            </div>
+
+            <!-- 翻转 -->
+            <div class="mobile-tab-content" id="tabFlip">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn" id="mobileFlipHBtn" disabled>水平翻转</button>
+                <button class="mobile-option-btn" id="mobileFlipVBtn" disabled>垂直翻转</button>
+              </div>
+            </div>
+
+            <!-- 裁剪 -->
+            <div class="mobile-tab-content" id="tabCrop">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn ratio-btn-mobile active" data-ratio-mobile="free">自由</button>
+                <button class="mobile-option-btn ratio-btn-mobile" data-ratio-mobile="1:1">1:1</button>
+                <button class="mobile-option-btn ratio-btn-mobile" data-ratio-mobile="4:3">4:3</button>
+                <button class="mobile-option-btn ratio-btn-mobile" data-ratio-mobile="16:9">16:9</button>
+              </div>
+            </div>
+
+            <!-- 滤镜 -->
+            <div class="mobile-tab-content" id="tabFilter">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn filter-btn-mobile active" data-filter-mobile="none">原图</button>
+                <button class="mobile-option-btn filter-btn-mobile" data-filter-mobile="grayscale">黑白</button>
+                <button class="mobile-option-btn filter-btn-mobile" data-filter-mobile="sepia">复古</button>
+                <button class="mobile-option-btn filter-btn-mobile" data-filter-mobile="invert">反色</button>
+                <button class="mobile-option-btn filter-btn-mobile" data-filter-mobile="blur">模糊</button>
+                <button class="mobile-option-btn filter-btn-mobile" data-filter-mobile="saturate">鲜艳</button>
+              </div>
+            </div>
+
+            <!-- 亮度 -->
+            <div class="mobile-tab-content" id="tabBrightness">
+              <div class="mobile-slider-row">
+                <input type="range" id="mobileBrightnessSlider3" min="0" max="200" value="100" disabled />
+                <span class="mobile-slider-value" id="mobileBrightnessValue3">100%</span>
+              </div>
+            </div>
+
+            <!-- 对比度 -->
+            <div class="mobile-tab-content" id="tabContrast">
+              <div class="mobile-slider-row">
+                <input type="range" id="mobileContrastSlider3" min="0" max="200" value="100" disabled />
+                <span class="mobile-slider-value" id="mobileContrastValue3">100%</span>
+              </div>
+            </div>
+
+            <!-- 饱和度 -->
+            <div class="mobile-tab-content" id="tabSaturation">
+              <div class="mobile-slider-row">
+                <input type="range" id="mobileSaturationSlider3" min="0" max="200" value="100" disabled />
+                <span class="mobile-slider-value" id="mobileSaturationValue3">100%</span>
+              </div>
+            </div>
+
+            <!-- 历史 -->
+            <div class="mobile-tab-content" id="tabHistory">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn" id="mobileUndoBtn" disabled>↶ 撤回</button>
+                <button class="mobile-option-btn" id="mobileRedoBtn" disabled>↷ 重做</button>
+                <button class="mobile-option-btn mobile-reset-confirm" id="mobileResetBtn2" disabled>⟲ 重置全部</button>
+              </div>
+            </div>
+
+            <!-- 导出 -->
+            <div class="mobile-tab-content" id="tabExport">
+              <div class="mobile-option-row">
+                <button class="mobile-option-btn" id="mobileDownloadPNGBtn3" disabled>下载 PNG</button>
+                <button class="mobile-option-btn" id="mobileDownloadJPGBtn3" disabled>下载 JPG</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 移动端裁剪工具栏 - 进入裁剪模式时显示 -->
+          <div class="mobile-crop-toolbar" id="mobileCropToolbar" style="display: none;">
+            <div class="crop-ratio-selector">
+              <button class="ratio-mini-btn active" data-ratio-mobile="free">自由</button>
+              <button class="ratio-mini-btn" data-ratio-mobile="1:1">1:1</button>
+              <button class="ratio-mini-btn" data-ratio-mobile="4:3">4:3</button>
+              <button class="ratio-mini-btn" data-ratio-mobile="16:9">16:9</button>
+            </div>
+            <div class="crop-actions">
+              <button class="tool-btn secondary" id="mobileCancelCropBtn">
+                <span>✕</span>
+                <span>取消</span>
+              </button>
+              <button class="tool-btn primary" id="mobileApplyCropBtn2" disabled>
+                <span>✓</span>
+                <span>应用</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧信息面板 -->
+        <div class="info-panel">
+          <div class="info-section">
+            <div class="tool-section-title">📊 图片信息</div>
+            <div class="info-item">
+              <span class="info-label">原始尺寸</span>
+              <span class="info-value" id="originalSize">-</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">当前尺寸</span>
+              <span class="info-value" id="currentSize">-</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">文件大小</span>
+              <span class="info-value" id="fileSize">-</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">格式</span>
+              <span class="info-value" id="fileFormat">-</span>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <div class="tool-section-title">💡 使用提示</div>
+            <p style="font-size: 13px; color: var(--text-light); line-height: 1.6;">
+              • 拖拽裁剪框边缘可调整大小<br/>
+              • 点击裁剪框内部可移动位置<br/>
+              • 九宫格线辅助构图(三分法则)<br/>
+              • 选择裁剪比例后自动锁定<br/>
+              • 所有操作可实时预览<br/>
+              • 支持撤销和重置操作
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 移动端抽屉遮罩 - 已废弃,使用扁平化导航 -->
+    <div class="drawer-overlay" id="drawerOverlay" style="display: none;"></div>
+
+    <!-- 移动端抽屉面板 - 已废弃,使用扁平化导航 -->
+    <div class="mobile-drawer" id="mobileDrawer" style="display: none;">
+      <div class="drawer-handle" id="drawerHandle">
+        <div class="drawer-handle-bar"></div>
+      </div>
+      <div class="drawer-content">
+        <!-- 裁剪功能 -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">✂️ 裁剪比例</div>
+          <div class="ratio-grid">
+            <div class="ratio-btn active" data-ratio="free" data-mobile="true">自由</div>
+            <div class="ratio-btn" data-ratio="1:1" data-mobile="true">1:1</div>
+            <div class="ratio-btn" data-ratio="4:3" data-mobile="true">4:3</div>
+            <div class="ratio-btn" data-ratio="16:9" data-mobile="true">16:9</div>
+            <div class="ratio-btn" data-ratio="3:4" data-mobile="true">3:4</div>
+            <div class="ratio-btn" data-ratio="9:16" data-mobile="true">9:16</div>
+          </div>
+          <button class="tool-btn" id="mobileApplyCropBtn" disabled style="margin-top: 10px; width: 100%;">
+            <span>✂️</span>
+            <span>应用裁剪</span>
+          </button>
+        </div>
+
+        <!-- 滤镜效果 -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">🎨 滤镜效果</div>
+          <div class="filter-grid">
+            <div class="filter-btn active" data-filter="none" data-mobile="true">原图</div>
+            <div class="filter-btn" data-filter="grayscale" data-mobile="true">黑白</div>
+            <div class="filter-btn" data-filter="sepia" data-mobile="true">复古</div>
+            <div class="filter-btn" data-filter="invert" data-mobile="true">反色</div>
+            <div class="filter-btn" data-filter="blur" data-mobile="true">模糊</div>
+            <div class="filter-btn" data-filter="saturate" data-mobile="true">鲜艳</div>
+          </div>
+        </div>
+
+        <!-- 图片调整 -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">⚡ 图片调整</div>
+          <div class="slider-control">
+            <div class="slider-label">
+              <span>亮度</span>
+              <span class="slider-value" id="mobileBrightnessValue">100%</span>
+            </div>
+            <input type="range" id="mobileBrightnessSlider" min="0" max="200" value="100" disabled />
+          </div>
+          <div class="slider-control">
+            <div class="slider-label">
+              <span>对比度</span>
+              <span class="slider-value" id="mobileContrastValue">100%</span>
+            </div>
+            <input type="range" id="mobileContrastSlider" min="0" max="200" value="100" disabled />
+          </div>
+          <div class="slider-control">
+            <div class="slider-label">
+              <span>饱和度</span>
+              <span class="slider-value" id="mobileSaturationValue">100%</span>
+            </div>
+            <input type="range" id="mobileSaturationSlider" min="0" max="200" value="100" disabled />
+          </div>
+        </div>
+
+        <!-- 旋转翻转 -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">🔄 旋转翻转</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="tool-btn" id="mobileRotateLeftBtn" disabled>
+              <span>↶</span>
+              <span>左旋90°</span>
+            </button>
+            <button class="tool-btn" id="mobileRotateRightBtn" disabled>
+              <span>↷</span>
+              <span>右旋90°</span>
+            </button>
+            <button class="tool-btn" id="mobileFlipHBtn" disabled>
+              <span>↔️</span>
+              <span>水平翻转</span>
+            </button>
+            <button class="tool-btn" id="mobileFlipVBtn" disabled>
+              <span>↕️</span>
+              <span>垂直翻转</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 导出下载 -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">💾 导出图片</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="tool-btn" id="mobileDownloadPNGBtn" disabled>
+              <span>⬇️</span>
+              <span>下载PNG</span>
+            </button>
+            <button class="tool-btn" id="mobileDownloadJPGBtn" disabled>
+              <span>⬇️</span>
+              <span>下载JPG</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../shared/scripts/common.js"></script>
+    <script src="../../shared/scripts/theme.js"></script>
+    <script>
+      // 全局变量
+      let originalImage = null;
+      let canvas = document.getElementById('canvas');
+      let ctx = canvas.getContext('2d');
+      let currentImage = null;
+      let cropRatio = null;
+      let isDragging = false;
+      let isResizing = false;
+      let dragStart = { x: 0, y: 0 };
+      let resizeHandle = null;
+
+      // 图片状态
+      let imageState = {
+        brightness: 100,
+        contrast: 100,
+        saturation: 100,
+        filter: 'none',
+        rotation: 0,
+        flipH: false,
+        flipV: false
+      };
+
+      // 历史记录系统
+      let history = [];
+      let historyIndex = -1;
+      const MAX_HISTORY = 20;
+
+      // DOM元素
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      const canvasContainer = document.getElementById('canvasContainer');
+      const cropBox = document.getElementById('cropBox');
+
+      // 初始化
+      function init() {
+        bindEvents();
+      }
+
+      // 绑定事件
+      function bindEvents() {
+        // 上传相关
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+
+        document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
+
+        // 裁剪比例 (仅绑定PC端按钮)
+        document.querySelectorAll('.toolbar .ratio-btn').forEach(btn => {
+          btn.addEventListener('click', handleRatioChange);
+        });
+
+        // 旋转翻转
+        document.getElementById('rotateLeftBtn').addEventListener('click', () => rotateImage(-90));
+        document.getElementById('rotateRightBtn').addEventListener('click', () => rotateImage(90));
+        document.getElementById('flipHBtn').addEventListener('click', flipHorizontal);
+        document.getElementById('flipVBtn').addEventListener('click', flipVertical);
+
+        // 滤镜 (仅绑定PC端按钮)
+        document.querySelectorAll('.toolbar .filter-btn').forEach(btn => {
+          btn.addEventListener('click', handleFilterChange);
+        });
+
+        // 滑块
+        document.getElementById('brightnessSlider').addEventListener('input', handleBrightnessChange);
+        document.getElementById('contrastSlider').addEventListener('input', handleContrastChange);
+        document.getElementById('saturationSlider').addEventListener('input', handleSaturationChange);
+
+        // 导出
+        document.getElementById('downloadPNGBtn').addEventListener('click', () => downloadImage('png'));
+        document.getElementById('downloadJPGBtn').addEventListener('click', () => downloadImage('jpeg'));
+
+        // 重置
+        document.getElementById('resetBtn').addEventListener('click', resetImage);
+
+        // 撤销/重做
+        document.getElementById('undoBtn').addEventListener('click', undo);
+        document.getElementById('redoBtn').addEventListener('click', redo);
+
+        // 应用裁剪
+        document.getElementById('applyCropBtn').addEventListener('click', applyCrop);
+
+        // 移动端扁平化导航按钮
+        document.getElementById('mobileRotateLeftBtn').addEventListener('click', () => rotateImage(-90));
+        document.getElementById('mobileRotateRightBtn').addEventListener('click', () => rotateImage(90));
+        document.getElementById('mobileFlipHBtn').addEventListener('click', flipHorizontal);
+        document.getElementById('mobileFlipVBtn').addEventListener('click', flipVertical);
+        document.getElementById('mobileUndoBtn').addEventListener('click', undo);
+        document.getElementById('mobileRedoBtn').addEventListener('click', redo);
+        document.getElementById('mobileResetBtn2').addEventListener('click', resetImage);
+        document.getElementById('mobileDownloadPNGBtn3').addEventListener('click', () => downloadImage('png'));
+        document.getElementById('mobileDownloadJPGBtn3').addEventListener('click', () => downloadImage('jpeg'));
+
+        // 移动端旧版本滑块 (slider1 系列 - 如果存在)
+        const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+        if (mobileBrightnessSlider) {
+          mobileBrightnessSlider.addEventListener('input', (e) => {
+            imageState.brightness = parseInt(e.target.value);
+            document.getElementById('mobileBrightnessValue').textContent = imageState.brightness + '%';
+            // 同步PC端
+            document.getElementById('brightnessSlider').value = imageState.brightness;
+            document.getElementById('brightnessValue').textContent = imageState.brightness + '%';
+            renderImage();
+          });
+        }
+
+        const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+        if (mobileContrastSlider) {
+          mobileContrastSlider.addEventListener('input', (e) => {
+            imageState.contrast = parseInt(e.target.value);
+            document.getElementById('mobileContrastValue').textContent = imageState.contrast + '%';
+            // 同步PC端
+            document.getElementById('contrastSlider').value = imageState.contrast;
+            document.getElementById('contrastValue').textContent = imageState.contrast + '%';
+            renderImage();
+          });
+        }
+
+        const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+        if (mobileSaturationSlider) {
+          mobileSaturationSlider.addEventListener('input', (e) => {
+            imageState.saturation = parseInt(e.target.value);
+            document.getElementById('mobileSaturationValue').textContent = imageState.saturation + '%';
+            // 同步PC端
+            document.getElementById('saturationSlider').value = imageState.saturation;
+            document.getElementById('saturationValue').textContent = imageState.saturation + '%';
+            renderImage();
+          });
+        }
+
+        // 移动端滤镜按钮 (使用事件委托)
+        document.querySelectorAll('.filter-btn[data-mobile="true"]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // 同步移动端和PC端的激活状态
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            const filter = e.currentTarget.dataset.filter;
+            document.querySelectorAll(`.filter-btn[data-filter="${filter}"]`).forEach(b => b.classList.add('active'));
+            imageState.filter = filter;
+            renderImage();
+          });
+        });
+
+        // 移动端裁剪比例按钮
+        document.querySelectorAll('.ratio-btn[data-mobile="true"]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // 检查是否已加载图片
+            if (!currentImage) {
+              showToast('请先上传图片', 'warning');
+              return;
+            }
+
+            // 同步移动端和PC端的激活状态
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+            const ratio = e.currentTarget.dataset.ratio;
+            document.querySelectorAll(`.ratio-btn[data-ratio="${ratio}"]`).forEach(b => b.classList.add('active'));
+
+            if (ratio === 'free') {
+              cropRatio = null;
+            } else {
+              const [w, h] = ratio.split(':').map(Number);
+              cropRatio = w / h;
+            }
+
+            // 初始化或更新裁剪框
+            initCropBox();
+          });
+        });
+
+        // 移动端裁剪工具栏按钮
+        document.querySelectorAll('.ratio-mini-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            if (!currentImage) return;
+
+            // 更新激活状态
+            document.querySelectorAll('.ratio-mini-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            // 设置裁剪比例
+            const ratio = e.target.dataset.ratioMobile;
+            if (ratio === 'free') {
+              cropRatio = null;
+            } else {
+              const [w, h] = ratio.split(':').map(Number);
+              cropRatio = w / h;
+            }
+
+            // 更新裁剪框
+            initCropBox();
+          });
+        });
+
+        document.getElementById('mobileCancelCropBtn').addEventListener('click', () => {
+          exitMobileCropMode();
+        });
+
+        document.getElementById('mobileApplyCropBtn2').addEventListener('click', () => {
+          applyCrop();
+          exitMobileCropMode();
+        });
+
+        // 移动端标签页切换
+        document.querySelectorAll('.mobile-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            const targetTab = e.currentTarget.dataset.tab;
+
+            // 更新标签激活状态
+            document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // 更新内容显示
+            document.querySelectorAll('.mobile-tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab${targetTab.charAt(0).toUpperCase() + targetTab.slice(1)}`).classList.add('active');
+          });
+        });
+
+        // 移动端旧版本滑块事件 (slider2 系列 - 如果存在)
+        const mobileBrightnessSlider2 = document.getElementById('mobileBrightnessSlider2');
+        if (mobileBrightnessSlider2) {
+          mobileBrightnessSlider2.addEventListener('input', (e) => {
+            imageState.brightness = parseInt(e.target.value);
+            document.getElementById('mobileBrightnessValue2').textContent = imageState.brightness + '%';
+            // 同步PC端和旧抽屉
+            document.getElementById('brightnessSlider').value = imageState.brightness;
+            document.getElementById('brightnessValue').textContent = imageState.brightness + '%';
+            const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+            if (mobileBrightnessSlider) {
+              mobileBrightnessSlider.value = imageState.brightness;
+              document.getElementById('mobileBrightnessValue').textContent = imageState.brightness + '%';
+            }
+            renderImage();
+          });
+        }
+
+        const mobileContrastSlider2 = document.getElementById('mobileContrastSlider2');
+        if (mobileContrastSlider2) {
+          mobileContrastSlider2.addEventListener('input', (e) => {
+            imageState.contrast = parseInt(e.target.value);
+            document.getElementById('mobileContrastValue2').textContent = imageState.contrast + '%';
+            // 同步PC端和旧抽屉
+            document.getElementById('contrastSlider').value = imageState.contrast;
+            document.getElementById('contrastValue').textContent = imageState.contrast + '%';
+            const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+            if (mobileContrastSlider) {
+              mobileContrastSlider.value = imageState.contrast;
+              document.getElementById('mobileContrastValue').textContent = imageState.contrast + '%';
+            }
+            renderImage();
+          });
+        }
+
+        const mobileSaturationSlider2 = document.getElementById('mobileSaturationSlider2');
+        if (mobileSaturationSlider2) {
+          mobileSaturationSlider2.addEventListener('input', (e) => {
+            imageState.saturation = parseInt(e.target.value);
+            document.getElementById('mobileSaturationValue2').textContent = imageState.saturation + '%';
+            // 同步PC端和旧抽屉
+            document.getElementById('saturationSlider').value = imageState.saturation;
+            document.getElementById('saturationValue').textContent = imageState.saturation + '%';
+            const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+            if (mobileSaturationSlider) {
+              mobileSaturationSlider.value = imageState.saturation;
+              document.getElementById('mobileSaturationValue').textContent = imageState.saturation + '%';
+            }
+            renderImage();
+          });
+        }
+
+        // 移动端导出按钮 (旧版本 - 可能已不存在)
+        const mobileDownloadPNGBtn2 = document.getElementById('mobileDownloadPNGBtn2');
+        if (mobileDownloadPNGBtn2) {
+          mobileDownloadPNGBtn2.addEventListener('click', () => {
+            downloadImage('png');
+          });
+        }
+
+        const mobileDownloadJPGBtn2 = document.getElementById('mobileDownloadJPGBtn2');
+        if (mobileDownloadJPGBtn2) {
+          mobileDownloadJPGBtn2.addEventListener('click', () => {
+            downloadImage('jpg');
+          });
+        }
+
+        // 移动端扁平化导航滑块 (slider3 系列)
+        document.getElementById('mobileBrightnessSlider3').addEventListener('input', (e) => {
+          imageState.brightness = parseInt(e.target.value);
+          document.getElementById('mobileBrightnessValue3').textContent = imageState.brightness + '%';
+          // 同步PC端
+          document.getElementById('brightnessSlider').value = imageState.brightness;
+          document.getElementById('brightnessValue').textContent = imageState.brightness + '%';
+          renderImage();
+        });
+
+        document.getElementById('mobileContrastSlider3').addEventListener('input', (e) => {
+          imageState.contrast = parseInt(e.target.value);
+          document.getElementById('mobileContrastValue3').textContent = imageState.contrast + '%';
+          // 同步PC端
+          document.getElementById('contrastSlider').value = imageState.contrast;
+          document.getElementById('contrastValue').textContent = imageState.contrast + '%';
+          renderImage();
+        });
+
+        document.getElementById('mobileSaturationSlider3').addEventListener('input', (e) => {
+          imageState.saturation = parseInt(e.target.value);
+          document.getElementById('mobileSaturationValue3').textContent = imageState.saturation + '%';
+          // 同步PC端
+          document.getElementById('saturationSlider').value = imageState.saturation;
+          document.getElementById('saturationValue').textContent = imageState.saturation + '%';
+          renderImage();
+        });
+
+        // 移动端扁平化导航 - 滤镜按钮
+        document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // 更新激活状态
+            document.querySelectorAll('.filter-btn-mobile').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // 应用滤镜
+            const filter = e.currentTarget.dataset.filterMobile;
+            imageState.filter = filter;
+
+            // 同步PC端
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            const pcFilterBtn = document.querySelector(`.filter-btn[data-filter="${filter}"]`);
+            if (pcFilterBtn) pcFilterBtn.classList.add('active');
+
+            renderImage();
+          });
+        });
+
+        // 移动端扁平化导航 - 裁剪比例按钮
+        document.querySelectorAll('.ratio-btn-mobile').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            if (!currentImage) {
+              showToast('请先上传图片', 'warning');
+              return;
+            }
+
+            // 更新激活状态
+            document.querySelectorAll('.ratio-btn-mobile').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // 设置裁剪比例
+            const ratio = e.currentTarget.dataset.ratioMobile;
+            if (ratio === 'free') {
+              cropRatio = null;
+            } else {
+              const [w, h] = ratio.split(':').map(Number);
+              cropRatio = w / h;
+            }
+
+            // 同步PC端
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+            const pcRatioBtn = document.querySelector(`.ratio-btn[data-ratio="${ratio}"]`);
+            if (pcRatioBtn) pcRatioBtn.classList.add('active');
+
+            // 初始化裁剪框
+            initCropBox();
+          });
+        });
+
+        // 防止滑块滑动时触发页面滚动
+        const preventScrollOnSliders = () => {
+          const sliders = [
+            'mobileBrightnessSlider3',
+            'mobileContrastSlider3',
+            'mobileSaturationSlider3',
+            'mobileBrightnessSlider2',
+            'mobileContrastSlider2',
+            'mobileSaturationSlider2',
+            'mobileBrightnessSlider',
+            'mobileContrastSlider',
+            'mobileSaturationSlider'
+          ];
+
+          sliders.forEach(sliderId => {
+            const slider = document.getElementById(sliderId);
+            if (slider) {
+              slider.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+              }, { passive: true });
+
+              slider.addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+              }, { passive: true });
+            }
+          });
+        };
+
+        preventScrollOnSliders();
+
+        // 检测canvas-area滚动状态,控制底部渐变显示
+        const canvasArea = document.querySelector('.canvas-area');
+        const workspace = document.querySelector('.workspace');
+        if (canvasArea && workspace) {
+          const handleCanvasScroll = () => {
+            const scrollTop = canvasArea.scrollTop;
+            const scrollHeight = canvasArea.scrollHeight;
+            const clientHeight = canvasArea.clientHeight;
+            const scrolledToBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px容差
+
+            if (scrolledToBottom) {
+              workspace.classList.add('scrolled-to-bottom');
+            } else {
+              workspace.classList.remove('scrolled-to-bottom');
+            }
+          };
+
+          canvasArea.addEventListener('scroll', handleCanvasScroll, { passive: true });
+          // 初始检查
+          handleCanvasScroll();
+        }
+
+        // 抽屉控制 (已废弃 - 如果元素存在则绑定)
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        const drawerHandle = document.getElementById('drawerHandle');
+
+        if (drawerOverlay) {
+          drawerOverlay.addEventListener('click', closeMobileDrawer);
+        }
+        if (drawerHandle) {
+          drawerHandle.addEventListener('click', closeMobileDrawer);
+        }
+      }
+
+      // 进入移动端裁剪模式
+      function enterMobileCropMode() {
+        if (!currentImage) {
+          showToast('请先上传图片', 'warning');
+          return;
+        }
+
+        // 隐藏标签页工具栏,显示裁剪工具栏
+        document.getElementById('mobileToolbarWrapper').style.display = 'none';
+        document.getElementById('mobileCropToolbar').style.display = 'block';
+
+        // 初始化裁剪框
+        cropRatio = null; // 默认自由裁剪
+        initCropBox();
+
+        showToast('💡 拖拽调整裁剪区域', 'info');
+      }
+
+      // 退出移动端裁剪模式
+      function exitMobileCropMode() {
+        // 显示标签页工具栏,隐藏裁剪工具栏
+        document.getElementById('mobileToolbarWrapper').style.display = 'flex';
+        document.getElementById('mobileCropToolbar').style.display = 'none';
+
+        // 隐藏裁剪框
+        cropBox.classList.remove('active');
+        document.getElementById('applyCropBtn').disabled = true;
+        document.getElementById('mobileApplyCropBtn2').disabled = true;
+
+        // 重置比例选择
+        document.querySelectorAll('.ratio-mini-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.ratio-mini-btn[data-ratio-mobile="free"]').classList.add('active');
+      }
+
+      // 文件选择处理
+      function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+          loadImage(file);
+        }
+      }
+
+      // 拖拽处理
+      function handleDragOver(e) {
+        e.preventDefault();
+        uploadArea.classList.add('dragging');
+      }
+
+      function handleDragLeave(e) {
+        uploadArea.classList.remove('dragging');
+      }
+
+      function handleDrop(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragging');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          loadImage(file);
+        } else {
+          showToast('请上传图片文件', 'error');
+        }
+      }
+
+      // 加载图片
+      function loadImage(file) {
+        if (file.size > 10 * 1024 * 1024) {
+          showToast('图片大小不能超过10MB', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            originalImage = img;
+            currentImage = img;
+
+            // 更新信息面板
+            document.getElementById('originalSize').textContent = `${img.width} × ${img.height}`;
+            document.getElementById('currentSize').textContent = `${img.width} × ${img.height}`;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileFormat').textContent = file.type.split('/')[1].toUpperCase();
+
+            // 初始化canvas
+            initCanvas(img);
+
+            // 显示canvas，隐藏上传区
+            uploadArea.style.display = 'none';
+            canvasContainer.classList.add('active');
+
+            // 启用按钮
+            enableButtons();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // 初始化Canvas
+      function initCanvas(img) {
+        const maxWidth = 800;
+        const maxHeight = 600;
+        let width = img.width;
+        let height = img.height;
+
+        // 等比缩放
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = width * ratio;
+          height = height * ratio;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        renderImage();
+      }
+
+      // 渲染图片
+      function renderImage() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 保存上下文
+        ctx.save();
+
+        // 应用变换
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        ctx.translate(centerX, centerY);
+
+        // 旋转
+        ctx.rotate((imageState.rotation * Math.PI) / 180);
+
+        // 翻转
+        ctx.scale(
+          imageState.flipH ? -1 : 1,
+          imageState.flipV ? -1 : 1
+        );
+
+        // 应用滤镜
+        applyFilters();
+
+        // 绘制图片
+        ctx.drawImage(
+          currentImage,
+          -canvas.width / 2,
+          -canvas.height / 2,
+          canvas.width,
+          canvas.height
+        );
+
+        ctx.restore();
+
+        // 更新当前尺寸
+        document.getElementById('currentSize').textContent = `${canvas.width} × ${canvas.height}`;
+
+        // 移动端:图片渲染后重新检查滚动状态
+        if (window.innerWidth <= 768) {
+          setTimeout(() => {
+            const canvasArea = document.querySelector('.canvas-area');
+            if (canvasArea) {
+              const scrollHeight = canvasArea.scrollHeight;
+              const clientHeight = canvasArea.clientHeight;
+              const scrolledToBottom = canvasArea.scrollTop + clientHeight >= scrollHeight - 10;
+
+              if (scrolledToBottom) {
+                canvasArea.classList.add('scrolled-to-bottom');
+              } else {
+                canvasArea.classList.remove('scrolled-to-bottom');
+              }
+            }
+          }, 100); // 等待DOM更新
+        }
+      }
+
+      // 应用滤镜
+      function applyFilters() {
+        let filters = [];
+
+        // 亮度
+        if (imageState.brightness !== 100) {
+          filters.push(`brightness(${imageState.brightness}%)`);
+        }
+
+        // 对比度
+        if (imageState.contrast !== 100) {
+          filters.push(`contrast(${imageState.contrast}%)`);
+        }
+
+        // 饱和度
+        if (imageState.saturation !== 100) {
+          filters.push(`saturate(${imageState.saturation}%)`);
+        }
+
+        // 预设滤镜
+        switch (imageState.filter) {
+          case 'grayscale':
+            filters.push('grayscale(100%)');
+            break;
+          case 'sepia':
+            filters.push('sepia(100%)');
+            break;
+          case 'invert':
+            filters.push('invert(100%)');
+            break;
+          case 'blur':
+            filters.push('blur(3px)');
+            break;
+          case 'saturate':
+            filters.push('saturate(200%)');
+            break;
+        }
+
+        ctx.filter = filters.length > 0 ? filters.join(' ') : 'none';
+      }
+
+      // 旋转图片
+      function rotateImage(deg) {
+        imageState.rotation = (imageState.rotation + deg) % 360;
+
+        // 交换宽高 - 使用requestAnimationFrame优化性能
+        if (deg === 90 || deg === -90) {
+          requestAnimationFrame(() => {
+            const temp = canvas.width;
+            canvas.width = canvas.height;
+            canvas.height = temp;
+            renderImage();
+          });
+        } else {
+          renderImage();
+        }
+      }
+
+      // 水平翻转
+      function flipHorizontal() {
+        imageState.flipH = !imageState.flipH;
+        renderImage();
+      }
+
+      // 垂直翻转
+      function flipVertical() {
+        imageState.flipV = !imageState.flipV;
+        renderImage();
+      }
+
+      // 裁剪比例切换
+      function handleRatioChange(e) {
+        // 检查是否已加载图片
+        if (!currentImage) {
+          showToast('请先上传图片', 'warning');
+          return;
+        }
+
+        document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        const ratio = e.target.dataset.ratio;
+        if (ratio === 'free') {
+          cropRatio = null;
+        } else {
+          const [w, h] = ratio.split(':').map(Number);
+          cropRatio = w / h;
+        }
+
+        // 初始化或更新裁剪框
+        initCropBox();
+      }
+
+      // 初始化裁剪框
+      function initCropBox() {
+        // 使用canvas的实际尺寸(非缩放后的显示尺寸)
+        const canvasWidth = canvas.offsetWidth;
+        const canvasHeight = canvas.offsetHeight;
+        const size = Math.min(canvasWidth, canvasHeight) * 0.8;
+
+        let width = size;
+        let height = size;
+
+        if (cropRatio) {
+          if (cropRatio > 1) {
+            height = width / cropRatio;
+          } else {
+            width = height * cropRatio;
+          }
+        }
+
+        // 限制裁剪框不超过canvas尺寸
+        width = Math.min(width, canvasWidth);
+        height = Math.min(height, canvasHeight);
+
+        cropBox.style.width = width + 'px';
+        cropBox.style.height = height + 'px';
+        cropBox.style.left = (canvasWidth - width) / 2 + 'px';
+        cropBox.style.top = (canvasHeight - height) / 2 + 'px';
+
+        cropBox.classList.add('active');
+        document.getElementById('applyCropBtn').disabled = false;
+        const mobileApplyCropBtn2 = document.getElementById('mobileApplyCropBtn2');
+        if (mobileApplyCropBtn2) {
+          mobileApplyCropBtn2.disabled = false;
+        }
+
+        // 绑定裁剪框拖拽事件
+        bindCropBoxEvents();
+      }
+
+      // 绑定裁剪框交互事件
+      function bindCropBoxEvents() {
+        // 移除旧的事件监听器(如果存在)
+        cropBox.removeEventListener('mousedown', handleCropBoxMouseDown);
+        cropBox.removeEventListener('touchstart', handleCropBoxTouchStart);
+
+        // 绑定新的事件监听器
+        cropBox.addEventListener('mousedown', handleCropBoxMouseDown);
+        cropBox.addEventListener('touchstart', handleCropBoxTouchStart, { passive: false });
+      }
+
+      // 裁剪框鼠标按下
+      function handleCropBoxMouseDown(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const target = e.target;
+        const canvasRect = canvas.getBoundingClientRect();
+        const boxRect = cropBox.getBoundingClientRect();
+
+        // 判断是拖拽还是调整大小
+        if (target.classList.contains('crop-handle')) {
+          isResizing = true;
+          resizeHandle = target.classList[1]; // 获取方向类名 (nw, ne, sw, se, n, s, w, e)
+        } else {
+          isDragging = true;
+        }
+
+        dragStart = {
+          x: e.clientX,
+          y: e.clientY,
+          boxLeft: parseFloat(cropBox.style.left),
+          boxTop: parseFloat(cropBox.style.top),
+          boxWidth: parseFloat(cropBox.style.width),
+          boxHeight: parseFloat(cropBox.style.height)
+        };
+
+        // 绑定全局鼠标移动和释放事件
+        document.addEventListener('mousemove', handleCropBoxMouseMove);
+        document.addEventListener('mouseup', handleCropBoxMouseUp);
+      }
+
+      // 裁剪框鼠标移动
+      function handleCropBoxMouseMove(e) {
+        e.preventDefault();
+
+        const deltaX = e.clientX - dragStart.x;
+        const deltaY = e.clientY - dragStart.y;
+        const canvasWidth = canvas.offsetWidth;
+        const canvasHeight = canvas.offsetHeight;
+
+        if (isDragging) {
+          // 拖拽移动
+          let newLeft = dragStart.boxLeft + deltaX;
+          let newTop = dragStart.boxTop + deltaY;
+
+          // 限制在canvas范围内
+          newLeft = Math.max(0, Math.min(newLeft, canvasWidth - dragStart.boxWidth));
+          newTop = Math.max(0, Math.min(newTop, canvasHeight - dragStart.boxHeight));
+
+          cropBox.style.left = newLeft + 'px';
+          cropBox.style.top = newTop + 'px';
+        } else if (isResizing) {
+          // 调整大小
+          let newWidth = dragStart.boxWidth;
+          let newHeight = dragStart.boxHeight;
+          let newLeft = dragStart.boxLeft;
+          let newTop = dragStart.boxTop;
+
+          // 根据拖拽方向调整尺寸
+          if (resizeHandle.includes('e')) {
+            newWidth = dragStart.boxWidth + deltaX;
+          }
+          if (resizeHandle.includes('w')) {
+            newWidth = dragStart.boxWidth - deltaX;
+            newLeft = dragStart.boxLeft + deltaX;
+          }
+          if (resizeHandle.includes('s')) {
+            newHeight = dragStart.boxHeight + deltaY;
+          }
+          if (resizeHandle.includes('n')) {
+            newHeight = dragStart.boxHeight - deltaY;
+            newTop = dragStart.boxTop + deltaY;
+          }
+
+          // 保持最小尺寸
+          const minSize = 50;
+          if (newWidth < minSize) {
+            newWidth = minSize;
+            if (resizeHandle.includes('w')) {
+              newLeft = dragStart.boxLeft + dragStart.boxWidth - minSize;
+            }
+          }
+          if (newHeight < minSize) {
+            newHeight = minSize;
+            if (resizeHandle.includes('n')) {
+              newTop = dragStart.boxTop + dragStart.boxHeight - minSize;
+            }
+          }
+
+          // 如果有固定比例,调整高度
+          if (cropRatio) {
+            if (resizeHandle.includes('e') || resizeHandle.includes('w')) {
+              newHeight = newWidth / cropRatio;
+            } else if (resizeHandle.includes('n') || resizeHandle.includes('s')) {
+              newWidth = newHeight * cropRatio;
+            } else {
+              // 对角调整,按比例缩放
+              newHeight = newWidth / cropRatio;
+            }
+          }
+
+          // 限制在canvas范围内
+          if (newLeft < 0) {
+            newWidth += newLeft;
+            newLeft = 0;
+          }
+          if (newTop < 0) {
+            newHeight += newTop;
+            newTop = 0;
+          }
+          if (newLeft + newWidth > canvasWidth) {
+            newWidth = canvasWidth - newLeft;
+            if (cropRatio) newHeight = newWidth / cropRatio;
+          }
+          if (newTop + newHeight > canvasHeight) {
+            newHeight = canvasHeight - newTop;
+            if (cropRatio) newWidth = newHeight * cropRatio;
+          }
+
+          cropBox.style.width = newWidth + 'px';
+          cropBox.style.height = newHeight + 'px';
+          cropBox.style.left = newLeft + 'px';
+          cropBox.style.top = newTop + 'px';
+        }
+      }
+
+      // 裁剪框鼠标释放
+      function handleCropBoxMouseUp(e) {
+        isDragging = false;
+        isResizing = false;
+        resizeHandle = null;
+
+        // 移除全局事件监听器
+        document.removeEventListener('mousemove', handleCropBoxMouseMove);
+        document.removeEventListener('mouseup', handleCropBoxMouseUp);
+      }
+
+      // 触摸事件处理
+      function handleCropBoxTouchStart(e) {
+        if (e.touches.length !== 1) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const touch = e.touches[0];
+        const target = e.target;
+
+        // 判断是拖拽还是调整大小
+        if (target.classList.contains('crop-handle')) {
+          isResizing = true;
+          resizeHandle = target.classList[1];
+        } else {
+          isDragging = true;
+        }
+
+        dragStart = {
+          x: touch.clientX,
+          y: touch.clientY,
+          boxLeft: parseFloat(cropBox.style.left),
+          boxTop: parseFloat(cropBox.style.top),
+          boxWidth: parseFloat(cropBox.style.width),
+          boxHeight: parseFloat(cropBox.style.height)
+        };
+
+        document.addEventListener('touchmove', handleCropBoxTouchMove, { passive: false });
+        document.addEventListener('touchend', handleCropBoxTouchEnd);
+      }
+
+      function handleCropBoxTouchMove(e) {
+        if (e.touches.length !== 1) return;
+        e.preventDefault();
+
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - dragStart.x;
+        const deltaY = touch.clientY - dragStart.y;
+        const canvasWidth = canvas.offsetWidth;
+        const canvasHeight = canvas.offsetHeight;
+
+        if (isDragging) {
+          let newLeft = dragStart.boxLeft + deltaX;
+          let newTop = dragStart.boxTop + deltaY;
+
+          newLeft = Math.max(0, Math.min(newLeft, canvasWidth - dragStart.boxWidth));
+          newTop = Math.max(0, Math.min(newTop, canvasHeight - dragStart.boxHeight));
+
+          cropBox.style.left = newLeft + 'px';
+          cropBox.style.top = newTop + 'px';
+        } else if (isResizing) {
+          let newWidth = dragStart.boxWidth;
+          let newHeight = dragStart.boxHeight;
+          let newLeft = dragStart.boxLeft;
+          let newTop = dragStart.boxTop;
+
+          if (resizeHandle.includes('e')) {
+            newWidth = dragStart.boxWidth + deltaX;
+          }
+          if (resizeHandle.includes('w')) {
+            newWidth = dragStart.boxWidth - deltaX;
+            newLeft = dragStart.boxLeft + deltaX;
+          }
+          if (resizeHandle.includes('s')) {
+            newHeight = dragStart.boxHeight + deltaY;
+          }
+          if (resizeHandle.includes('n')) {
+            newHeight = dragStart.boxHeight - deltaY;
+            newTop = dragStart.boxTop + deltaY;
+          }
+
+          const minSize = 50;
+          if (newWidth < minSize) {
+            newWidth = minSize;
+            if (resizeHandle.includes('w')) {
+              newLeft = dragStart.boxLeft + dragStart.boxWidth - minSize;
+            }
+          }
+          if (newHeight < minSize) {
+            newHeight = minSize;
+            if (resizeHandle.includes('n')) {
+              newTop = dragStart.boxTop + dragStart.boxHeight - minSize;
+            }
+          }
+
+          if (cropRatio) {
+            if (resizeHandle.includes('e') || resizeHandle.includes('w')) {
+              newHeight = newWidth / cropRatio;
+            } else if (resizeHandle.includes('n') || resizeHandle.includes('s')) {
+              newWidth = newHeight * cropRatio;
+            } else {
+              newHeight = newWidth / cropRatio;
+            }
+          }
+
+          if (newLeft < 0) {
+            newWidth += newLeft;
+            newLeft = 0;
+          }
+          if (newTop < 0) {
+            newHeight += newTop;
+            newTop = 0;
+          }
+          if (newLeft + newWidth > canvasWidth) {
+            newWidth = canvasWidth - newLeft;
+            if (cropRatio) newHeight = newWidth / cropRatio;
+          }
+          if (newTop + newHeight > canvasHeight) {
+            newHeight = canvasHeight - newTop;
+            if (cropRatio) newWidth = newHeight * cropRatio;
+          }
+
+          cropBox.style.width = newWidth + 'px';
+          cropBox.style.height = newHeight + 'px';
+          cropBox.style.left = newLeft + 'px';
+          cropBox.style.top = newTop + 'px';
+        }
+      }
+
+      function handleCropBoxTouchEnd(e) {
+        isDragging = false;
+        isResizing = false;
+        resizeHandle = null;
+
+        document.removeEventListener('touchmove', handleCropBoxTouchMove);
+        document.removeEventListener('touchend', handleCropBoxTouchEnd);
+      }
+
+      // 应用裁剪
+      function applyCrop() {
+        if (!cropBox.classList.contains('active')) return;
+
+        // 获取裁剪框相对位置和尺寸
+        const boxLeft = parseFloat(cropBox.style.left);
+        const boxTop = parseFloat(cropBox.style.top);
+        const boxWidth = parseFloat(cropBox.style.width);
+        const boxHeight = parseFloat(cropBox.style.height);
+
+        // 计算canvas显示尺寸和实际尺寸的比例
+        const scaleX = canvas.width / canvas.offsetWidth;
+        const scaleY = canvas.height / canvas.offsetHeight;
+
+        // 计算实际裁剪区域(canvas坐标)
+        const x = boxLeft * scaleX;
+        const y = boxTop * scaleY;
+        const width = boxWidth * scaleX;
+        const height = boxHeight * scaleY;
+
+        // 创建临时canvas
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        // 复制裁剪区域
+        tempCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height);
+
+        // 更新主canvas
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(tempCanvas, 0, 0);
+
+        // 更新currentImage引用
+        currentImage = canvas;
+
+        // 隐藏裁剪框
+        cropBox.classList.remove('active');
+        document.getElementById('applyCropBtn').disabled = true;
+        const mobileApplyCropBtn2 = document.getElementById('mobileApplyCropBtn2');
+        if (mobileApplyCropBtn2) {
+          mobileApplyCropBtn2.disabled = true;
+        }
+
+        // 更新尺寸信息
+        document.getElementById('currentSize').textContent = `${canvas.width} × ${canvas.height}`;
+
+      }
+
+      // 滤镜切换
+      function handleFilterChange(e) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+
+        imageState.filter = e.target.dataset.filter;
+        renderImage();
+      }
+
+      // 亮度调整
+      function handleBrightnessChange(e) {
+        imageState.brightness = parseInt(e.target.value);
+        document.getElementById('brightnessValue').textContent = imageState.brightness + '%';
+        // 同步移动端
+        const mobileBrightnessSlider3 = document.getElementById('mobileBrightnessSlider3');
+        if (mobileBrightnessSlider3) {
+          mobileBrightnessSlider3.value = imageState.brightness;
+          document.getElementById('mobileBrightnessValue3').textContent = imageState.brightness + '%';
+        }
+        const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+        if (mobileBrightnessSlider) {
+          mobileBrightnessSlider.value = imageState.brightness;
+          document.getElementById('mobileBrightnessValue').textContent = imageState.brightness + '%';
+        }
+        renderImage();
+      }
+
+      // 对比度调整
+      function handleContrastChange(e) {
+        imageState.contrast = parseInt(e.target.value);
+        document.getElementById('contrastValue').textContent = imageState.contrast + '%';
+        // 同步移动端
+        const mobileContrastSlider3 = document.getElementById('mobileContrastSlider3');
+        if (mobileContrastSlider3) {
+          mobileContrastSlider3.value = imageState.contrast;
+          document.getElementById('mobileContrastValue3').textContent = imageState.contrast + '%';
+        }
+        const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+        if (mobileContrastSlider) {
+          mobileContrastSlider.value = imageState.contrast;
+          document.getElementById('mobileContrastValue').textContent = imageState.contrast + '%';
+        }
+        renderImage();
+      }
+
+      // 饱和度调整
+      function handleSaturationChange(e) {
+        imageState.saturation = parseInt(e.target.value);
+        document.getElementById('saturationValue').textContent = imageState.saturation + '%';
+        // 同步移动端
+        const mobileSaturationSlider3 = document.getElementById('mobileSaturationSlider3');
+        if (mobileSaturationSlider3) {
+          mobileSaturationSlider3.value = imageState.saturation;
+          document.getElementById('mobileSaturationValue3').textContent = imageState.saturation + '%';
+        }
+        const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+        if (mobileSaturationSlider) {
+          mobileSaturationSlider.value = imageState.saturation;
+          document.getElementById('mobileSaturationValue').textContent = imageState.saturation + '%';
+        }
+        renderImage();
+      }
+
+      // 下载图片
+      function downloadImage(format) {
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `edited-image-${Date.now()}.${format === 'jpeg' ? 'jpg' : 'png'}`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }, `image/${format}`, 0.95);
+      }
+
+      // 重置图片
+      function resetImage() {
+        if (!originalImage) return;
+
+        currentImage = originalImage;
+        imageState = {
+          brightness: 100,
+          contrast: 100,
+          saturation: 100,
+          filter: 'none',
+          rotation: 0,
+          flipH: false,
+          flipV: false
+        };
+
+        // 重置PC端滑块
+        document.getElementById('brightnessSlider').value = 100;
+        document.getElementById('contrastSlider').value = 100;
+        document.getElementById('saturationSlider').value = 100;
+        document.getElementById('brightnessValue').textContent = '100%';
+        document.getElementById('contrastValue').textContent = '100%';
+        document.getElementById('saturationValue').textContent = '100%';
+
+        // 重置移动端滑块 (slider3 系列)
+        const mobileBrightnessSlider3 = document.getElementById('mobileBrightnessSlider3');
+        if (mobileBrightnessSlider3) {
+          mobileBrightnessSlider3.value = 100;
+          document.getElementById('mobileBrightnessValue3').textContent = '100%';
+        }
+        const mobileContrastSlider3 = document.getElementById('mobileContrastSlider3');
+        if (mobileContrastSlider3) {
+          mobileContrastSlider3.value = 100;
+          document.getElementById('mobileContrastValue3').textContent = '100%';
+        }
+        const mobileSaturationSlider3 = document.getElementById('mobileSaturationSlider3');
+        if (mobileSaturationSlider3) {
+          mobileSaturationSlider3.value = 100;
+          document.getElementById('mobileSaturationValue3').textContent = '100%';
+        }
+
+        // 重置旧版本移动端滑块 (如果存在)
+        const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+        if (mobileBrightnessSlider) {
+          mobileBrightnessSlider.value = 100;
+          document.getElementById('mobileBrightnessValue').textContent = '100%';
+        }
+        const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+        if (mobileContrastSlider) {
+          mobileContrastSlider.value = 100;
+          document.getElementById('mobileContrastValue').textContent = '100%';
+        }
+        const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+        if (mobileSaturationSlider) {
+          mobileSaturationSlider.value = 100;
+          document.getElementById('mobileSaturationValue').textContent = '100%';
+        }
+
+        // 重置滤镜
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.filter-btn[data-filter="none"]').forEach(btn => btn.classList.add('active'));
+        document.querySelectorAll('.filter-btn-mobile').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.filter-btn-mobile[data-filter-mobile="none"]').forEach(btn => btn.classList.add('active'));
+
+        // 重置裁剪比例
+        document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.ratio-btn[data-ratio="free"]').forEach(btn => btn.classList.add('active'));
+        document.querySelectorAll('.ratio-btn-mobile').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.ratio-btn-mobile[data-ratio-mobile="free"]').forEach(btn => btn.classList.add('active'));
+        cropRatio = null;
+        cropBox.classList.remove('active');
+
+        initCanvas(originalImage);
+      }
+
+      // 启用按钮
+      function enableButtons() {
+        // PC端按钮
+        document.getElementById('resetBtn').disabled = false;
+        document.getElementById('rotateLeftBtn').disabled = false;
+        document.getElementById('rotateRightBtn').disabled = false;
+        document.getElementById('flipHBtn').disabled = false;
+        document.getElementById('flipVBtn').disabled = false;
+        document.getElementById('brightnessSlider').disabled = false;
+        document.getElementById('contrastSlider').disabled = false;
+        document.getElementById('saturationSlider').disabled = false;
+        document.getElementById('downloadPNGBtn').disabled = false;
+        document.getElementById('downloadJPGBtn').disabled = false;
+
+        // 移动端扁平化导航按钮
+        document.getElementById('mobileRotateLeftBtn').disabled = false;
+        document.getElementById('mobileRotateRightBtn').disabled = false;
+        document.getElementById('mobileFlipHBtn').disabled = false;
+        document.getElementById('mobileFlipVBtn').disabled = false;
+        document.getElementById('mobileResetBtn2').disabled = false;
+        document.getElementById('mobileUndoBtn').disabled = false;
+        document.getElementById('mobileRedoBtn').disabled = false;
+        document.getElementById('mobileDownloadPNGBtn3').disabled = false;
+        document.getElementById('mobileDownloadJPGBtn3').disabled = false;
+
+        // 移动端扁平化导航滑块
+        document.getElementById('mobileBrightnessSlider3').disabled = false;
+        document.getElementById('mobileContrastSlider3').disabled = false;
+        document.getElementById('mobileSaturationSlider3').disabled = false;
+
+        // 移动端裁剪工具栏
+        const mobileApplyCropBtn = document.getElementById('mobileApplyCropBtn');
+        if (mobileApplyCropBtn) mobileApplyCropBtn.disabled = false;
+        const mobileApplyCropBtn2 = document.getElementById('mobileApplyCropBtn2');
+        if (mobileApplyCropBtn2) mobileApplyCropBtn2.disabled = false;
+
+        // 旧版本元素 (如果存在)
+        const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+        if (mobileBrightnessSlider) mobileBrightnessSlider.disabled = false;
+        const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+        if (mobileContrastSlider) mobileContrastSlider.disabled = false;
+        const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+        if (mobileSaturationSlider) mobileSaturationSlider.disabled = false;
+
+        const mobileBrightnessSlider2 = document.getElementById('mobileBrightnessSlider2');
+        if (mobileBrightnessSlider2) mobileBrightnessSlider2.disabled = false;
+        const mobileContrastSlider2 = document.getElementById('mobileContrastSlider2');
+        if (mobileContrastSlider2) mobileContrastSlider2.disabled = false;
+        const mobileSaturationSlider2 = document.getElementById('mobileSaturationSlider2');
+        if (mobileSaturationSlider2) mobileSaturationSlider2.disabled = false;
+
+        const mobileDownloadPNGBtn = document.getElementById('mobileDownloadPNGBtn');
+        if (mobileDownloadPNGBtn) mobileDownloadPNGBtn.disabled = false;
+        const mobileDownloadJPGBtn = document.getElementById('mobileDownloadJPGBtn');
+        if (mobileDownloadJPGBtn) mobileDownloadJPGBtn.disabled = false;
+        const mobileDownloadPNGBtn2 = document.getElementById('mobileDownloadPNGBtn2');
+        if (mobileDownloadPNGBtn2) mobileDownloadPNGBtn2.disabled = false;
+        const mobileDownloadJPGBtn2 = document.getElementById('mobileDownloadJPGBtn2');
+        if (mobileDownloadJPGBtn2) mobileDownloadJPGBtn2.disabled = false;
+
+        // 更新撤销/重做按钮状态
+        updateHistoryButtons();
+      }
+
+      // 保存历史状态
+      function saveHistory() {
+        // 清除当前索引之后的历史
+        history = history.slice(0, historyIndex + 1);
+
+        // 保存当前状态
+        const state = {
+          imageData: canvas.toDataURL(),
+          width: canvas.width,
+          height: canvas.height,
+          state: { ...imageState }
+        };
+
+        history.push(state);
+
+        // 限制历史记录数量
+        if (history.length > MAX_HISTORY) {
+          history.shift();
+        } else {
+          historyIndex++;
+        }
+
+        updateHistoryButtons();
+      }
+
+      // 撤销
+      function undo() {
+        if (historyIndex > 0) {
+          historyIndex--;
+          restoreHistory();
+        }
+      }
+
+      // 重做
+      function redo() {
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          restoreHistory();
+        }
+      }
+
+      // 恢复历史状态
+      function restoreHistory() {
+        if (historyIndex < 0 || historyIndex >= history.length) return;
+
+        const state = history[historyIndex];
+        const img = new Image();
+        img.onload = () => {
+          canvas.width = state.width;
+          canvas.height = state.height;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+
+          // 恢复状态
+          imageState = { ...state.state };
+
+          // 同步UI
+          syncUIFromState();
+          updateHistoryButtons();
+        };
+        img.src = state.imageData;
+      }
+
+      // 从状态同步UI
+      function syncUIFromState() {
+        // PC端
+        document.getElementById('brightnessSlider').value = imageState.brightness;
+        document.getElementById('contrastSlider').value = imageState.contrast;
+        document.getElementById('saturationSlider').value = imageState.saturation;
+        document.getElementById('brightnessValue').textContent = imageState.brightness + '%';
+        document.getElementById('contrastValue').textContent = imageState.contrast + '%';
+        document.getElementById('saturationValue').textContent = imageState.saturation + '%';
+
+        // 移动端 (slider3 系列)
+        const mobileBrightnessSlider3 = document.getElementById('mobileBrightnessSlider3');
+        if (mobileBrightnessSlider3) {
+          mobileBrightnessSlider3.value = imageState.brightness;
+          document.getElementById('mobileBrightnessValue3').textContent = imageState.brightness + '%';
+        }
+        const mobileContrastSlider3 = document.getElementById('mobileContrastSlider3');
+        if (mobileContrastSlider3) {
+          mobileContrastSlider3.value = imageState.contrast;
+          document.getElementById('mobileContrastValue3').textContent = imageState.contrast + '%';
+        }
+        const mobileSaturationSlider3 = document.getElementById('mobileSaturationSlider3');
+        if (mobileSaturationSlider3) {
+          mobileSaturationSlider3.value = imageState.saturation;
+          document.getElementById('mobileSaturationValue3').textContent = imageState.saturation + '%';
+        }
+
+        // 旧版本移动端滑块 (如果存在)
+        const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
+        if (mobileBrightnessSlider) {
+          mobileBrightnessSlider.value = imageState.brightness;
+          document.getElementById('mobileBrightnessValue').textContent = imageState.brightness + '%';
+        }
+        const mobileContrastSlider = document.getElementById('mobileContrastSlider');
+        if (mobileContrastSlider) {
+          mobileContrastSlider.value = imageState.contrast;
+          document.getElementById('mobileContrastValue').textContent = imageState.contrast + '%';
+        }
+        const mobileSaturationSlider = document.getElementById('mobileSaturationSlider');
+        if (mobileSaturationSlider) {
+          mobileSaturationSlider.value = imageState.saturation;
+          document.getElementById('mobileSaturationValue').textContent = imageState.saturation + '%';
+        }
+
+        // 滤镜
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll(`.filter-btn[data-filter="${imageState.filter}"]`).forEach(btn => btn.classList.add('active'));
+        document.querySelectorAll('.filter-btn-mobile').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll(`.filter-btn-mobile[data-filter-mobile="${imageState.filter}"]`).forEach(btn => btn.classList.add('active'));
+      }
+
+      // 更新历史按钮状态
+      function updateHistoryButtons() {
+        const undoBtn = document.getElementById('undoBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        const mobileUndoBtn = document.getElementById('mobileUndoBtn');
+        const mobileRedoBtn = document.getElementById('mobileRedoBtn');
+
+        if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+        if (redoBtn) redoBtn.disabled = historyIndex >= history.length - 1;
+        if (mobileUndoBtn) mobileUndoBtn.disabled = historyIndex <= 0;
+        if (mobileRedoBtn) mobileRedoBtn.disabled = historyIndex >= history.length - 1;
+      }
+
+      // 打开移动端抽屉
+      function openMobileDrawer() {
+        console.log('openMobileDrawer 函数被调用');
+        const drawer = document.getElementById('mobileDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+
+        console.log('抽屉元素:', drawer);
+        console.log('遮罩元素:', overlay);
+
+        if (!drawer || !overlay) {
+          console.error('抽屉元素未找到');
+          return;
+        }
+
+        console.log('添加 active 类');
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+
+        console.log('抽屉类名:', drawer.className);
+        console.log('遮罩类名:', overlay.className);
+
+        // 禁止body滚动
+        document.body.style.overflow = 'hidden';
+      }
+
+      // 关闭移动端抽屉 (已废弃函数)
+      function closeMobileDrawer() {
+        const drawer = document.getElementById('mobileDrawer');
+        const overlay = document.getElementById('drawerOverlay');
+        if (drawer) drawer.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        // 恢复body滚动
+        document.body.style.overflow = '';
+      }
+
+      // Toast提示
+      // Toast 自动隐藏定时器
+      let toastTimer = null;
+
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+        const msg = document.getElementById('toastMessage');
+
+        // 清除之前的定时器
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+
+        msg.textContent = message;
+        toast.className = 'toast ' + type;
+
+        // 设置图标
+        if (type === 'success') {
+          icon.textContent = '✅';
+        } else if (type === 'error') {
+          icon.textContent = '❌';
+        } else if (type === 'warning') {
+          icon.textContent = '⚠️';
+        } else if (type === 'info') {
+          icon.textContent = 'ℹ️';
+        }
+
+        // 移动端震动反馈
+        if ('vibrate' in navigator && window.innerWidth <= 768) {
+          if (type === 'error') {
+            navigator.vibrate([50, 30, 50]); // 错误:两次短震
+          } else if (type === 'warning') {
+            navigator.vibrate(30); // 警告:单次短震
+          } else if (type === 'success') {
+            navigator.vibrate(20); // 成功:轻微震动
+          }
+        }
+
+        // 显示 Toast
+        toast.classList.add('show');
+
+        // 移动端:添加触摸关闭功能
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          // 触摸关闭
+          const handleToastTouch = () => {
+            toast.classList.remove('show');
+            toast.removeEventListener('click', handleToastTouch);
+          };
+          toast.addEventListener('click', handleToastTouch);
+
+          // 滑动关闭
+          let startY = 0;
+          let currentY = 0;
+
+          const handleTouchStart = (e) => {
+            startY = e.touches[0].clientY;
+          };
+
+          const handleTouchMove = (e) => {
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+
+            // 向下滑动超过 30px 时关闭
+            if (deltaY > 30) {
+              toast.classList.remove('show');
+              toast.removeEventListener('touchstart', handleTouchStart);
+              toast.removeEventListener('touchmove', handleTouchMove);
+            }
+          };
+
+          toast.addEventListener('touchstart', handleTouchStart, { passive: true });
+          toast.addEventListener('touchmove', handleTouchMove, { passive: true });
+        }
+
+        // 自动隐藏 (移动端 2.5 秒,桌面端 3 秒)
+        const duration = isMobile ? 2500 : 3000;
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, duration);
+      }
+
+      // 格式化文件大小
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+
+      init();
+    </script>
+  </body>
+</html>

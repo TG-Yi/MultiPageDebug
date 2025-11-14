@@ -352,6 +352,264 @@
         transform: scale(1) rotate(90deg);
       }
 
+      /* 帮助模态框 */
+      .help-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 10003;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .help-modal.active {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .help-content {
+        background: white;
+        border-radius: 16px;
+        max-width: 900px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: slideUp 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .help-header {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, #ee6c4d 0%, #f4a261 100%);
+        color: white;
+        padding: 24px 30px;
+        border-radius: 16px 16px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1;
+      }
+
+      .help-header h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .help-close {
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: white;
+      }
+
+      .help-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+      }
+
+      .help-body {
+        padding: 30px;
+      }
+
+      .help-section {
+        margin-bottom: 30px;
+      }
+
+      .help-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .help-section h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .help-section p {
+        color: #5a6c7d;
+        line-height: 1.6;
+        margin: 0 0 10px 0;
+      }
+
+      .help-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+      }
+
+      .help-section li {
+        padding: 8px 0;
+        color: #5a6c7d;
+        line-height: 1.6;
+      }
+
+      .help-section li::before {
+        content: "▸";
+        color: #ee6c4d;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .code-block {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 15px 0;
+        overflow-x: auto;
+        font-family: "Monaco", "Consolas", monospace;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .code-block pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .json-structure {
+        background: #263238;
+        color: #aed581;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        overflow-x: auto;
+        font-family: "Monaco", "Consolas", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .json-structure .key {
+        color: #82aaff;
+      }
+
+      .json-structure .string {
+        color: #c3e88d;
+      }
+
+      .json-structure .number {
+        color: #f78c6c;
+      }
+
+      .json-structure .comment {
+        color: #546e7a;
+        font-style: italic;
+      }
+
+      .help-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: #ee6c4d;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+      }
+
+      .help-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(238, 108, 77, 0.3);
+      }
+
+      .example-card {
+        background: #f8f9fa;
+        border-left: 4px solid #ee6c4d;
+        padding: 15px 20px;
+        margin: 15px 0;
+        border-radius: 4px;
+      }
+
+      .example-card h4 {
+        margin: 0 0 10px 0;
+        color: #ee6c4d;
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .help-content {
+          max-width: 100%;
+          max-height: 100vh;
+          border-radius: 0;
+        }
+
+        .help-header {
+          padding: 20px;
+          border-radius: 0;
+        }
+
+        .help-header h2 {
+          font-size: 20px;
+        }
+
+        .help-body {
+          padding: 20px;
+        }
+
+        .help-section h3 {
+          font-size: 18px;
+        }
+
+        .code-block,
+        .json-structure {
+          font-size: 12px;
+          padding: 12px;
+        }
+
+        .help-btn {
+          top: 15px;
+          right: 15px;
+          width: 36px;
+          height: 36px;
+          font-size: 18px;
+        }
+      }
+
       /* 右侧属性面板 */
       .properties-panel {
         background: rgba(255, 255, 255, 0.95);
@@ -895,6 +1153,11 @@
           padding: 0;
         }
 
+        .main-container {
+          position: relative;
+          z-index: 1; /* 确保主容器在抽屉下方 */
+        }
+
         .header {
           padding: 15px 10px;
         }
@@ -938,6 +1201,7 @@
           grid-row: 1;
           position: relative;
           overflow: visible;
+          z-index: 1; /* 确保在抽屉(z-index: 10001)下方 */
         }
 
         .canvas-wrapper {
@@ -1097,8 +1361,9 @@
     <div class="main-container">
       <!-- 头部 -->
       <div class="header">
+        <button class="help-btn" id="helpBtn" title="使用说明">❓</button>
         <h1>🎨 海报设计工具</h1>
-        <p>在线设计海报，支持文本、图片、形状等元素，导出高清图片</p>
+        <p>在线设计海报，支持文本、图片、形状等元素，导出高清图片和JSON数据</p>
       </div>
 
       <!-- 工作区 -->
@@ -1109,9 +1374,15 @@
             <div class="tool-section-title">📐 画布尺寸</div>
             <div class="preset-grid">
               <div class="preset-btn" data-size="800,600">800×600</div>
-              <div class="preset-btn active" data-size="1080,1920">1080×1920<br/><small>竖屏</small></div>
-              <div class="preset-btn" data-size="1920,1080">1920×1080<br/><small>横屏</small></div>
-              <div class="preset-btn" data-size="1080,1080">1080×1080<br/><small>方形</small></div>
+              <div class="preset-btn active" data-size="1080,1920">
+                1080×1920<br /><small>竖屏</small>
+              </div>
+              <div class="preset-btn" data-size="1920,1080">
+                1920×1080<br /><small>横屏</small>
+              </div>
+              <div class="preset-btn" data-size="1080,1080">
+                1080×1080<br /><small>方形</small>
+              </div>
             </div>
           </div>
 
@@ -1125,7 +1396,12 @@
               <span>🖼️</span>
               <span>图片背景</span>
             </button>
-            <input type="file" class="file-input" id="bgImageInput" accept="image/*" />
+            <input
+              type="file"
+              class="file-input"
+              id="bgImageInput"
+              accept="image/*"
+            />
           </div>
 
           <div class="tool-section">
@@ -1138,7 +1414,12 @@
               <span>🖼️</span>
               <span>上传图片</span>
             </button>
-            <input type="file" class="file-input" id="imageInput" accept="image/*" />
+            <input
+              type="file"
+              class="file-input"
+              id="imageInput"
+              accept="image/*"
+            />
             <button class="tool-btn" id="addRect">
               <span>⬜</span>
               <span>添加矩形</span>
@@ -1163,15 +1444,35 @@
               <span>⬇️</span>
               <span>导出JPG</span>
             </button>
+            <button class="tool-btn" id="exportJSON">
+              <span>📄</span>
+              <span>导出JSON</span>
+            </button>
+            <button class="tool-btn" id="importJSON">
+              <span>📥</span>
+              <span>导入JSON</span>
+            </button>
+            <input
+              type="file"
+              id="jsonFileInput"
+              accept=".json"
+              style="display: none"
+            />
           </div>
         </div>
 
         <!-- 中间画布 -->
         <div class="canvas-area">
           <div class="canvas-controls">
-            <button class="canvas-control-btn" id="undoBtn" title="撤销">↶</button>
-            <button class="canvas-control-btn" id="redoBtn" title="重做">↷</button>
-            <button class="canvas-control-btn" id="previewBtn" title="预览">👁️</button>
+            <button class="canvas-control-btn" id="undoBtn" title="撤销">
+              ↶
+            </button>
+            <button class="canvas-control-btn" id="redoBtn" title="重做">
+              ↷
+            </button>
+            <button class="canvas-control-btn" id="previewBtn" title="预览">
+              👁️
+            </button>
           </div>
           <!-- 移动端悬浮按钮 -->
           <div class="mobile-fab">
@@ -1188,23 +1489,35 @@
           <div class="property-group">
             <div class="tool-section-title">📋 图层列表</div>
             <div class="layer-list" id="layerList">
-              <div class="empty-state">暂无图层<br/>添加元素开始设计</div>
+              <div class="empty-state">暂无图层<br />添加元素开始设计</div>
             </div>
           </div>
 
-          <div class="property-group" id="elementProps" style="display: none;">
+          <div class="property-group" id="elementProps" style="display: none">
             <div class="tool-section-title">✏️ 元素属性</div>
 
-            <div id="textProps" style="display: none;">
+            <div id="textProps" style="display: none">
               <div class="property-group">
                 <label class="property-label">文本内容</label>
-                <input type="text" class="property-input" id="textContent" placeholder="输入文本" />
+                <input
+                  type="text"
+                  class="property-input"
+                  id="textContent"
+                  placeholder="输入文本"
+                />
               </div>
 
               <div class="property-row">
                 <div>
                   <label class="property-label">字体大小</label>
-                  <input type="number" class="property-input font-size-input" id="fontSize" value="40" min="12" max="200" />
+                  <input
+                    type="number"
+                    class="property-input font-size-input"
+                    id="fontSize"
+                    value="40"
+                    min="12"
+                    max="200"
+                  />
                 </div>
                 <div>
                   <label class="property-label">字体粗细</label>
@@ -1218,48 +1531,102 @@
               <div class="property-group">
                 <label class="property-label">文本颜色</label>
                 <div class="color-picker-wrapper">
-                  <input type="color" class="color-picker" id="textColor" value="#000000" />
-                  <input type="text" class="property-input" id="textColorHex" value="#000000" />
+                  <input
+                    type="color"
+                    class="color-picker"
+                    id="textColor"
+                    value="#000000"
+                  />
+                  <input
+                    type="text"
+                    class="property-input"
+                    id="textColorHex"
+                    value="#000000"
+                  />
                 </div>
               </div>
             </div>
 
-            <div id="shapeProps" style="display: none;">
+            <div id="shapeProps" style="display: none">
               <div class="property-group">
                 <label class="property-label">填充颜色</label>
                 <div class="color-picker-wrapper">
-                  <input type="color" class="color-picker" id="fillColor" value="#ee6c4d" />
-                  <input type="text" class="property-input" id="fillColorHex" value="#ee6c4d" />
+                  <input
+                    type="color"
+                    class="color-picker"
+                    id="fillColor"
+                    value="#ee6c4d"
+                  />
+                  <input
+                    type="text"
+                    class="property-input"
+                    id="fillColorHex"
+                    value="#ee6c4d"
+                  />
                 </div>
               </div>
 
               <div class="property-group">
                 <label class="property-label">边框宽度</label>
-                <input type="number" class="property-input" id="strokeWidth" value="0" min="0" max="20" />
+                <input
+                  type="number"
+                  class="property-input"
+                  id="strokeWidth"
+                  value="0"
+                  min="0"
+                  max="20"
+                />
               </div>
 
               <div class="property-group">
                 <label class="property-label">边框颜色</label>
                 <div class="color-picker-wrapper">
-                  <input type="color" class="color-picker" id="strokeColor" value="#000000" />
-                  <input type="text" class="property-input" id="strokeColorHex" value="#000000" />
+                  <input
+                    type="color"
+                    class="color-picker"
+                    id="strokeColor"
+                    value="#000000"
+                  />
+                  <input
+                    type="text"
+                    class="property-input"
+                    id="strokeColorHex"
+                    value="#000000"
+                  />
                 </div>
               </div>
             </div>
 
             <div class="property-group">
               <label class="property-label">不透明度</label>
-              <input type="range" class="property-input" id="opacity" min="0" max="100" value="100" />
+              <input
+                type="range"
+                class="property-input"
+                id="opacity"
+                min="0"
+                max="100"
+                value="100"
+              />
             </div>
 
             <div class="property-row">
               <div>
                 <label class="property-label">宽度</label>
-                <input type="number" class="property-input" id="elementWidth" min="10" />
+                <input
+                  type="number"
+                  class="property-input"
+                  id="elementWidth"
+                  min="10"
+                />
               </div>
               <div>
                 <label class="property-label">高度</label>
-                <input type="number" class="property-input" id="elementHeight" min="10" />
+                <input
+                  type="number"
+                  class="property-input"
+                  id="elementHeight"
+                  min="10"
+                />
               </div>
             </div>
 
@@ -1286,6 +1653,210 @@
       </div>
     </div>
 
+    <!-- 帮助模态框 -->
+    <div class="help-modal" id="helpModal">
+      <div class="help-content">
+        <div class="help-header">
+          <h2>📚 使用说明 - JSON导出功能</h2>
+          <button class="help-close" id="helpClose">×</button>
+        </div>
+        <div class="help-body">
+          <!-- 概述 -->
+          <div class="help-section">
+            <h3>🎯 功能概述</h3>
+            <p>
+              海报设计工具现已支持导出JSON格式的设计数据，让你能够在任何项目中复用海报设计！
+            </p>
+            <ul>
+              <li>导出完整的设计数据（元素、样式、位置等）</li>
+              <li>图片自动转换为base64格式，无需额外文件</li>
+              <li>跨平台、跨项目通用</li>
+              <li>支持JavaScript、Python、Java等任何语言解析</li>
+            </ul>
+          </div>
+
+          <!-- JSON结构 -->
+          <div class="help-section">
+            <h3>📄 JSON数据结构</h3>
+            <p>导出的JSON文件包含以下完整信息：</p>
+            <div class="json-structure">
+              <pre>{
+  <span class="key">"version"</span>: <span class="string">"1.0"</span>,
+  <span class="key">"canvas"</span>: {
+    <span class="key">"width"</span>: <span class="number">1080</span>,
+    <span class="key">"height"</span>: <span class="number">1920</span>,
+    <span class="key">"backgroundColor"</span>: <span class="string">"#ffffff"</span>,
+    <span class="key">"backgroundImage"</span>: <span class="string">"data:image/png;base64,..."</span>
+  },
+  <span class="key">"elements"</span>: [
+    {
+      <span class="key">"type"</span>: <span class="string">"text"</span>,
+      <span class="key">"x"</span>: <span class="number">100</span>, <span class="key">"y"</span>: <span class="number">100</span>,
+      <span class="key">"text"</span>: <span class="string">"Hello"</span>,
+      <span class="key">"fontSize"</span>: <span class="number">40</span>,
+      <span class="key">"color"</span>: <span class="string">"#000000"</span>
+    }
+  ]
+}</pre>
+            </div>
+          </div>
+
+          <!-- 使用场景 -->
+          <div class="help-section">
+            <h3>💡 应用场景</h3>
+
+            <div class="example-card">
+              <h4>场景1: Web项目中渲染海报</h4>
+              <div class="code-block">
+                <pre>
+// 在网页中加载并渲染JSON海报
+fetch('poster.json')
+  .then(res => res.json())
+  .then(data => {
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 设置画布尺寸
+    canvas.width = data.canvas.width;
+    canvas.height = data.canvas.height;
+
+    // 绘制背景
+    ctx.fillStyle = data.canvas.backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 渲染所有元素
+    data.elements.forEach(element => {
+      if (element.type === 'text') {
+        ctx.font = `${element.fontSize}px ${element.fontFamily}`;
+        ctx.fillStyle = element.color;
+        ctx.fillText(element.text, element.x, element.y);
+      }
+      // ... 其他元素类型
+    });
+  });</pre
+                >
+              </div>
+            </div>
+
+            <div class="example-card">
+              <h4>场景2: Node.js后端生成图片</h4>
+              <div class="code-block">
+                <pre>
+const { createCanvas, loadImage } = require('canvas');
+const fs = require('fs');
+
+// 读取JSON数据
+const posterData = JSON.parse(fs.readFileSync('poster.json'));
+
+// 创建画布
+const canvas = createCanvas(
+  posterData.canvas.width,
+  posterData.canvas.height
+);
+const ctx = canvas.getContext('2d');
+
+// 绘制背景
+ctx.fillStyle = posterData.canvas.backgroundColor;
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// 渲染元素并保存
+// ... 渲染逻辑
+const buffer = canvas.toBuffer('image/png');
+fs.writeFileSync('output.png', buffer);</pre
+                >
+              </div>
+            </div>
+
+            <div class="example-card">
+              <h4>场景3: Python数据处理</h4>
+              <div class="code-block">
+                <pre>
+import json
+from PIL import Image, ImageDraw, ImageFont
+
+# 加载JSON数据
+with open('poster.json', 'r') as f:
+    data = json.load(f)
+
+# 创建图片
+img = Image.new('RGB',
+  (data['canvas']['width'], data['canvas']['height']),
+  data['canvas']['backgroundColor']
+)
+draw = ImageDraw.Draw(img)
+
+# 渲染文本元素
+for element in data['elements']:
+    if element['type'] == 'text':
+        font = ImageFont.truetype('arial.ttf', element['fontSize'])
+        draw.text((element['x'], element['y']),
+                  element['text'],
+                  fill=element['color'],
+                  font=font)
+
+img.save('output.png')</pre
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- 操作步骤 -->
+          <div class="help-section">
+            <h3>🚀 快速开始</h3>
+            <p><strong>导出JSON：</strong></p>
+            <ul>
+              <li>设计完成后，点击"导出JSON"按钮</li>
+              <li>自动下载 <code>poster_时间戳.json</code> 文件</li>
+              <li>文件包含所有设计数据，可直接在其他项目使用</li>
+            </ul>
+            <p><strong>导入JSON：</strong></p>
+            <ul>
+              <li>点击"导入JSON"按钮</li>
+              <li>选择之前导出的JSON文件</li>
+              <li>自动恢复所有设计元素和样式</li>
+            </ul>
+          </div>
+
+          <!-- 技术细节 -->
+          <div class="help-section">
+            <h3>⚙️ 技术细节</h3>
+            <ul>
+              <li>
+                <strong>图片处理：</strong
+                >所有图片自动转换为base64格式，无需额外管理图片文件
+              </li>
+              <li>
+                <strong>字体兼容：</strong
+                >使用系统字体时需确保目标环境已安装相应字体
+              </li>
+              <li>
+                <strong>坐标系统：</strong
+                >左上角为原点(0,0)，向右为X轴正方向，向下为Y轴正方向
+              </li>
+              <li>
+                <strong>颜色格式：</strong
+                >支持HEX格式(#ffffff)和CSS颜色名称(white)
+              </li>
+              <li>
+                <strong>版本控制：</strong>JSON包含version字段，便于后续格式升级
+              </li>
+            </ul>
+          </div>
+
+          <!-- 注意事项 -->
+          <div class="help-section">
+            <h3>⚠️ 注意事项</h3>
+            <ul>
+              <li>导出的JSON文件可能较大（特别是包含多张图片时）</li>
+              <li>base64图片数据在某些环境下可能有大小限制</li>
+              <li>自定义字体需要在目标环境中单独加载</li>
+              <li>建议使用UTF-8编码保存和读取JSON文件</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 遮罩层 -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
 
@@ -1299,10 +1870,18 @@
       <div class="tool-section">
         <div class="tool-section-title">📐 画布尺寸</div>
         <div class="preset-grid">
-          <div class="preset-btn mobile-preset" data-size="800,600">800×600</div>
-          <div class="preset-btn mobile-preset active" data-size="1080,1920">1080×1920<br/><small>竖屏</small></div>
-          <div class="preset-btn mobile-preset" data-size="1920,1080">1920×1080<br/><small>横屏</small></div>
-          <div class="preset-btn mobile-preset" data-size="1080,1080">1080×1080<br/><small>方形</small></div>
+          <div class="preset-btn mobile-preset" data-size="800,600">
+            800×600
+          </div>
+          <div class="preset-btn mobile-preset active" data-size="1080,1920">
+            1080×1920<br /><small>竖屏</small>
+          </div>
+          <div class="preset-btn mobile-preset" data-size="1920,1080">
+            1920×1080<br /><small>横屏</small>
+          </div>
+          <div class="preset-btn mobile-preset" data-size="1080,1080">
+            1080×1080<br /><small>方形</small>
+          </div>
         </div>
       </div>
 
@@ -1352,6 +1931,14 @@
           <span>⬇️</span>
           <span>导出JPG</span>
         </button>
+        <button class="tool-btn mobile-tool" id="mobileExportJSON">
+          <span>📄</span>
+          <span>导出JSON</span>
+        </button>
+        <button class="tool-btn mobile-tool" id="mobileImportJSON">
+          <span>📥</span>
+          <span>导入JSON</span>
+        </button>
       </div>
     </div>
 
@@ -1365,23 +1952,35 @@
       <div class="property-group">
         <div class="tool-section-title">📋 图层列表</div>
         <div class="layer-list" id="mobileLayerList">
-          <div class="empty-state">暂无图层<br/>添加元素开始设计</div>
+          <div class="empty-state">暂无图层<br />添加元素开始设计</div>
         </div>
       </div>
 
-      <div class="property-group" id="mobileElementProps" style="display: none;">
+      <div class="property-group" id="mobileElementProps" style="display: none">
         <div class="tool-section-title">✏️ 元素属性</div>
 
-        <div id="mobileTextProps" style="display: none;">
+        <div id="mobileTextProps" style="display: none">
           <div class="property-group">
             <label class="property-label">文本内容</label>
-            <input type="text" class="property-input" id="mobileTextContent" placeholder="输入文本" />
+            <input
+              type="text"
+              class="property-input"
+              id="mobileTextContent"
+              placeholder="输入文本"
+            />
           </div>
 
           <div class="property-row">
             <div>
               <label class="property-label">字体大小</label>
-              <input type="number" class="property-input font-size-input" id="mobileFontSize" value="40" min="12" max="200" />
+              <input
+                type="number"
+                class="property-input font-size-input"
+                id="mobileFontSize"
+                value="40"
+                min="12"
+                max="200"
+              />
             </div>
             <div>
               <label class="property-label">字体粗细</label>
@@ -1395,43 +1994,90 @@
           <div class="property-group">
             <label class="property-label">文本颜色</label>
             <div class="color-picker-wrapper">
-              <input type="color" class="color-picker" id="mobileTextColor" value="#000000" />
-              <input type="text" class="property-input" id="mobileTextColorHex" value="#000000" />
+              <input
+                type="color"
+                class="color-picker"
+                id="mobileTextColor"
+                value="#000000"
+              />
+              <input
+                type="text"
+                class="property-input"
+                id="mobileTextColorHex"
+                value="#000000"
+              />
             </div>
           </div>
         </div>
 
-        <div id="mobileShapeProps" style="display: none;">
+        <div id="mobileShapeProps" style="display: none">
           <div class="property-group">
             <label class="property-label">填充颜色</label>
             <div class="color-picker-wrapper">
-              <input type="color" class="color-picker" id="mobileFillColor" value="#ee6c4d" />
-              <input type="text" class="property-input" id="mobileFillColorHex" value="#ee6c4d" />
+              <input
+                type="color"
+                class="color-picker"
+                id="mobileFillColor"
+                value="#ee6c4d"
+              />
+              <input
+                type="text"
+                class="property-input"
+                id="mobileFillColorHex"
+                value="#ee6c4d"
+              />
             </div>
           </div>
 
           <div class="property-group">
             <label class="property-label">边框颜色</label>
             <div class="color-picker-wrapper">
-              <input type="color" class="color-picker" id="mobileStrokeColor" value="#000000" />
-              <input type="text" class="property-input" id="mobileStrokeColorHex" value="#000000" />
+              <input
+                type="color"
+                class="color-picker"
+                id="mobileStrokeColor"
+                value="#000000"
+              />
+              <input
+                type="text"
+                class="property-input"
+                id="mobileStrokeColorHex"
+                value="#000000"
+              />
             </div>
           </div>
 
           <div class="property-group">
             <label class="property-label">边框宽度</label>
-            <input type="number" class="property-input" id="mobileStrokeWidth" value="0" min="0" max="20" />
+            <input
+              type="number"
+              class="property-input"
+              id="mobileStrokeWidth"
+              value="0"
+              min="0"
+              max="20"
+            />
           </div>
         </div>
 
         <div class="property-row">
           <div>
             <label class="property-label">宽度</label>
-            <input type="number" class="property-input" id="mobileElementWidth" min="10" />
+            <input
+              type="number"
+              class="property-input"
+              id="mobileElementWidth"
+              min="10"
+            />
           </div>
           <div>
             <label class="property-label">高度</label>
-            <input type="number" class="property-input" id="mobileElementHeight" min="10" />
+            <input
+              type="number"
+              class="property-input"
+              id="mobileElementHeight"
+              min="10"
+            />
           </div>
         </div>
 
@@ -1447,7 +2093,11 @@
         </div>
 
         <div class="property-group">
-          <button class="tool-btn secondary" id="mobileDeleteElement" style="width: 100%;">
+          <button
+            class="tool-btn secondary"
+            id="mobileDeleteElement"
+            style="width: 100%"
+          >
             <span>🗑️</span>
             <span>删除元素</span>
           </button>
@@ -1459,8 +2109,8 @@
     <script src="../../shared/scripts/theme.js"></script>
     <script>
       // Canvas 和上下文
-      const canvas = document.getElementById('posterCanvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.getElementById("posterCanvas");
+      const ctx = canvas.getContext("2d");
 
       // 元素数组和选中状态
       let elements = [];
@@ -1477,7 +2127,7 @@
       const MAX_HISTORY = 50;
 
       // 背景设置
-      let backgroundColor = '#ffffff';
+      let backgroundColor = "#ffffff";
       let backgroundImage = null;
 
       // 元素类型定义
@@ -1497,8 +2147,11 @@
           ctx.save();
           ctx.globalAlpha = this.opacity;
           ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
-          ctx.rotate(this.rotation * Math.PI / 180);
-          ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
+          ctx.rotate((this.rotation * Math.PI) / 180);
+          ctx.translate(
+            -(this.x + this.width / 2),
+            -(this.y + this.height / 2)
+          );
 
           this.drawContent(ctx);
 
@@ -1515,7 +2168,7 @@
         }
 
         drawSelectionBox(ctx) {
-          ctx.strokeStyle = '#ee6c4d';
+          ctx.strokeStyle = "#ee6c4d";
           ctx.lineWidth = 2;
           ctx.setLineDash([5, 5]);
           ctx.strokeRect(this.x, this.y, this.width, this.height);
@@ -1523,30 +2176,51 @@
 
           // 绘制调整手柄
           const handles = this.getResizeHandles();
-          ctx.fillStyle = '#ee6c4d';
-          handles.forEach(handle => {
+          ctx.fillStyle = "#ee6c4d";
+          handles.forEach((handle) => {
             ctx.fillRect(handle.x - 4, handle.y - 4, 8, 8);
           });
         }
 
         getResizeHandles() {
           return [
-            { x: this.x, y: this.y, cursor: 'nw-resize', handle: 'nw' },
-            { x: this.x + this.width, y: this.y, cursor: 'ne-resize', handle: 'ne' },
-            { x: this.x, y: this.y + this.height, cursor: 'sw-resize', handle: 'sw' },
-            { x: this.x + this.width, y: this.y + this.height, cursor: 'se-resize', handle: 'se' }
+            { x: this.x, y: this.y, cursor: "nw-resize", handle: "nw" },
+            {
+              x: this.x + this.width,
+              y: this.y,
+              cursor: "ne-resize",
+              handle: "ne"
+            },
+            {
+              x: this.x,
+              y: this.y + this.height,
+              cursor: "sw-resize",
+              handle: "sw"
+            },
+            {
+              x: this.x + this.width,
+              y: this.y + this.height,
+              cursor: "se-resize",
+              handle: "se"
+            }
           ];
         }
 
         contains(x, y) {
-          return x >= this.x && x <= this.x + this.width &&
-                 y >= this.y && y <= this.y + this.height;
+          return (
+            x >= this.x &&
+            x <= this.x + this.width &&
+            y >= this.y &&
+            y <= this.y + this.height
+          );
         }
 
         getResizeHandleAt(x, y) {
           const handles = this.getResizeHandles();
           for (let handle of handles) {
-            const distance = Math.sqrt(Math.pow(x - handle.x, 2) + Math.pow(y - handle.y, 2));
+            const distance = Math.sqrt(
+              Math.pow(x - handle.x, 2) + Math.pow(y - handle.y, 2)
+            );
             if (distance < 10) {
               return handle;
             }
@@ -1556,19 +2230,19 @@
       }
 
       class TextElement extends Element {
-        constructor(x, y, text = '双击编辑文本') {
-          super('text', x, y, 200, 50);
+        constructor(x, y, text = "文本") {
+          super("text", x, y, 200, 50);
           this.text = text;
           this.fontSize = 40;
-          this.fontWeight = 'normal';
-          this.color = '#000000';
-          this.fontFamily = 'Arial, sans-serif';
+          this.fontWeight = "normal";
+          this.color = "#000000";
+          this.fontFamily = "Arial, sans-serif";
         }
 
         drawContent(ctx) {
           ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
           ctx.fillStyle = this.color;
-          ctx.textBaseline = 'top';
+          ctx.textBaseline = "top";
 
           // 自动调整宽度以适应文本
           const metrics = ctx.measureText(this.text);
@@ -1581,7 +2255,7 @@
 
       class ImageElement extends Element {
         constructor(x, y, image) {
-          super('image', x, y, image.width, image.height);
+          super("image", x, y, image.width, image.height);
           this.image = image;
 
           // 限制图片大小
@@ -1600,10 +2274,10 @@
 
       class RectElement extends Element {
         constructor(x, y) {
-          super('rect', x, y, 200, 150);
-          this.fillColor = '#ee6c4d';
+          super("rect", x, y, 200, 150);
+          this.fillColor = "#ee6c4d";
           this.strokeWidth = 0;
-          this.strokeColor = '#000000';
+          this.strokeColor = "#000000";
         }
 
         drawContent(ctx) {
@@ -1620,10 +2294,10 @@
 
       class CircleElement extends Element {
         constructor(x, y) {
-          super('circle', x, y, 150, 150);
-          this.fillColor = '#f4a261';
+          super("circle", x, y, 150, 150);
+          this.fillColor = "#f4a261";
           this.strokeWidth = 0;
-          this.strokeColor = '#000000';
+          this.strokeColor = "#000000";
         }
 
         drawContent(ctx) {
@@ -1653,12 +2327,12 @@
         bindEvents();
 
         // 窗口大小变化时调整画布显示
-        window.addEventListener('resize', adjustCanvasSize);
+        window.addEventListener("resize", adjustCanvasSize);
       }
 
       // 调整画布显示大小（保持实际分辨率不变）
       function adjustCanvasSize() {
-        const wrapper = document.getElementById('canvasWrapper');
+        const wrapper = document.getElementById("canvasWrapper");
         const maxWidth = wrapper.parentElement.clientWidth - 60;
         const maxHeight = window.innerHeight - 280;
 
@@ -1669,11 +2343,11 @@
 
         // 设置显示尺寸
         if (scale < 1) {
-          canvas.style.width = (canvas.width * scale) + 'px';
-          canvas.style.height = (canvas.height * scale) + 'px';
+          canvas.style.width = canvas.width * scale + "px";
+          canvas.style.height = canvas.height * scale + "px";
         } else {
-          canvas.style.width = canvas.width + 'px';
-          canvas.style.height = canvas.height + 'px';
+          canvas.style.width = canvas.width + "px";
+          canvas.style.height = canvas.height + "px";
         }
       }
 
@@ -1691,28 +2365,31 @@
         }
 
         // 绘制所有元素
-        elements.forEach(element => {
+        elements.forEach((element) => {
           element.draw(ctx);
         });
       }
 
       // 添加文本
-      document.getElementById('addText').addEventListener('click', () => {
-        const text = new TextElement(canvas.width / 2 - 100, canvas.height / 2 - 25);
+      document.getElementById("addText").addEventListener("click", () => {
+        const text = new TextElement(
+          canvas.width / 2 - 100,
+          canvas.height / 2 - 25
+        );
         elements.push(text);
         selectElement(text);
         saveHistory();
         render();
         updateLayerList();
-        showToast('已添加文本元素', 'success');
+        showToast("已添加文本元素", "success");
       });
 
       // 上传图片
-      document.getElementById('uploadImage').addEventListener('click', () => {
-        document.getElementById('imageInput').click();
+      document.getElementById("uploadImage").addEventListener("click", () => {
+        document.getElementById("imageInput").click();
       });
 
-      document.getElementById('imageInput').addEventListener('change', (e) => {
+      document.getElementById("imageInput").addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
           const reader = new FileReader();
@@ -1725,98 +2402,140 @@
               saveHistory();
               render();
               updateLayerList();
-              showToast('已添加图片', 'success');
+              showToast("已添加图片", "success");
             };
             img.src = event.target.result;
           };
           reader.readAsDataURL(file);
         }
-        e.target.value = '';
+        e.target.value = "";
       });
 
       // 添加矩形
-      document.getElementById('addRect').addEventListener('click', () => {
-        const rect = new RectElement(canvas.width / 2 - 100, canvas.height / 2 - 75);
+      document.getElementById("addRect").addEventListener("click", () => {
+        const rect = new RectElement(
+          canvas.width / 2 - 100,
+          canvas.height / 2 - 75
+        );
         elements.push(rect);
         selectElement(rect);
         saveHistory();
         render();
         updateLayerList();
-        showToast('已添加矩形', 'success');
+        showToast("已添加矩形", "success");
       });
 
       // 添加圆形
-      document.getElementById('addCircle').addEventListener('click', () => {
-        const circle = new CircleElement(canvas.width / 2 - 75, canvas.height / 2 - 75);
+      document.getElementById("addCircle").addEventListener("click", () => {
+        const circle = new CircleElement(
+          canvas.width / 2 - 75,
+          canvas.height / 2 - 75
+        );
         elements.push(circle);
         selectElement(circle);
         saveHistory();
         render();
         updateLayerList();
-        showToast('已添加圆形', 'success');
+        showToast("已添加圆形", "success");
       });
 
       // 设置背景颜色
-      document.getElementById('setBgColor').addEventListener('click', () => {
-        const color = prompt('请输入背景颜色 (如: #ffffff 或 white):', backgroundColor);
+      document.getElementById("setBgColor").addEventListener("click", () => {
+        const color = prompt(
+          "请输入背景颜色 (如: #ffffff 或 white):",
+          backgroundColor
+        );
         if (color) {
           backgroundColor = color;
           backgroundImage = null;
           saveHistory();
           render();
-          showToast('背景颜色已更新', 'success');
+          showToast("背景颜色已更新", "success");
         }
       });
 
       // 上传背景图片
-      document.getElementById('uploadBgImage').addEventListener('click', () => {
-        document.getElementById('bgImageInput').click();
+      document.getElementById("uploadBgImage").addEventListener("click", () => {
+        document.getElementById("bgImageInput").click();
       });
 
-      document.getElementById('bgImageInput').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-              backgroundImage = img;
-              saveHistory();
-              render();
-              showToast('背景图片已设置', 'success');
+      document
+        .getElementById("bgImageInput")
+        .addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const img = new Image();
+              img.onload = () => {
+                backgroundImage = img;
+                saveHistory();
+                render();
+                showToast("背景图片已设置", "success");
+              };
+              img.src = event.target.result;
             };
-            img.src = event.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-        e.target.value = '';
-      });
+            reader.readAsDataURL(file);
+          }
+          e.target.value = "";
+        });
 
       // 清空画布
-      document.getElementById('clearCanvas').addEventListener('click', () => {
-        if (confirm('确定要清空画布吗？此操作不可撤销。')) {
+      document.getElementById("clearCanvas").addEventListener("click", () => {
+        if (confirm("确定要清空画布吗？此操作不可撤销。")) {
           elements = [];
           selectedElement = null;
-          backgroundColor = '#ffffff';
+          backgroundColor = "#ffffff";
           backgroundImage = null;
           history = [];
           historyIndex = -1;
           render();
           updateLayerList();
           updateProperties();
-          showToast('画布已清空', 'success');
+          showToast("画布已清空", "success");
         }
       });
 
       // 导出PNG
-      document.getElementById('exportPNG').addEventListener('click', () => {
-        exportImage('png');
+      document.getElementById("exportPNG").addEventListener("click", () => {
+        exportImage("png");
       });
 
       // 导出JPG
-      document.getElementById('exportJPG').addEventListener('click', () => {
-        exportImage('jpeg');
+      document.getElementById("exportJPG").addEventListener("click", () => {
+        exportImage("jpeg");
       });
+
+      // 导出JSON
+      document.getElementById("exportJSON").addEventListener("click", () => {
+        exportJSON();
+      });
+
+      // 导入JSON
+      document.getElementById("importJSON").addEventListener("click", () => {
+        document.getElementById("jsonFileInput").click();
+      });
+
+      // 处理JSON文件上传
+      document
+        .getElementById("jsonFileInput")
+        .addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              try {
+                const jsonData = JSON.parse(event.target.result);
+                importJSON(jsonData);
+              } catch (error) {
+                showToast("JSON文件格式错误", "error");
+                console.error("JSON解析错误:", error);
+              }
+            };
+            reader.readAsText(file);
+          }
+          e.target.value = "";
+        });
 
       function exportImage(format) {
         // 临时取消选中状态
@@ -1825,35 +2544,194 @@
         render();
 
         // 导出
-        canvas.toBlob((blob) => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `poster_${Date.now()}.${format === 'jpeg' ? 'jpg' : 'png'}`;
-          a.click();
-          URL.revokeObjectURL(url);
+        canvas.toBlob(
+          (blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `poster_${Date.now()}.${
+              format === "jpeg" ? "jpg" : "png"
+            }`;
+            a.click();
+            URL.revokeObjectURL(url);
 
-          // 恢复选中状态
-          selectedElement = tempSelected;
+            // 恢复选中状态
+            selectedElement = tempSelected;
+            render();
+
+            showToast(`已导出${format.toUpperCase()}图片`, "success");
+          },
+          `image/${format}`,
+          0.95
+        );
+      }
+
+      function exportJSON() {
+        // 序列化元素数据
+        const elementsData = elements.map((e) => {
+          const data = {
+            type: e.type,
+            id: e.id,
+            x: e.x,
+            y: e.y,
+            width: e.width,
+            height: e.height,
+            rotation: e.rotation || 0,
+            opacity: e.opacity || 1
+          };
+
+          // 根据类型添加特定属性
+          if (e.type === "text") {
+            data.text = e.text;
+            data.fontSize = e.fontSize;
+            data.fontWeight = e.fontWeight;
+            data.color = e.color;
+            data.fontFamily = e.fontFamily;
+          } else if (e.type === "image") {
+            data.imageData = e.image.src;
+          } else if (e.type === "rect" || e.type === "circle") {
+            data.fillColor = e.fillColor;
+            data.strokeWidth = e.strokeWidth;
+            data.strokeColor = e.strokeColor;
+          }
+
+          return data;
+        });
+
+        // 构建完整的JSON结构
+        const posterData = {
+          version: "1.0",
+          canvas: {
+            width: canvas.width,
+            height: canvas.height,
+            backgroundColor: backgroundColor,
+            backgroundImage: backgroundImage ? backgroundImage.src : null
+          },
+          elements: elementsData,
+          createdAt: new Date().toISOString(),
+          creator: "Poster Designer Tool"
+        };
+
+        // 下载JSON文件
+        const jsonStr = JSON.stringify(posterData, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `poster_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showToast("已导出JSON数据", "success");
+      }
+
+      function importJSON(jsonData) {
+        try {
+          // 验证JSON格式
+          if (!jsonData.version || !jsonData.canvas || !jsonData.elements) {
+            throw new Error("JSON格式不正确");
+          }
+
+          // 恢复画布设置
+          canvas.width = jsonData.canvas.width;
+          canvas.height = jsonData.canvas.height;
+          backgroundColor = jsonData.canvas.backgroundColor;
+
+          // 恢复背景图片
+          if (jsonData.canvas.backgroundImage) {
+            const img = new Image();
+            img.onload = () => {
+              backgroundImage = img;
+              render();
+            };
+            img.src = jsonData.canvas.backgroundImage;
+          } else {
+            backgroundImage = null;
+          }
+
+          // 清空现有元素
+          elements = [];
+
+          // 恢复元素
+          jsonData.elements.forEach((e) => {
+            let element;
+
+            if (e.type === "text") {
+              element = new TextElement(e.x, e.y, e.text);
+              element.fontSize = e.fontSize;
+              element.fontWeight = e.fontWeight;
+              element.color = e.color;
+              element.fontFamily = e.fontFamily;
+            } else if (e.type === "image") {
+              const img = new Image();
+              img.onload = () => {
+                const imgElement = new ImageElement(e.x, e.y, img);
+                imgElement.id = e.id;
+                imgElement.width = e.width;
+                imgElement.height = e.height;
+                imgElement.rotation = e.rotation || 0;
+                imgElement.opacity = e.opacity || 1;
+                elements.push(imgElement);
+                render();
+                updateLayerList();
+              };
+              img.src = e.imageData;
+              return; // 异步处理，跳过后续代码
+            } else if (e.type === "rect") {
+              element = new RectElement(e.x, e.y);
+              element.fillColor = e.fillColor;
+              element.strokeWidth = e.strokeWidth;
+              element.strokeColor = e.strokeColor;
+            } else if (e.type === "circle") {
+              element = new CircleElement(e.x, e.y);
+              element.fillColor = e.fillColor;
+              element.strokeWidth = e.strokeWidth;
+              element.strokeColor = e.strokeColor;
+            }
+
+            if (element) {
+              element.id = e.id;
+              element.width = e.width;
+              element.height = e.height;
+              element.rotation = e.rotation || 0;
+              element.opacity = e.opacity || 1;
+              elements.push(element);
+            }
+          });
+
+          // 重置选中状态
+          selectedElement = null;
+
+          // 保存到历史记录
+          saveHistory();
+
+          // 更新界面
           render();
+          updateLayerList();
+          updateProperties();
 
-          showToast(`已导出${format.toUpperCase()}图片`, 'success');
-        }, `image/${format}`, 0.95);
+          showToast("已导入JSON数据", "success");
+        } catch (error) {
+          showToast("导入失败: " + error.message, "error");
+          console.error("导入错误:", error);
+        }
       }
 
       // 画布尺寸预设
-      document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const [width, height] = this.dataset.size.split(',').map(Number);
+      document.querySelectorAll(".preset-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const [width, height] = this.dataset.size.split(",").map(Number);
           canvas.width = width;
           canvas.height = height;
 
-          document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
+          document
+            .querySelectorAll(".preset-btn")
+            .forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
 
           adjustCanvasSize();
           render();
-          showToast(`画布尺寸已调整为 ${width}×${height}`, 'success');
+          showToast(`画布尺寸已调整为 ${width}×${height}`, "success");
         });
       });
 
@@ -1867,122 +2745,160 @@
 
       // 更新属性面板
       function updateProperties() {
-        const propsPanel = document.getElementById('elementProps');
-        const textProps = document.getElementById('textProps');
-        const shapeProps = document.getElementById('shapeProps');
+        const propsPanel = document.getElementById("elementProps");
+        const textProps = document.getElementById("textProps");
+        const shapeProps = document.getElementById("shapeProps");
 
         // 移动端面板
-        const mobilePropsPanel = document.getElementById('mobileElementProps');
-        const mobileTextProps = document.getElementById('mobileTextProps');
-        const mobileShapeProps = document.getElementById('mobileShapeProps');
+        const mobilePropsPanel = document.getElementById("mobileElementProps");
+        const mobileTextProps = document.getElementById("mobileTextProps");
+        const mobileShapeProps = document.getElementById("mobileShapeProps");
 
         if (!selectedElement) {
-          propsPanel.style.display = 'none';
-          mobilePropsPanel.style.display = 'none';
+
+          propsPanel.style.display = "none";
+          mobilePropsPanel.style.display = "none";
           return;
         }
 
-        propsPanel.style.display = 'block';
-        mobilePropsPanel.style.display = 'block';
+        propsPanel.style.display = "block";
+        mobilePropsPanel.style.display = "block";
 
         // 通用属性 - 桌面端
-        document.getElementById('opacity').value = selectedElement.opacity * 100;
-        document.getElementById('elementWidth').value = Math.round(selectedElement.width);
-        document.getElementById('elementHeight').value = Math.round(selectedElement.height);
-        document.getElementById('elementX').value = Math.round(selectedElement.x);
-        document.getElementById('elementY').value = Math.round(selectedElement.y);
+        document.getElementById("opacity").value =
+          selectedElement.opacity * 100;
+        document.getElementById("elementWidth").value = Math.round(
+          selectedElement.width
+        );
+        document.getElementById("elementHeight").value = Math.round(
+          selectedElement.height
+        );
+        document.getElementById("elementX").value = Math.round(
+          selectedElement.x
+        );
+        document.getElementById("elementY").value = Math.round(
+          selectedElement.y
+        );
 
         // 通用属性 - 移动端
-        document.getElementById('mobileElementWidth').value = Math.round(selectedElement.width);
-        document.getElementById('mobileElementHeight').value = Math.round(selectedElement.height);
-        document.getElementById('mobileElementX').value = Math.round(selectedElement.x);
-        document.getElementById('mobileElementY').value = Math.round(selectedElement.y);
+        document.getElementById("mobileElementWidth").value = Math.round(
+          selectedElement.width
+        );
+        document.getElementById("mobileElementHeight").value = Math.round(
+          selectedElement.height
+        );
+        document.getElementById("mobileElementX").value = Math.round(
+          selectedElement.x
+        );
+        document.getElementById("mobileElementY").value = Math.round(
+          selectedElement.y
+        );
 
         // 文本属性
-        if (selectedElement.type === 'text') {
-          textProps.style.display = 'block';
-          shapeProps.style.display = 'none';
-          mobileTextProps.style.display = 'block';
-          mobileShapeProps.style.display = 'none';
+        if (selectedElement.type === "text") {
+          textProps.style.display = "block";
+          shapeProps.style.display = "none";
+          mobileTextProps.style.display = "block";
+          mobileShapeProps.style.display = "none";
 
           // 桌面端
-          document.getElementById('textContent').value = selectedElement.text;
-          document.getElementById('fontSize').value = selectedElement.fontSize;
-          document.getElementById('fontWeight').value = selectedElement.fontWeight;
-          document.getElementById('textColor').value = selectedElement.color;
-          document.getElementById('textColorHex').value = selectedElement.color;
+          document.getElementById("textContent").value = selectedElement.text;
+          document.getElementById("fontSize").value = selectedElement.fontSize;
+          document.getElementById("fontWeight").value =
+            selectedElement.fontWeight;
+          document.getElementById("textColor").value = selectedElement.color;
+          document.getElementById("textColorHex").value = selectedElement.color;
 
           // 移动端
-          document.getElementById('mobileTextContent').value = selectedElement.text;
-          document.getElementById('mobileFontSize').value = selectedElement.fontSize;
-          document.getElementById('mobileFontWeight').value = selectedElement.fontWeight;
-          document.getElementById('mobileTextColor').value = selectedElement.color;
-          document.getElementById('mobileTextColorHex').value = selectedElement.color;
+          document.getElementById("mobileTextContent").value =
+            selectedElement.text;
+          document.getElementById("mobileFontSize").value =
+            selectedElement.fontSize;
+          document.getElementById("mobileFontWeight").value =
+            selectedElement.fontWeight;
+          document.getElementById("mobileTextColor").value =
+            selectedElement.color;
+          document.getElementById("mobileTextColorHex").value =
+            selectedElement.color;
         } else {
-          textProps.style.display = 'none';
-          mobileTextProps.style.display = 'none';
+          textProps.style.display = "none";
+          mobileTextProps.style.display = "none";
         }
 
         // 形状属性
-        if (selectedElement.type === 'rect' || selectedElement.type === 'circle') {
-          shapeProps.style.display = 'block';
-          mobileShapeProps.style.display = 'block';
+        if (
+          selectedElement.type === "rect" ||
+          selectedElement.type === "circle"
+        ) {
+          shapeProps.style.display = "block";
+          mobileShapeProps.style.display = "block";
 
           // 桌面端
-          document.getElementById('fillColor').value = selectedElement.fillColor;
-          document.getElementById('fillColorHex').value = selectedElement.fillColor;
-          document.getElementById('strokeWidth').value = selectedElement.strokeWidth;
-          document.getElementById('strokeColor').value = selectedElement.strokeColor;
-          document.getElementById('strokeColorHex').value = selectedElement.strokeColor;
+          document.getElementById("fillColor").value =
+            selectedElement.fillColor;
+          document.getElementById("fillColorHex").value =
+            selectedElement.fillColor;
+          document.getElementById("strokeWidth").value =
+            selectedElement.strokeWidth;
+          document.getElementById("strokeColor").value =
+            selectedElement.strokeColor;
+          document.getElementById("strokeColorHex").value =
+            selectedElement.strokeColor;
 
           // 移动端
-          document.getElementById('mobileFillColor').value = selectedElement.fillColor;
-          document.getElementById('mobileFillColorHex').value = selectedElement.fillColor;
-          document.getElementById('mobileStrokeWidth').value = selectedElement.strokeWidth;
-          document.getElementById('mobileStrokeColor').value = selectedElement.strokeColor;
-          document.getElementById('mobileStrokeColorHex').value = selectedElement.strokeColor;
+          document.getElementById("mobileFillColor").value =
+            selectedElement.fillColor;
+          document.getElementById("mobileFillColorHex").value =
+            selectedElement.fillColor;
+          document.getElementById("mobileStrokeWidth").value =
+            selectedElement.strokeWidth;
+          document.getElementById("mobileStrokeColor").value =
+            selectedElement.strokeColor;
+          document.getElementById("mobileStrokeColorHex").value =
+            selectedElement.strokeColor;
         } else {
-          shapeProps.style.display = 'none';
-          mobileShapeProps.style.display = 'none';
+          shapeProps.style.display = "none";
+          mobileShapeProps.style.display = "none";
         }
       }
 
       // 更新图层列表
       function updateLayerList() {
-        const layerList = document.getElementById('layerList');
-        const mobileLayerList = document.getElementById('mobileLayerList');
+        const layerList = document.getElementById("layerList");
+        const mobileLayerList = document.getElementById("mobileLayerList");
 
         function renderLayerList(container) {
           if (elements.length === 0) {
-            container.innerHTML = '<div class="empty-state">暂无图层<br/>添加元素开始设计</div>';
+            container.innerHTML =
+              '<div class="empty-state">暂无图层<br/>添加元素开始设计</div>';
             return;
           }
 
-          container.innerHTML = '';
+          container.innerHTML = "";
 
           // 反向显示（最上层在最前）
           [...elements].reverse().forEach((element, index) => {
             const actualIndex = elements.length - 1 - index;
-            const layerItem = document.createElement('div');
-            layerItem.className = 'layer-item';
+            const layerItem = document.createElement("div");
+            layerItem.className = "layer-item";
             if (element === selectedElement) {
-              layerItem.classList.add('active');
+              layerItem.classList.add("active");
             }
 
-            let icon = '📄';
-            let name = '元素';
-            if (element.type === 'text') {
-              icon = '📝';
+            let icon = "📄";
+            let name = "元素";
+            if (element.type === "text") {
+              icon = "📝";
               name = element.text.substring(0, 10);
-            } else if (element.type === 'image') {
-              icon = '🖼️';
-              name = '图片';
-            } else if (element.type === 'rect') {
-              icon = '⬜';
-              name = '矩形';
-            } else if (element.type === 'circle') {
-              icon = '⭕';
-              name = '圆形';
+            } else if (element.type === "image") {
+              icon = "🖼️";
+              name = "图片";
+            } else if (element.type === "rect") {
+              icon = "⬜";
+              name = "矩形";
+            } else if (element.type === "circle") {
+              icon = "⭕";
+              name = "圆形";
             }
 
             layerItem.innerHTML = `
@@ -1996,17 +2912,19 @@
 
             // 选中图层事件（双事件绑定）
             const selectHandler = (e) => {
-              if (!e.target.classList.contains('layer-action-btn')) {
+              if (!e.target.classList.contains("layer-action-btn")) {
                 selectElement(element);
               }
             };
-            layerItem.addEventListener('click', selectHandler);
-            layerItem.addEventListener('touchstart', selectHandler, { passive: false });
+            layerItem.addEventListener("click", selectHandler);
+            layerItem.addEventListener("touchstart", selectHandler, {
+              passive: false
+            });
 
             // 绑定图层操作按钮事件
-            const moveUpBtn = layerItem.querySelector('.move-up');
-            const moveDownBtn = layerItem.querySelector('.move-down');
-            const deleteBtn = layerItem.querySelector('.delete-layer');
+            const moveUpBtn = layerItem.querySelector(".move-up");
+            const moveDownBtn = layerItem.querySelector(".move-down");
+            const deleteBtn = layerItem.querySelector(".delete-layer");
 
             if (moveUpBtn) {
               const moveUpHandler = (e) => {
@@ -2014,8 +2932,10 @@
                 e.stopPropagation();
                 moveLayer(actualIndex, -1);
               };
-              moveUpBtn.addEventListener('click', moveUpHandler);
-              moveUpBtn.addEventListener('touchstart', moveUpHandler, { passive: false });
+              moveUpBtn.addEventListener("click", moveUpHandler);
+              moveUpBtn.addEventListener("touchstart", moveUpHandler, {
+                passive: false
+              });
             }
 
             if (moveDownBtn) {
@@ -2024,8 +2944,10 @@
                 e.stopPropagation();
                 moveLayer(actualIndex, 1);
               };
-              moveDownBtn.addEventListener('click', moveDownHandler);
-              moveDownBtn.addEventListener('touchstart', moveDownHandler, { passive: false });
+              moveDownBtn.addEventListener("click", moveDownHandler);
+              moveDownBtn.addEventListener("touchstart", moveDownHandler, {
+                passive: false
+              });
             }
 
             if (deleteBtn) {
@@ -2034,8 +2956,10 @@
                 e.stopPropagation();
                 deleteLayer(actualIndex);
               };
-              deleteBtn.addEventListener('click', deleteHandler);
-              deleteBtn.addEventListener('touchstart', deleteHandler, { passive: false });
+              deleteBtn.addEventListener("click", deleteHandler);
+              deleteBtn.addEventListener("touchstart", deleteHandler, {
+                passive: false
+              });
             }
 
             container.appendChild(layerItem);
@@ -2048,19 +2972,22 @@
       }
 
       // 移动图层
-      window.moveLayer = function(index, direction) {
+      window.moveLayer = function (index, direction) {
         const newIndex = index + direction;
         if (newIndex < 0 || newIndex >= elements.length) return;
 
-        [elements[index], elements[newIndex]] = [elements[newIndex], elements[index]];
+        [elements[index], elements[newIndex]] = [
+          elements[newIndex],
+          elements[index]
+        ];
         saveHistory();
         render();
         updateLayerList();
       };
 
       // 删除图层
-      window.deleteLayer = function(index) {
-        if (confirm('确定要删除此图层吗？')) {
+      window.deleteLayer = function (index) {
+        if (confirm("确定要删除此图层吗？")) {
           if (elements[index] === selectedElement) {
             selectedElement = null;
             updateProperties();
@@ -2069,23 +2996,27 @@
           saveHistory();
           render();
           updateLayerList();
-          showToast('图层已删除', 'success');
+          showToast("图层已删除", "success");
         }
       };
 
       // 绑定事件
       function bindEvents() {
         // 鼠标事件 - 绑定到window以支持拖拽到画布外
-        canvas.addEventListener('mousedown', handleMouseDown);
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-        canvas.addEventListener('mouseleave', handleMouseLeave);
-        canvas.addEventListener('dblclick', handleDoubleClick);
+        canvas.addEventListener("mousedown", handleMouseDown);
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+        canvas.addEventListener("mouseleave", handleMouseLeave);
+        canvas.addEventListener("dblclick", handleDoubleClick);
 
         // 触摸事件支持
-        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-        window.addEventListener('touchmove', handleTouchMove, { passive: false });
-        window.addEventListener('touchend', handleTouchEnd);
+        canvas.addEventListener("touchstart", handleTouchStart, {
+          passive: false
+        });
+        window.addEventListener("touchmove", handleTouchMove, {
+          passive: false
+        });
+        window.addEventListener("touchend", handleTouchEnd);
 
         // 属性更新事件
         bindPropertyEvents();
@@ -2096,16 +3027,24 @@
           e.stopPropagation();
           undo();
         };
-        document.getElementById('undoBtn').addEventListener('click', undoHandler);
-        document.getElementById('undoBtn').addEventListener('touchstart', undoHandler, { passive: false });
+        document
+          .getElementById("undoBtn")
+          .addEventListener("click", undoHandler);
+        document
+          .getElementById("undoBtn")
+          .addEventListener("touchstart", undoHandler, { passive: false });
 
         const redoHandler = (e) => {
           e.preventDefault();
           e.stopPropagation();
           redo();
         };
-        document.getElementById('redoBtn').addEventListener('click', redoHandler);
-        document.getElementById('redoBtn').addEventListener('touchstart', redoHandler, { passive: false });
+        document
+          .getElementById("redoBtn")
+          .addEventListener("click", redoHandler);
+        document
+          .getElementById("redoBtn")
+          .addEventListener("touchstart", redoHandler, { passive: false });
 
         // 预览
         const previewHandler = (e) => {
@@ -2113,22 +3052,26 @@
           e.stopPropagation();
           openPreview();
         };
-        document.getElementById('previewBtn').addEventListener('click', previewHandler);
-        document.getElementById('previewBtn').addEventListener('touchstart', previewHandler, { passive: false });
+        document
+          .getElementById("previewBtn")
+          .addEventListener("click", previewHandler);
+        document
+          .getElementById("previewBtn")
+          .addEventListener("touchstart", previewHandler, { passive: false });
 
         // 键盘事件
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Delete' && selectedElement) {
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Delete" && selectedElement) {
             const index = elements.indexOf(selectedElement);
             if (index !== -1) {
               deleteLayer(index);
             }
           }
-          if (e.ctrlKey && e.key === 'z') {
+          if (e.ctrlKey && e.key === "z") {
             e.preventDefault();
             undo();
           }
-          if (e.ctrlKey && e.key === 'y') {
+          if (e.ctrlKey && e.key === "y") {
             e.preventDefault();
             redo();
           }
@@ -2156,7 +3099,7 @@
           if (handle) {
             isResizing = true;
             resizeHandle = handle;
-            canvas.classList.add('resizing');
+            canvas.classList.add("resizing");
             return;
           }
         }
@@ -2168,7 +3111,7 @@
             isDragging = true;
             dragStartX = x - selectedElement.x;
             dragStartY = y - selectedElement.y;
-            canvas.classList.add('dragging');
+            canvas.classList.add("dragging");
             return;
           }
         }
@@ -2188,22 +3131,34 @@
           if (isResizing && selectedElement && resizeHandle) {
             // 调整大小
             const handle = resizeHandle.handle;
-            if (handle === 'se') {
+            if (handle === "se") {
               selectedElement.width = Math.max(20, x - selectedElement.x);
               selectedElement.height = Math.max(20, y - selectedElement.y);
-            } else if (handle === 'sw') {
-              const newWidth = Math.max(20, selectedElement.x + selectedElement.width - x);
+            } else if (handle === "sw") {
+              const newWidth = Math.max(
+                20,
+                selectedElement.x + selectedElement.width - x
+              );
               selectedElement.x = x;
               selectedElement.width = newWidth;
               selectedElement.height = Math.max(20, y - selectedElement.y);
-            } else if (handle === 'ne') {
+            } else if (handle === "ne") {
               selectedElement.width = Math.max(20, x - selectedElement.x);
-              const newHeight = Math.max(20, selectedElement.y + selectedElement.height - y);
+              const newHeight = Math.max(
+                20,
+                selectedElement.y + selectedElement.height - y
+              );
               selectedElement.y = y;
               selectedElement.height = newHeight;
-            } else if (handle === 'nw') {
-              const newWidth = Math.max(20, selectedElement.x + selectedElement.width - x);
-              const newHeight = Math.max(20, selectedElement.y + selectedElement.height - y);
+            } else if (handle === "nw") {
+              const newWidth = Math.max(
+                20,
+                selectedElement.x + selectedElement.width - x
+              );
+              const newHeight = Math.max(
+                20,
+                selectedElement.y + selectedElement.height - y
+              );
               selectedElement.x = x;
               selectedElement.y = y;
               selectedElement.width = newWidth;
@@ -2213,23 +3168,37 @@
             render();
           } else if (isDragging && selectedElement) {
             // 拖动 - 允许拖动到画布外但限制在边界
-            selectedElement.x = Math.max(0, Math.min(canvas.width - selectedElement.width, x - dragStartX));
-            selectedElement.y = Math.max(0, Math.min(canvas.height - selectedElement.height, y - dragStartY));
+            selectedElement.x = Math.max(
+              0,
+              Math.min(canvas.width - selectedElement.width, x - dragStartX)
+            );
+            selectedElement.y = Math.max(
+              0,
+              Math.min(canvas.height - selectedElement.height, y - dragStartY)
+            );
             updateProperties();
             render();
           }
         } else {
           // 仅在画布内时更新鼠标样式
           const rect = canvas.getBoundingClientRect();
-          if (e.clientX >= rect.left && e.clientX <= rect.right &&
-              e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          if (
+            e.clientX >= rect.left &&
+            e.clientX <= rect.right &&
+            e.clientY >= rect.top &&
+            e.clientY <= rect.bottom
+          ) {
             const { x, y } = getCanvasCoordinates(e);
 
             if (selectedElement) {
               const handle = selectedElement.getResizeHandleAt(x, y);
-              canvas.style.cursor = handle ? handle.cursor : (selectedElement.contains(x, y) ? 'move' : 'crosshair');
+              canvas.style.cursor = handle
+                ? handle.cursor
+                : selectedElement.contains(x, y)
+                ? "move"
+                : "crosshair";
             } else {
-              canvas.style.cursor = 'crosshair';
+              canvas.style.cursor = "crosshair";
             }
           }
         }
@@ -2242,23 +3211,26 @@
         isDragging = false;
         isResizing = false;
         resizeHandle = null;
-        canvas.classList.remove('dragging', 'resizing');
-        canvas.style.cursor = 'crosshair';
+        canvas.classList.remove("dragging", "resizing");
+        canvas.style.cursor = "crosshair";
       }
 
       function handleMouseLeave(e) {
         // 鼠标离开画布时，如果没有在拖拽，重置样式
         if (!isDragging && !isResizing) {
-          canvas.style.cursor = 'crosshair';
+          canvas.style.cursor = "crosshair";
         }
       }
 
       // 触摸事件支持
       function handleTouchStart(e) {
-        e.preventDefault();
+        // 只在触摸画布时阻止默认行为，不影响其他区域（如抽屉内的输入框）
+        if (e.target === canvas) {
+          e.preventDefault();
+        }
         if (e.touches.length === 1) {
           const touch = e.touches[0];
-          const mouseEvent = new MouseEvent('mousedown', {
+          const mouseEvent = new MouseEvent("mousedown", {
             clientX: touch.clientX,
             clientY: touch.clientY
           });
@@ -2267,10 +3239,13 @@
       }
 
       function handleTouchMove(e) {
-        e.preventDefault();
+        // 只在拖拽或调整大小时阻止默认行为，允许页面其他区域正常滚动
+        if (isDragging || isResizing) {
+          e.preventDefault();
+        }
         if (e.touches.length === 1) {
           const touch = e.touches[0];
-          const mouseEvent = new MouseEvent('mousemove', {
+          const mouseEvent = new MouseEvent("mousemove", {
             clientX: touch.clientX,
             clientY: touch.clientY
           });
@@ -2279,17 +3254,20 @@
       }
 
       function handleTouchEnd(e) {
-        e.preventDefault();
-        const mouseEvent = new MouseEvent('mouseup', {});
+        // 只在有拖拽或调整大小操作时阻止默认行为
+        if (isDragging || isResizing) {
+          e.preventDefault();
+        }
+        const mouseEvent = new MouseEvent("mouseup", {});
         handleMouseUp(mouseEvent);
       }
 
       function handleDoubleClick(e) {
-        if (selectedElement && selectedElement.type === 'text') {
-          const newText = prompt('请输入文本内容:', selectedElement.text);
+        if (selectedElement && selectedElement.type === "text") {
+          const newText = prompt("请输入文本内容:", selectedElement.text);
           if (newText !== null) {
             selectedElement.text = newText;
-            document.getElementById('textContent').value = newText;
+            document.getElementById("textContent").value = newText;
             saveHistory();
             render();
             updateLayerList();
@@ -2300,90 +3278,124 @@
       // 绑定属性更新事件
       function bindPropertyEvents() {
         // 文本内容
-        document.getElementById('textContent').addEventListener('input', (e) => {
-          if (selectedElement && selectedElement.type === 'text') {
-            selectedElement.text = e.target.value;
-            render();
-            updateLayerList();
-          }
-        });
+        document
+          .getElementById("textContent")
+          .addEventListener("input", (e) => {
+            if (selectedElement && selectedElement.type === "text") {
+              selectedElement.text = e.target.value;
+              render();
+              updateLayerList();
+            }
+          });
 
         // 字体大小
-        document.getElementById('fontSize').addEventListener('input', (e) => {
-          if (selectedElement && selectedElement.type === 'text') {
+        document.getElementById("fontSize").addEventListener("input", (e) => {
+          if (selectedElement && selectedElement.type === "text") {
             selectedElement.fontSize = parseInt(e.target.value);
             render();
           }
         });
 
         // 字体粗细
-        document.getElementById('fontWeight').addEventListener('change', (e) => {
-          if (selectedElement && selectedElement.type === 'text') {
-            selectedElement.fontWeight = e.target.value;
-            render();
-          }
-        });
+        document
+          .getElementById("fontWeight")
+          .addEventListener("change", (e) => {
+            if (selectedElement && selectedElement.type === "text") {
+              selectedElement.fontWeight = e.target.value;
+              render();
+            }
+          });
 
         // 文本颜色
-        document.getElementById('textColor').addEventListener('input', (e) => {
-          if (selectedElement && selectedElement.type === 'text') {
+        document.getElementById("textColor").addEventListener("input", (e) => {
+          if (selectedElement && selectedElement.type === "text") {
             selectedElement.color = e.target.value;
-            document.getElementById('textColorHex').value = e.target.value;
+            document.getElementById("textColorHex").value = e.target.value;
             render();
           }
         });
 
-        document.getElementById('textColorHex').addEventListener('input', (e) => {
-          if (selectedElement && selectedElement.type === 'text') {
-            selectedElement.color = e.target.value;
-            document.getElementById('textColor').value = e.target.value;
-            render();
-          }
-        });
+        document
+          .getElementById("textColorHex")
+          .addEventListener("input", (e) => {
+            if (selectedElement && selectedElement.type === "text") {
+              selectedElement.color = e.target.value;
+              document.getElementById("textColor").value = e.target.value;
+              render();
+            }
+          });
 
         // 填充颜色
-        document.getElementById('fillColor').addEventListener('input', (e) => {
-          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
+        document.getElementById("fillColor").addEventListener("input", (e) => {
+          if (
+            selectedElement &&
+            (selectedElement.type === "rect" ||
+              selectedElement.type === "circle")
+          ) {
             selectedElement.fillColor = e.target.value;
-            document.getElementById('fillColorHex').value = e.target.value;
+            document.getElementById("fillColorHex").value = e.target.value;
             render();
           }
         });
 
-        document.getElementById('fillColorHex').addEventListener('input', (e) => {
-          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
-            selectedElement.fillColor = e.target.value;
-            document.getElementById('fillColor').value = e.target.value;
-            render();
-          }
-        });
+        document
+          .getElementById("fillColorHex")
+          .addEventListener("input", (e) => {
+            if (
+              selectedElement &&
+              (selectedElement.type === "rect" ||
+                selectedElement.type === "circle")
+            ) {
+              selectedElement.fillColor = e.target.value;
+              document.getElementById("fillColor").value = e.target.value;
+              render();
+            }
+          });
 
         // 边框
-        document.getElementById('strokeWidth').addEventListener('input', (e) => {
-          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
-            selectedElement.strokeWidth = parseInt(e.target.value);
-            render();
-          }
-        });
+        document
+          .getElementById("strokeWidth")
+          .addEventListener("input", (e) => {
+            if (
+              selectedElement &&
+              (selectedElement.type === "rect" ||
+                selectedElement.type === "circle")
+            ) {
+              selectedElement.strokeWidth = parseInt(e.target.value);
+              render();
+            }
+          });
 
-        document.getElementById('strokeColor').addEventListener('input', (e) => {
-          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
-            selectedElement.strokeColor = e.target.value;
-            document.getElementById('strokeColorHex').value = e.target.value;
-            render();
-          }
-        });
+        document
+          .getElementById("strokeColor")
+          .addEventListener("input", (e) => {
+            if (
+              selectedElement &&
+              (selectedElement.type === "rect" ||
+                selectedElement.type === "circle")
+            ) {
+              selectedElement.strokeColor = e.target.value;
+              document.getElementById("strokeColorHex").value = e.target.value;
+              render();
+            }
+          });
 
-        document.getElementById('strokeColorHex').addEventListener('input', (e) => {
-          if (selectedElement && (selectedElement.type === 'rect' || selectedElement.type === 'circle')) {
-            selectedElement.strokeColor = e.target.value;
-            document.getElementById('strokeColor').value = e.target.value;
-            render();
-          }
-        });
+        document
+          .getElementById("strokeColorHex")
+          .addEventListener("input", (e) => {
+            if (
+              selectedElement &&
+              (selectedElement.type === "rect" ||
+                selectedElement.type === "circle")
+            ) {
+              selectedElement.strokeColor = e.target.value;
+              document.getElementById("strokeColor").value = e.target.value;
+              render();
+            }
+          });
 
         // 不透明度
-        document.getElementById('opacity').addEventListener('input', (e) => {
+        document.getElementById("opacity").addEventListener("input", (e) => {
           if (selectedElement) {
             selectedElement.opacity = parseInt(e.target.value) / 100;
             render();
@@ -2391,17 +3403,19 @@
         });
 
         // 尺寸和位置
-        ['elementWidth', 'elementHeight', 'elementX', 'elementY'].forEach(id => {
-          document.getElementById(id).addEventListener('change', (e) => {
-            if (!selectedElement) return;
-            const value = parseInt(e.target.value);
-            if (id === 'elementWidth') selectedElement.width = value;
-            if (id === 'elementHeight') selectedElement.height = value;
-            if (id === 'elementX') selectedElement.x = value;
-            if (id === 'elementY') selectedElement.y = value;
-            render();
-          });
-        });
+        ["elementWidth", "elementHeight", "elementX", "elementY"].forEach(
+          (id) => {
+            document.getElementById(id).addEventListener("change", (e) => {
+              if (!selectedElement) return;
+              const value = parseInt(e.target.value);
+              if (id === "elementWidth") selectedElement.width = value;
+              if (id === "elementHeight") selectedElement.height = value;
+              if (id === "elementX") selectedElement.x = value;
+              if (id === "elementY") selectedElement.y = value;
+              render();
+            });
+          }
+        );
       }
 
       // 历史记录
@@ -2411,10 +3425,14 @@
 
         // 保存当前状态
         const state = {
-          elements: JSON.parse(JSON.stringify(elements.map(e => ({
-            ...e,
-            imageData: e.type === 'image' ? e.image.src : null
-          })))),
+          elements: JSON.parse(
+            JSON.stringify(
+              elements.map((e) => ({
+                ...e,
+                imageData: e.type === "image" ? e.image.src : null
+              }))
+            )
+          ),
           backgroundColor,
           backgroundImageData: backgroundImage ? backgroundImage.src : null
         };
@@ -2433,7 +3451,7 @@
         if (historyIndex > 0) {
           historyIndex--;
           restoreHistory();
-          showToast('已撤销', 'success');
+          showToast("已撤销", "success");
         }
       }
 
@@ -2441,7 +3459,7 @@
         if (historyIndex < history.length - 1) {
           historyIndex++;
           restoreHistory();
-          showToast('已重做', 'success');
+          showToast("已重做", "success");
         }
       }
 
@@ -2450,16 +3468,16 @@
         if (!state) return;
 
         // 恢复元素（简化版，实际需要根据类型重建对象）
-        elements = state.elements.map(e => {
-          if (e.type === 'text') {
+        elements = state.elements.map((e) => {
+          if (e.type === "text") {
             const text = new TextElement(e.x, e.y, e.text);
             Object.assign(text, e);
             return text;
-          } else if (e.type === 'rect') {
+          } else if (e.type === "rect") {
             const rect = new RectElement(e.x, e.y);
             Object.assign(rect, e);
             return rect;
-          } else if (e.type === 'circle') {
+          } else if (e.type === "circle") {
             const circle = new CircleElement(e.x, e.y);
             Object.assign(circle, e);
             return circle;
@@ -2488,25 +3506,25 @@
       }
 
       // 显示提示信息
-      function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const icon = document.getElementById('toastIcon');
-        const messageEl = document.getElementById('toastMessage');
+      function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        const icon = document.getElementById("toastIcon");
+        const messageEl = document.getElementById("toastMessage");
 
-        toast.className = 'toast show ' + type;
-        icon.textContent = type === 'success' ? '✅' : '❌';
+        toast.className = "toast show " + type;
+        icon.textContent = type === "success" ? "✅" : "❌";
         messageEl.textContent = message;
 
         setTimeout(() => {
-          toast.classList.remove('show');
+          toast.classList.remove("show");
         }, 3000);
       }
 
       // ========== 预览功能 ==========
       function openPreview() {
-        const previewModal = document.getElementById('previewModal');
-        const previewCanvas = document.getElementById('previewCanvas');
-        const previewCtx = previewCanvas.getContext('2d');
+        const previewModal = document.getElementById("previewModal");
+        const previewCanvas = document.getElementById("previewCanvas");
+        const previewCtx = previewCanvas.getContext("2d");
 
         // 设置预览画布尺寸
         previewCanvas.width = canvas.width;
@@ -2517,24 +3535,30 @@
 
         // 绘制背景
         if (backgroundImage) {
-          previewCtx.drawImage(backgroundImage, 0, 0, previewCanvas.width, previewCanvas.height);
+          previewCtx.drawImage(
+            backgroundImage,
+            0,
+            0,
+            previewCanvas.width,
+            previewCanvas.height
+          );
         } else {
           previewCtx.fillStyle = backgroundColor;
           previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
         }
 
         // 绘制所有元素（不绘制选中框）
-        elements.forEach(element => {
+        elements.forEach((element) => {
           element.draw(previewCtx);
         });
 
         // 显示预览模态框
-        previewModal.classList.add('active');
+        previewModal.classList.add("active");
       }
 
       function closePreview() {
-        const previewModal = document.getElementById('previewModal');
-        previewModal.classList.remove('active');
+        const previewModal = document.getElementById("previewModal");
+        previewModal.classList.remove("active");
       }
 
       // 绑定预览关闭事件
@@ -2543,47 +3567,115 @@
         e.stopPropagation();
         closePreview();
       };
-      document.getElementById('previewClose').addEventListener('click', previewCloseHandler);
-      document.getElementById('previewClose').addEventListener('touchstart', previewCloseHandler, { passive: false });
+      document
+        .getElementById("previewClose")
+        .addEventListener("click", previewCloseHandler);
+      document
+        .getElementById("previewClose")
+        .addEventListener("touchstart", previewCloseHandler, {
+          passive: false
+        });
 
       const previewModalHandler = (e) => {
-        if (e.target.id === 'previewModal') {
+        if (e.target.id === "previewModal") {
           e.preventDefault();
           closePreview();
         }
       };
-      document.getElementById('previewModal').addEventListener('click', previewModalHandler);
-      document.getElementById('previewModal').addEventListener('touchstart', previewModalHandler, { passive: false });
+      document
+        .getElementById("previewModal")
+        .addEventListener("click", previewModalHandler);
+      document
+        .getElementById("previewModal")
+        .addEventListener("touchstart", previewModalHandler, {
+          passive: false
+        });
 
-      // ESC键关闭预览
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+      // ESC键关闭预览和帮助
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
           closePreview();
+          closeHelp();
         }
       });
 
+      // ========== 帮助模态框功能 ==========
+      function openHelp() {
+        const helpModal = document.getElementById("helpModal");
+        helpModal.classList.add("active");
+        document.body.style.overflow = "hidden"; // 防止背景滚动
+      }
+
+      function closeHelp() {
+        const helpModal = document.getElementById("helpModal");
+        helpModal.classList.remove("active");
+        document.body.style.overflow = ""; // 恢复滚动
+      }
+
+      // 绑定帮助按钮事件
+      const helpBtnHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openHelp();
+      };
+      document
+        .getElementById("helpBtn")
+        .addEventListener("click", helpBtnHandler);
+      document
+        .getElementById("helpBtn")
+        .addEventListener("touchstart", helpBtnHandler, { passive: false });
+
+      // 绑定关闭按钮事件
+      const helpCloseHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeHelp();
+      };
+      document
+        .getElementById("helpClose")
+        .addEventListener("click", helpCloseHandler);
+      document
+        .getElementById("helpClose")
+        .addEventListener("touchstart", helpCloseHandler, { passive: false });
+
+      // 点击模态框背景关闭
+      const helpModalHandler = (e) => {
+        if (e.target.id === "helpModal") {
+          e.preventDefault();
+          closeHelp();
+        }
+      };
+      document
+        .getElementById("helpModal")
+        .addEventListener("click", helpModalHandler);
+      document
+        .getElementById("helpModal")
+        .addEventListener("touchstart", helpModalHandler, { passive: false });
+
       // ========== 移动端抽屉控制 ==========
       function initMobileDrawers() {
-        const toolDrawer = document.getElementById('toolDrawer');
-        const propsDrawer = document.getElementById('propsDrawer');
-        const overlay = document.getElementById('drawerOverlay');
-        const mobileFabTools = document.getElementById('mobileFabTools');
-        const mobileFabProps = document.getElementById('mobileFabProps');
-        const closeToolDrawer = document.getElementById('closeToolDrawer');
-        const closePropsDrawer = document.getElementById('closePropsDrawer');
+        const toolDrawer = document.getElementById("toolDrawer");
+        const propsDrawer = document.getElementById("propsDrawer");
+        const overlay = document.getElementById("drawerOverlay");
+        const mobileFabTools = document.getElementById("mobileFabTools");
+        const mobileFabProps = document.getElementById("mobileFabProps");
+        const closeToolDrawer = document.getElementById("closeToolDrawer");
+        const closePropsDrawer = document.getElementById("closePropsDrawer");
 
         // 打开工具抽屉
         if (mobileFabTools) {
           const openToolDrawer = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            toolDrawer.classList.add('active');
-            overlay.classList.add('active');
-            document.body.classList.add('drawer-open');
+            toolDrawer.classList.add("active");
+            overlay.classList.add("active");
+            document.body.classList.add("drawer-open");
           };
 
-          mobileFabTools.addEventListener('click', openToolDrawer);
-          mobileFabTools.addEventListener('touchstart', openToolDrawer, { passive: false });
+          mobileFabTools.addEventListener("click", openToolDrawer);
+          mobileFabTools.addEventListener("touchstart", openToolDrawer, {
+            passive: false
+          });
         }
 
         // 打开属性抽屉
@@ -2591,13 +3683,15 @@
           const openPropsDrawer = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            propsDrawer.classList.add('active');
-            overlay.classList.add('active');
-            document.body.classList.add('drawer-open');
+            propsDrawer.classList.add("active");
+            overlay.classList.add("active");
+            document.body.classList.add("drawer-open");
           };
 
-          mobileFabProps.addEventListener('click', openPropsDrawer);
-          mobileFabProps.addEventListener('touchstart', openPropsDrawer, { passive: false });
+          mobileFabProps.addEventListener("click", openPropsDrawer);
+          mobileFabProps.addEventListener("touchstart", openPropsDrawer, {
+            passive: false
+          });
         }
 
         // 关闭抽屉的函数
@@ -2606,31 +3700,49 @@
             e.preventDefault();
             e.stopPropagation();
           }
-          toolDrawer.classList.remove('active');
-          propsDrawer.classList.remove('active');
-          overlay.classList.remove('active');
-          document.body.classList.remove('drawer-open');
+          toolDrawer.classList.remove("active");
+          propsDrawer.classList.remove("active");
+          overlay.classList.remove("active");
+          document.body.classList.remove("drawer-open");
         }
 
         // 关闭工具抽屉
         if (closeToolDrawer) {
           const closeToolHandler = (e) => closeDrawers(e);
-          closeToolDrawer.addEventListener('click', closeToolHandler);
-          closeToolDrawer.addEventListener('touchstart', closeToolHandler, { passive: false });
+          closeToolDrawer.addEventListener("click", closeToolHandler);
+          closeToolDrawer.addEventListener("touchstart", closeToolHandler, {
+            passive: false
+          });
         }
 
         // 关闭属性抽屉
         if (closePropsDrawer) {
           const closePropsHandler = (e) => closeDrawers(e);
-          closePropsDrawer.addEventListener('click', closePropsHandler);
-          closePropsDrawer.addEventListener('touchstart', closePropsHandler, { passive: false });
+          closePropsDrawer.addEventListener("click", closePropsHandler);
+          closePropsDrawer.addEventListener("touchstart", closePropsHandler, {
+            passive: false
+          });
         }
 
-        // 点击遮罩层关闭
+        // 点击遮罩层关闭（只在点击遮罩层自身时关闭，不阻止抽屉内的交互）
         if (overlay) {
-          const overlayHandler = (e) => closeDrawers(e);
-          overlay.addEventListener('click', overlayHandler);
-          overlay.addEventListener('touchstart', overlayHandler, { passive: false });
+          const overlayHandler = (e) => {
+            // 只在点击遮罩层本身时关闭，不阻止事件传播到抽屉
+            if (e.target === overlay) {
+              closeDrawers(e);
+            }
+          };
+          overlay.addEventListener("click", overlayHandler);
+          // 触摸事件不需要 preventDefault，允许抽屉内的输入框正常工作
+          overlay.addEventListener(
+            "touchstart",
+            (e) => {
+              if (e.target === overlay) {
+                closeDrawers(e);
+              }
+            },
+            { passive: true }
+          );
         }
 
         // 绑定移动端工具按钮事件（复用桌面端逻辑）
@@ -2640,15 +3752,15 @@
       // 绑定移动端工具按钮事件
       function bindMobileToolEvents() {
         // 获取关闭抽屉函数的引用
-        const toolDrawer = document.getElementById('toolDrawer');
-        const propsDrawer = document.getElementById('propsDrawer');
-        const overlay = document.getElementById('drawerOverlay');
+        const toolDrawer = document.getElementById("toolDrawer");
+        const propsDrawer = document.getElementById("propsDrawer");
+        const overlay = document.getElementById("drawerOverlay");
 
         const closeAllDrawers = () => {
-          toolDrawer.classList.remove('active');
-          propsDrawer.classList.remove('active');
-          overlay.classList.remove('active');
-          document.body.classList.remove('drawer-open');
+          toolDrawer.classList.remove("active");
+          propsDrawer.classList.remove("active");
+          overlay.classList.remove("active");
+          document.body.classList.remove("drawer-open");
         };
 
         // 辅助函数：为按钮绑定 click 和 touchstart 事件
@@ -2660,81 +3772,95 @@
               e.stopPropagation();
               handler(e);
             };
-            btn.addEventListener('click', wrappedHandler);
-            btn.addEventListener('touchstart', wrappedHandler, { passive: false });
+            btn.addEventListener("click", wrappedHandler);
+            btn.addEventListener("touchstart", wrappedHandler, {
+              passive: false
+            });
           }
         };
 
         // 画布尺寸预设
-        const mobilePresets = document.querySelectorAll('.mobile-preset');
+        const mobilePresets = document.querySelectorAll(".mobile-preset");
         mobilePresets.forEach((btn, index) => {
-          const handler = function(e) {
+          const handler = function (e) {
             e.preventDefault();
             e.stopPropagation();
-            const [width, height] = this.dataset.size.split(',').map(Number);
+            const [width, height] = this.dataset.size.split(",").map(Number);
             canvas.width = width;
             canvas.height = height;
-            document.querySelectorAll('.mobile-preset').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+            document
+              .querySelectorAll(".mobile-preset")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
             adjustCanvasSize();
             render();
-            showToast(`画布尺寸已调整为 ${width}×${height}`, 'success');
+            showToast(`画布尺寸已调整为 ${width}×${height}`, "success");
             closeAllDrawers();
           };
-          btn.addEventListener('click', handler);
-          btn.addEventListener('touchstart', handler, { passive: false });
+          btn.addEventListener("click", handler);
+          btn.addEventListener("touchstart", handler, { passive: false });
         });
 
         // 背景设置
-        bindButtonEvents('mobileBgColor', () => {
-          document.getElementById('setBgColor').click();
+        bindButtonEvents("mobileBgColor", () => {
+          document.getElementById("setBgColor").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileUploadBg', () => {
-          document.getElementById('uploadBgImage').click();
+        bindButtonEvents("mobileUploadBg", () => {
+          document.getElementById("uploadBgImage").click();
           closeAllDrawers();
         });
 
         // 添加元素
-        bindButtonEvents('mobileAddText', () => {
-          document.getElementById('addText').click();
+        bindButtonEvents("mobileAddText", () => {
+          document.getElementById("addText").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileUploadImage', () => {
-          document.getElementById('uploadImage').click();
+        bindButtonEvents("mobileUploadImage", () => {
+          document.getElementById("uploadImage").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileAddRect', () => {
-          document.getElementById('addRect').click();
+        bindButtonEvents("mobileAddRect", () => {
+          document.getElementById("addRect").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileAddCircle', () => {
-          document.getElementById('addCircle').click();
+        bindButtonEvents("mobileAddCircle", () => {
+          document.getElementById("addCircle").click();
           closeAllDrawers();
         });
 
         // 文件操作
-        bindButtonEvents('mobileClear', () => {
-          document.getElementById('clearCanvas').click();
+        bindButtonEvents("mobileClear", () => {
+          document.getElementById("clearCanvas").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileExportPNG', () => {
-          document.getElementById('exportPNG').click();
+        bindButtonEvents("mobileExportPNG", () => {
+          document.getElementById("exportPNG").click();
           closeAllDrawers();
         });
 
-        bindButtonEvents('mobileExportJPG', () => {
-          document.getElementById('exportJPG').click();
+        bindButtonEvents("mobileExportJPG", () => {
+          document.getElementById("exportJPG").click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents("mobileExportJSON", () => {
+          document.getElementById("exportJSON").click();
+          closeAllDrawers();
+        });
+
+        bindButtonEvents("mobileImportJSON", () => {
+          document.getElementById("importJSON").click();
           closeAllDrawers();
         });
 
         // 删除元素
-        bindButtonEvents('mobileDeleteElement', () => {
+        bindButtonEvents("mobileDeleteElement", () => {
           if (selectedElement) {
             const index = elements.indexOf(selectedElement);
             if (index !== -1) {
@@ -2742,10 +3868,9 @@
               closeAllDrawers();
             }
           } else {
-            showToast('请先选择要删除的元素', 'warning');
+            showToast("请先选择要删除的元素", "warning");
           }
         });
-
 
         // 移动端属性输入绑定（同步到桌面端）
         syncMobileProperties();
@@ -2754,7 +3879,7 @@
       // 同步移动端和桌面端属性输入
       function syncMobileProperties() {
         // 辅助函数：为输入框绑定双事件
-        const bindInputSync = (mobileId, desktopId, eventType = 'input') => {
+        const bindInputSync = (mobileId, desktopId, eventType = "input") => {
           const mobileEl = document.getElementById(mobileId);
           const desktopEl = document.getElementById(desktopId);
 
@@ -2770,8 +3895,11 @@
 
           mobileEl.addEventListener(eventType, handler);
           // 为某些可能需要的元素添加 change 事件
-          if (eventType === 'input' && (mobileEl.type === 'number' || mobileEl.type === 'color')) {
-            mobileEl.addEventListener('change', handler);
+          if (
+            eventType === "input" &&
+            (mobileEl.type === "number" || mobileEl.type === "color")
+          ) {
+            mobileEl.addEventListener("change", handler);
           }
         };
 
@@ -2787,29 +3915,29 @@
 
           const handler = () => {
             desktopEl.value = mobileEl.value;
-            desktopEl.dispatchEvent(new Event('input'));
+            desktopEl.dispatchEvent(new Event("input"));
           };
 
-          mobileEl.addEventListener('input', handler);
-          mobileEl.addEventListener('change', handler);
+          mobileEl.addEventListener("input", handler);
+          mobileEl.addEventListener("change", handler);
         };
 
         // 文本属性
-        bindInputSync('mobileTextContent', 'textContent', 'input');
-        bindInputSync('mobileFontSize', 'fontSize', 'input');
-        bindInputSync('mobileFontWeight', 'fontWeight', 'change');
-        bindColorPickerSync('mobileTextColor', 'textColor');
+        bindInputSync("mobileTextContent", "textContent", "input");
+        bindInputSync("mobileFontSize", "fontSize", "input");
+        bindInputSync("mobileFontWeight", "fontWeight", "change");
+        bindColorPickerSync("mobileTextColor", "textColor");
 
         // 形状属性
-        bindColorPickerSync('mobileFillColor', 'fillColor');
-        bindColorPickerSync('mobileStrokeColor', 'strokeColor');
-        bindInputSync('mobileStrokeWidth', 'strokeWidth', 'input');
+        bindColorPickerSync("mobileFillColor", "fillColor");
+        bindColorPickerSync("mobileStrokeColor", "strokeColor");
+        bindInputSync("mobileStrokeWidth", "strokeWidth", "input");
 
         // 通用属性
-        bindInputSync('mobileElementWidth', 'elementWidth', 'input');
-        bindInputSync('mobileElementHeight', 'elementHeight', 'input');
-        bindInputSync('mobileElementX', 'elementX', 'input');
-        bindInputSync('mobileElementY', 'elementY', 'input');
+        bindInputSync("mobileElementWidth", "elementWidth", "input");
+        bindInputSync("mobileElementHeight", "elementHeight", "input");
+        bindInputSync("mobileElementX", "elementX", "input");
+        bindInputSync("mobileElementY", "elementY", "input");
       }
 
       // 启动应用

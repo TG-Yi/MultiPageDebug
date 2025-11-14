@@ -78,6 +78,18 @@
       "tags": ["design", "poster", "canvas", "image", "graphics"],
       "version": "1.0.0",
       "author": "Toolbox"
+    },
+    {
+      "id": "image-cropper",
+      "name": "图片裁剪工具",
+      "icon": "✂️",
+      "description": "专业图片处理工具，支持裁剪、旋转、翻转、滤镜、亮度对比度调节，导出PNG/JPG",
+      "category": "media",
+      "path": "./tools/image-cropper/index.html",
+      "featured": true,
+      "tags": ["image", "crop", "filter", "rotate", "edit", "photo"],
+      "version": "1.0.0",
+      "author": "Toolbox"
     }
   ]
 }
