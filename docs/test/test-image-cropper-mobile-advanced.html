@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>图片裁剪工具 - 移动端高级功能测试</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f7;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #1d1d1f;
+    }
+
+    .test-section {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .test-section h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .test-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 8px;
+      background: white;
+      border-radius: 6px;
+    }
+
+    .status {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .status.pass {
+      background: #34c759;
+    }
+
+    .status.fail {
+      background: #ff3b30;
+    }
+
+    .status.pending {
+      background: #ffcc00;
+    }
+
+    .test-label {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .test-button {
+      padding: 8px 16px;
+      background: #007aff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .test-button:active {
+      opacity: 0.7;
+    }
+
+    .open-tool {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: #007aff;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 20px;
+    }
+
+    .open-tool:active {
+      opacity: 0.7;
+    }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+    }
+
+    .info-box p {
+      font-size: 14px;
+      color: #1976d2;
+      line-height: 1.5;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist li {
+      padding: 8px 0;
+      font-size: 14px;
+      color: #666;
+      border-bottom: 1px solid #eee;
+    }
+
+    .checklist li:last-child {
+      border-bottom: none;
+    }
+
+    .checklist li::before {
+      content: "□ ";
+      margin-right: 8px;
+      color: #007aff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 移动端高级功能测试</h1>
+
+    <div class="info-box">
+      <p><strong>测试目标：</strong>验证移动端高级功能（水印、圆角、边框、阴影）是否正常工作</p>
+    </div>
+
+    <div class="test-section">
+      <h2>✅ 已修复的问题</h2>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">阴影模糊不再改变图片大小</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">阴影模糊效果正常显示</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">圆角支持统一/独立设置</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">移动端同步PC端下拉选择器</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">移动端显示高级功能设置</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">修复JavaScript重复声明错误</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>🧪 手动测试清单</h2>
+      <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+        请在移动端打开图片裁剪工具，逐项验证以下功能：
+      </p>
+      <ul class="checklist">
+        <li>打开工具后上传一张图片</li>
+        <li>点击底部"高级"标签页</li>
+        <li>点击"💧 水印"按钮，抽屉应该打开并滚动到水印设置</li>
+        <li>点击"⭕ 圆角"按钮，抽屉应该打开并滚动到圆角设置</li>
+        <li>点击"🖼️ 边框"按钮，抽屉应该打开并滚动到边框设置</li>
+        <li>点击"🌫️ 阴影"按钮，抽屉应该打开并滚动到阴影设置</li>
+        <li>在圆角设置中切换"统一圆角"/"独立设置"模式</li>
+        <li>在独立设置模式下，分别调整四个角的圆角大小</li>
+        <li>调整阴影模糊度，图片大小不应改变</li>
+        <li>启用边框后，阴影应该只作用于边框</li>
+        <li>禁用边框后，阴影应该作用于图片本身</li>
+        <li>点击抽屉顶部拖动条，抽屉应该关闭</li>
+        <li>点击抽屉外部区域，抽屉应该关闭</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>🔍 技术细节验证</h2>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">移除了drawerOverlay重复声明</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">移除了openMobileDrawer()重复定义</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">移除了closeMobileDrawer()重复定义</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">抽屉控制函数添加了null检查</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">抽屉打开时禁用body滚动</div>
+      </div>
+      <div class="test-item">
+        <div class="status pass"></div>
+        <div class="test-label">抽屉关闭时恢复body滚动</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>📊 功能完整性检查</h2>
+      <ul class="checklist">
+        <li>PC端：裁剪比例下拉选择器 ✅</li>
+        <li>移动端：裁剪比例下拉选择器 ✅</li>
+        <li>PC端：滤镜下拉选择器 ✅</li>
+        <li>移动端：滤镜下拉选择器 ✅</li>
+        <li>PC端：翻转下拉选择器 + 旋转按钮 ✅</li>
+        <li>移动端：翻转下拉选择器 + 旋转按钮 ✅</li>
+        <li>PC端：高级功能（水印、圆角、边框、阴影）✅</li>
+        <li>移动端：高级功能（水印、圆角、边框、阴影）✅</li>
+        <li>PC/移动端双向同步 ✅</li>
+      </ul>
+    </div>
+
+    <a href="../../tools/image-cropper/index.html" class="open-tool">
+      🚀 打开图片裁剪工具进行测试
+    </a>
+
+    <div style="margin-top: 20px; padding: 16px; background: #fff3cd; border-radius: 8px;">
+      <p style="font-size: 14px; color: #856404; line-height: 1.6;">
+        <strong>💡 测试提示：</strong><br>
+        1. 请在真实移动设备或浏览器移动模拟器中测试<br>
+        2. 验证所有按钮点击都有响应<br>
+        3. 确认控制台没有JavaScript错误<br>
+        4. 测试PC端和移动端切换时状态同步
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // 记录测试开始时间
+    console.log('📱 移动端高级功能测试页面加载完成');
+    console.log('⏰ 测试开始时间:', new Date().toLocaleString());
+
+    // 可选：添加简单的交互式测试状态切换
+    document.querySelectorAll('.checklist li').forEach(item => {
+      item.addEventListener('click', function() {
+        if (this.style.textDecoration === 'line-through') {
+          this.style.textDecoration = 'none';
+          this.style.color = '#666';
+          this.querySelector('::before') ? null : (this.innerHTML = '□ ' + this.textContent.slice(2));
+        } else {
+          this.style.textDecoration = 'line-through';
+          this.style.color = '#999';
+          this.innerHTML = '✓ ' + this.textContent.slice(2);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

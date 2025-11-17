@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自动主题优化验证</title>
+  <link rel="stylesheet" href="../../shared/styles/common.css">
+  <link rel="stylesheet" href="../../shared/styles/theme-selector.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3a5f 0%, #3d5a80 15%, #ee6c4d 45%, #f4a261 65%, #e9c46a 85%, #98c1d9 100%);
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    h1 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 32px;
+    }
+
+    h2 {
+      margin: 32px 0 16px 0;
+      color: var(--primary-color);
+      font-size: 24px;
+      border-bottom: 2px solid var(--primary-alpha-20);
+      padding-bottom: 8px;
+    }
+
+    .intro {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .test-btn {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 32px;
+    }
+
+    .test-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-alpha-30);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .feature-item {
+      background: var(--primary-alpha-05);
+      border-left: 4px solid var(--primary-color);
+      padding: 16px;
+      border-radius: var(--radius-md);
+    }
+
+    .feature-item h3 {
+      margin: 0 0 8px 0;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    .feature-item p {
+      margin: 0;
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .checklist {
+      background: var(--bg-color);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+
+    .checklist h3 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .check-item:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .check-text {
+      flex: 1;
+      color: var(--text-color);
+      line-height: 1.5;
+    }
+
+    .check-text strong {
+      color: var(--primary-color);
+    }
+
+    .tip {
+      background: var(--info-alpha-10);
+      border-left: 4px solid var(--info-color);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+
+    .tip-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    .code-inline {
+      background: var(--primary-alpha-05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🚀 自动主题优化验证</h1>
+      <p class="intro">
+        本页面用于验证自动主题切换功能的两项重要优化。请打开主题选择器并切换到"自动主题"标签页进行测试。
+      </p>
+
+      <button class="test-btn" onclick="openThemeSelector()">
+        🎨 打开主题选择器
+      </button>
+
+      <h2>✨ 优化内容</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>📊 时间轴预览</h3>
+          <p>每个自动切换方案现在都显示可视化的时间轴预览,清晰展示24小时内的主题切换时段</p>
+        </div>
+        <div class="feature-item">
+          <h3>🎯 流畅切换</h3>
+          <p>标签页切换时不再出现滚动条闪现,使用平滑的淡入效果提升视觉体验</p>
+        </div>
+        <div class="feature-item">
+          <h3>🌈 渐变显示</h3>
+          <p>时间轴上的每个时段使用对应主题的渐变色,悬停时有放大效果</p>
+        </div>
+        <div class="feature-item">
+          <h3>⚡ 性能优化</h3>
+          <p>使用 requestAnimationFrame 确保 DOM 更新顺序,避免布局抖动</p>
+        </div>
+      </div>
+
+      <h2>🧪 测试步骤</h2>
+      <div class="checklist">
+        <h3>
+          <span>✅</span>
+          验证清单
+        </h3>
+
+        <div class="check-item">
+          <span class="check-icon">1️⃣</span>
+          <div class="check-text">
+            <strong>打开自动主题标签页</strong><br>
+            点击上方按钮打开主题选择器,切换到"自动主题"标签页。观察切换过程是否平滑,是否出现滚动条闪现。
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">2️⃣</span>
+          <div class="check-text">
+            <strong>查看时间轴预览</strong><br>
+            检查每个自动切换方案(全天黎明、昼夜交替、工作时段、四时变换)是否都显示了彩色的时间轴预览条。
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">3️⃣</span>
+          <div class="check-text">
+            <strong>交互测试</strong><br>
+            鼠标悬停在时间轴的不同时段上,观察是否有放大效果和提示信息(显示时间范围和主题名称)。
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">4️⃣</span>
+          <div class="check-text">
+            <strong>标签切换测试</strong><br>
+            在"预设主题"、"自动主题"、"自定义"三个标签页之间快速切换,观察是否平滑无卡顿,滚动条是否闪现。
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">5️⃣</span>
+          <div class="check-text">
+            <strong>响应式测试</strong><br>
+            调整浏览器窗口大小(1920px、1024px、768px、480px),检查时间轴预览在不同屏幕尺寸下的显示效果。
+          </div>
+        </div>
+      </div>
+
+      <h2>🔧 技术实现</h2>
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        <strong>时间轴预览实现要点：</strong>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>动态计算</h3>
+          <p>根据时间段的起止时间计算在24小时轴上的百分比位置和宽度</p>
+        </div>
+        <div class="feature-item">
+          <h3>主题色映射</h3>
+          <p>从 <span class="code-inline">PRESET_THEMES</span> 获取对应主题的渐变色</p>
+        </div>
+        <div class="feature-item">
+          <h3>绝对定位</h3>
+          <p>使用 <span class="code-inline">position: absolute</span> 精确放置每个时段</p>
+        </div>
+        <div class="feature-item">
+          <h3>时间刻度</h3>
+          <p>底部显示 00:00、06:00、12:00、18:00、24:00 时间标记</p>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top: 24px;">
+        <span class="tip-icon">💡</span>
+        <strong>切换优化实现要点：</strong>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>状态管理</h3>
+          <p>添加 <span class="code-inline">.switching</span> 类临时隐藏滚动条</p>
+        </div>
+        <div class="feature-item">
+          <h3>双重RAF</h3>
+          <p>使用两次 <span class="code-inline">requestAnimationFrame</span> 确保渲染顺序</p>
+        </div>
+        <div class="feature-item">
+          <h3>滚动重置</h3>
+          <p>切换前先重置 <span class="code-inline">scrollTop = 0</span></p>
+        </div>
+        <div class="feature-item">
+          <h3>延迟恢复</h3>
+          <p>100ms 后移除 <span class="code-inline">.switching</span> 类恢复滚动</p>
+        </div>
+      </div>
+
+      <h2>📊 预期效果</h2>
+      <div class="checklist">
+        <div class="check-item">
+          <span class="check-icon">✅</span>
+          <div class="check-text">
+            <strong>时间轴预览清晰可见</strong> - 每个方案都显示彩色时间轴,一目了然
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">✅</span>
+          <div class="check-text">
+            <strong>标签切换流畅</strong> - 无滚动条闪现,淡入淡出自然
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">✅</span>
+          <div class="check-text">
+            <strong>交互反馈及时</strong> - 悬停时段有放大效果和提示信息
+          </div>
+        </div>
+
+        <div class="check-item">
+          <span class="check-icon">✅</span>
+          <div class="check-text">
+            <strong>性能表现优秀</strong> - 无卡顿,无布局抖动,动画平滑
+          </div>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top: 32px;">
+        <span class="tip-icon">📖</span>
+        查看完整文档：<a href="../auto-theme-optimization.md" style="color: var(--primary-color); font-weight: 600;">自动主题优化文档</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../shared/scripts/common.js"></script>
+  <script src="../../shared/scripts/theme.js"></script>
+  <script>
+    console.log('✅ 自动主题优化验证页面已加载');
+
+    // 监听主题变更
+    window.addEventListener('themechange', (e) => {
+      console.log('✅ 主题已变更:', e.detail.theme.name);
+    });
+
+    // 测试提示
+    window.addEventListener('load', () => {
+      console.log('\n🔍 测试要点：');
+      console.log('1. 打开主题选择器,切换到"自动主题"标签页');
+      console.log('2. 检查每个方案是否显示时间轴预览');
+      console.log('3. 在标签页之间快速切换,观察是否有滚动条闪现');
+      console.log('4. 悬停在时间轴上查看交互效果');
+      console.log('\n');
+    });
+  </script>
+</body>
+</html>

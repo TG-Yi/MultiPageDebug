@@ -4,7 +4,7 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
 :root {
-  /* 黎明主题色 */
+  /* ========== 基础主题色（不透明） ========== */
   --primary-color: #ee6c4d; /* 日出橙红 */
   --primary-dark: #d4573b;
   --secondary-color: #f4a261; /* 晨曦金橙 */
@@ -12,29 +12,82 @@
   --dawn-blue: #98c1d9; /* 黎明天蓝 */
   --night-blue: #1e3a5f; /* 夜幕深蓝 */
 
-  /* 状态色 */
+  /* ========== 主色调透明度系列 ========== */
+  --primary-alpha-90: rgba(238, 108, 77, 0.9);   /* 强调区域 */
+  --primary-alpha-80: rgba(238, 108, 77, 0.8);   /* 按钮悬停 */
+  --primary-alpha-60: rgba(238, 108, 77, 0.6);   /* 遮罩层 */
+  --primary-alpha-40: rgba(238, 108, 77, 0.4);   /* 辅助装饰 */
+  --primary-alpha-20: rgba(238, 108, 77, 0.2);   /* 背景提示 */
+  --primary-alpha-10: rgba(238, 108, 77, 0.1);   /* 微妙高亮 */
+  --primary-alpha-05: rgba(238, 108, 77, 0.05);  /* 极淡背景 */
+
+  /* ========== 次色调透明度系列 ========== */
+  --secondary-alpha-90: rgba(244, 162, 97, 0.9);
+  --secondary-alpha-80: rgba(244, 162, 97, 0.8);
+  --secondary-alpha-60: rgba(244, 162, 97, 0.6);
+  --secondary-alpha-40: rgba(244, 162, 97, 0.4);
+  --secondary-alpha-20: rgba(244, 162, 97, 0.2);
+  --secondary-alpha-10: rgba(244, 162, 97, 0.1);
+  --secondary-alpha-05: rgba(244, 162, 97, 0.05);
+
+  /* ========== 强调色透明度系列 ========== */
+  --accent-alpha-90: rgba(233, 196, 106, 0.9);
+  --accent-alpha-80: rgba(233, 196, 106, 0.8);
+  --accent-alpha-60: rgba(233, 196, 106, 0.6);
+  --accent-alpha-40: rgba(233, 196, 106, 0.4);
+  --accent-alpha-20: rgba(233, 196, 106, 0.2);
+  --accent-alpha-10: rgba(233, 196, 106, 0.1);
+  --accent-alpha-05: rgba(233, 196, 106, 0.05);
+
+  /* ========== 白色透明度系列（通用） ========== */
+  --white-alpha-95: rgba(255, 255, 255, 0.95);  /* 卡片背景 */
+  --white-alpha-90: rgba(255, 255, 255, 0.9);   /* 模态框 */
+  --white-alpha-80: rgba(255, 255, 255, 0.8);   /* 半透明面板 */
+  --white-alpha-60: rgba(255, 255, 255, 0.6);   /* 玻璃效果 */
+  --white-alpha-40: rgba(255, 255, 255, 0.4);   /* 边框 */
+  --white-alpha-30: rgba(255, 255, 255, 0.3);   /* 边框浅 */
+  --white-alpha-20: rgba(255, 255, 255, 0.2);   /* 微妙分隔 */
+  --white-alpha-10: rgba(255, 255, 255, 0.1);   /* 悬停效果 */
+  --white-alpha-05: rgba(255, 255, 255, 0.05);  /* 极淡背景 */
+
+  /* ========== 黑色透明度系列（阴影/遮罩） ========== */
+  --black-alpha-70: rgba(0, 0, 0, 0.7);   /* 深色遮罩 */
+  --black-alpha-50: rgba(0, 0, 0, 0.5);   /* 中度遮罩 */
+  --black-alpha-30: rgba(0, 0, 0, 0.3);   /* 浅遮罩 */
+  --black-alpha-20: rgba(0, 0, 0, 0.2);   /* 阴影深 */
+  --black-alpha-15: rgba(0, 0, 0, 0.15);  /* 阴影中 */
+  --black-alpha-10: rgba(0, 0, 0, 0.1);   /* 阴影浅 */
+  --black-alpha-05: rgba(0, 0, 0, 0.05);  /* 极淡阴影 */
+
+  /* ========== 状态色 ========== */
   --success-color: #2a9d8f; /* 平静的青绿 */
   --info-color: #98c1d9; /* 黎明天蓝 */
   --warning-color: #f4a261; /* 晨曦金橙 */
   --error-color: #e76f51; /* 警示橙红 */
 
-  /* 中性色 */
+  /* 状态色透明度 */
+  --success-alpha-10: rgba(42, 157, 143, 0.1);
+  --info-alpha-10: rgba(152, 193, 217, 0.1);
+  --warning-alpha-10: rgba(244, 162, 97, 0.1);
+  --error-alpha-10: rgba(231, 111, 81, 0.1);
+
+  /* ========== 中性色 ========== */
   --bg-color: #f5f7fa;
   --text-color: #2c3e50;
   --text-light: #7f8c8d;
   --border-color: #e0e6ed;
 
-  /* 阴影 */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+  /* ========== 阴影（使用透明度） ========== */
+  --shadow-sm: 0 2px 4px var(--black-alpha-10);
+  --shadow-md: 0 4px 15px var(--black-alpha-15);
+  --shadow-lg: 0 8px 32px var(--black-alpha-20);
 
-  /* 圆角 */
+  /* ========== 圆角 ========== */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  /* 过渡 */
+  /* ========== 过渡 ========== */
   --transition: all 0.3s ease;
 }
 
@@ -42,6 +95,49 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* ========== 自定义滚动条样式 ========== */
+/* Webkit浏览器 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 10px;
+  border: 2px solid var(--bg-color);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  border-width: 1px;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--primary-dark);
+}
+
+/* Firefox浏览器 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--bg-color);
+}
+
+/* 深色主题下的滚动条 */
+body[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(30, 58, 95, 0.3);
+}
+
+body[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  border-color: rgba(30, 58, 95, 0.3);
 }
 
 body {

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>滚动条优化测试</title>
+  <link rel="stylesheet" href="../../shared/styles/common.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3a5f 0%, #3d5a80 15%, #ee6c4d 45%, #f4a261 65%, #e9c46a 85%, #98c1d9 100%);
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    h1 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 32px;
+    }
+
+    h2 {
+      margin: 32px 0 16px 0;
+      color: var(--primary-color);
+      font-size: 24px;
+      border-bottom: 2px solid var(--primary-alpha-20);
+      padding-bottom: 8px;
+    }
+
+    .intro {
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .feature-item {
+      background: var(--primary-alpha-05);
+      border-left: 4px solid var(--primary-color);
+      padding: 16px;
+      border-radius: var(--radius-md);
+    }
+
+    .feature-item h3 {
+      margin: 0 0 8px 0;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    .feature-item p {
+      margin: 0;
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .demo-box {
+      background: var(--bg-color);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .demo-title {
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .scrollable-area {
+      height: 200px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .scrollable-content {
+      padding-right: 8px;
+    }
+
+    .scrollable-content p {
+      margin-bottom: 12px;
+      line-height: 1.6;
+      color: var(--text-color);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .comparison-table th {
+      background: var(--primary-alpha-05);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .comparison-table tr:hover {
+      background: var(--bg-color);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--success-alpha-10);
+      color: var(--success-color);
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge.warn {
+      background: var(--warning-alpha-10);
+      color: var(--warning-color);
+    }
+
+    .code-block {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin-bottom: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      background: var(--primary-alpha-05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--primary-color);
+    }
+
+    .tip {
+      background: var(--info-alpha-10);
+      border-left: 4px solid var(--info-color);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+
+    .tip-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🎨 滚动条优化测试</h1>
+      <p class="intro">
+        本页面展示了优化后的滚动条样式。尝试滚动页面和下方的示例区域，体验全新的视觉效果！
+      </p>
+
+      <h2>✨ 优化特性</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>🌈 渐变配色</h3>
+          <p>使用主题色渐变，从日出橙红到晨曦金橙，视觉统一</p>
+        </div>
+        <div class="feature-item">
+          <h3>🔄 圆角设计</h3>
+          <p>10px 圆角，现代美观，与整体设计风格一致</p>
+        </div>
+        <div class="feature-item">
+          <h3>✨ 平滑动画</h3>
+          <p>0.3s 过渡效果，悬停时颜色变深，交互流畅</p>
+        </div>
+        <div class="feature-item">
+          <h3>🎯 精致边框</h3>
+          <p>2px 边框创造内嵌效果，滑块更有层次感</p>
+        </div>
+      </div>
+
+      <h2>🧪 滚动测试区域</h2>
+      <div class="demo-box">
+        <div class="demo-title">👇 尝试滚动下方区域，查看优化后的滚动条</div>
+        <div class="scrollable-area">
+          <div class="scrollable-content">
+            <p><strong>Lorem ipsum dolor sit amet</strong></p>
+            <p>consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+
+            <p><strong>Duis aute irure dolor</strong></p>
+            <p>in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            <p><strong>Sed ut perspiciatis unde</strong></p>
+            <p>omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+            <p><strong>Nemo enim ipsam voluptatem</strong></p>
+            <p>quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+
+            <p><strong>Neque porro quisquam est</strong></p>
+            <p>qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>📊 浏览器兼容性</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>浏览器</th>
+            <th>支持程度</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chrome 90+</td>
+            <td><span class="badge">✅ 完全支持</span></td>
+            <td>::-webkit-scrollbar 完整特性</td>
+          </tr>
+          <tr>
+            <td>Edge 90+</td>
+            <td><span class="badge">✅ 完全支持</span></td>
+            <td>基于 Chromium，完整支持</td>
+          </tr>
+          <tr>
+            <td>Safari 14+</td>
+            <td><span class="badge">✅ 完全支持</span></td>
+            <td>Webkit 引擎，原生支持</td>
+          </tr>
+          <tr>
+            <td>Firefox 64+</td>
+            <td><span class="badge warn">⚠️ 部分支持</span></td>
+            <td>仅支持 scrollbar-width/color</td>
+          </tr>
+          <tr>
+            <td>Opera 76+</td>
+            <td><span class="badge">✅ 完全支持</span></td>
+            <td>基于 Chromium，完整支持</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>💻 实现代码</h2>
+      <div class="tip">
+        <span class="tip-icon">💡</span>
+        以下代码已添加到 <span class="highlight">shared/styles/common.css</span>
+      </div>
+
+      <div class="code-block">/* Webkit浏览器 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg,
+    var(--primary-color),
+    var(--secondary-color));
+  border-radius: 10px;
+  border: 2px solid var(--bg-color);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+    var(--primary-dark),
+    var(--primary-color));
+  border-width: 1px;
+}</div>
+
+      <h2>🎯 优化效果</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>首页布局</h3>
+          <p>✅ 内容少时无滚动条<br>✅ 精确的视口高度控制</p>
+        </div>
+        <div class="feature-item">
+          <h3>滚动条样式</h3>
+          <p>✅ 美观的渐变效果<br>✅ 与主题色统一</p>
+        </div>
+        <div class="feature-item">
+          <h3>用户体验</h3>
+          <p>✅ 平滑的交互动画<br>✅ 流畅的滚动体验</p>
+        </div>
+        <div class="feature-item">
+          <h3>响应式设计</h3>
+          <p>✅ 桌面端完美呈现<br>✅ 移动端自适应</p>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top: 32px;">
+        <span class="tip-icon">📖</span>
+        查看完整文档：<a href="../scrollbar-optimization.md" style="color: var(--primary-color); font-weight: 600;">滚动条优化文档</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

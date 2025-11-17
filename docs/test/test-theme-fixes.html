@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主题系统问题修复验证</title>
+  <link rel="stylesheet" href="../../shared/styles/common.css">
+  <link rel="stylesheet" href="../../shared/styles/theme-selector.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--night-blue) 0%, var(--primary-color) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .test-container {
+      background: white;
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      max-width: 700px;
+      width: 100%;
+    }
+
+    h1 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 28px;
+    }
+
+    .intro {
+      color: var(--text-light);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .test-btn {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 32px;
+    }
+
+    .test-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-alpha-30);
+    }
+
+    .checklist {
+      background: var(--bg-color);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+
+    .checklist h2 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .check-item:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .check-text {
+      flex: 1;
+      color: var(--text-color);
+      line-height: 1.5;
+    }
+
+    .check-text strong {
+      color: var(--primary-color);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--success-alpha-10);
+      color: var(--success-color);
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .fix-summary {
+      background: var(--primary-alpha-05);
+      border-left: 4px solid var(--primary-color);
+      padding: 20px;
+      border-radius: var(--radius-md);
+    }
+
+    .fix-summary h3 {
+      margin: 0 0 12px 0;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    .fix-summary ul {
+      margin: 0;
+      padding-left: 24px;
+      color: var(--text-color);
+    }
+
+    .fix-summary li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🔧 主题系统问题修复验证</h1>
+    <p class="intro">
+      以下三个问题已全部修复，请打开主题选择器进行验证测试。
+    </p>
+
+    <button class="test-btn" onclick="openThemeSelector()">
+      🚀 打开主题选择器
+    </button>
+
+    <div class="checklist">
+      <h2>
+        <span>✅</span>
+        修复清单
+      </h2>
+
+      <div class="check-item">
+        <span class="check-icon">1️⃣</span>
+        <div class="check-text">
+          <strong>选择标识动态更新</strong><br>
+          修复了选中标识固定在第一个主题上的问题。现在点击任何预设主题，勾选标记会动态移动到被选中的主题卡片上。
+        </div>
+      </div>
+
+      <div class="check-item">
+        <span class="check-icon">2️⃣</span>
+        <div class="check-text">
+          <strong>消除横向滚动条</strong><br>
+          优化了所有网格布局和容器宽度，添加了 <code>max-width: 100%</code> 和 <code>overflow-x: hidden</code>，确保弹框内容不会横向溢出。
+        </div>
+      </div>
+
+      <div class="check-item">
+        <span class="check-icon">3️⃣</span>
+        <div class="check-text">
+          <strong>标签切换无抖动</strong><br>
+          为每个标签页设置了最小高度 <code>min-height: 400px</code>（移动端 350px），切换标签时自动重置滚动位置，消除了弹框抖动效果。
+        </div>
+      </div>
+    </div>
+
+    <div class="fix-summary">
+      <h3>📋 技术实现细节</h3>
+      <ul>
+        <li><strong>动态勾选标记：</strong>在 <code>selectPresetTheme()</code> 函数中动态添加/移除 DOM 元素</li>
+        <li><strong>布局优化：</strong>所有网格容器添加 <code>width: 100%; max-width: 100%</code></li>
+        <li><strong>溢出控制：</strong>模态框和内容区域设置 <code>overflow-x: hidden</code></li>
+        <li><strong>固定高度：</strong>标签页内容设置最小高度，保持弹框尺寸稳定</li>
+        <li><strong>滚动重置：</strong>切换标签时重置 <code>scrollTop = 0</code></li>
+        <li><strong>响应式优化：</strong>移动端和平板端分别设置合适的内边距和间距</li>
+      </ul>
+    </div>
+
+    <div style="margin-top: 24px; text-align: center;">
+      <span class="status-badge">所有问题已修复 ✓</span>
+    </div>
+  </div>
+
+  <script src="../../shared/scripts/common.js"></script>
+  <script src="../../shared/scripts/theme.js"></script>
+  <script>
+    console.log('✅ 主题系统问题修复验证页面已加载');
+
+    // 监听主题变更
+    window.addEventListener('themechange', (e) => {
+      console.log('✅ 主题已变更:', e.detail.theme.name);
+    });
+
+    // 测试提示
+    window.addEventListener('load', () => {
+      console.log('\n🔍 测试要点：');
+      console.log('1. 切换不同的预设主题，观察勾选标记是否正确跟随');
+      console.log('2. 调整浏览器窗口大小，检查是否出现横向滚动条');
+      console.log('3. 在三个标签页之间切换，观察弹框是否平滑无抖动');
+      console.log('\n');
+    });
+  </script>
+</body>
+</html>

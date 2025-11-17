@@ -175,11 +175,310 @@
         border-color: var(--primary-color);
       }
 
+      /* 下拉选择器样式 */
+      .tool-select {
+        width: 100%;
+        padding: 12px 16px;
+        background: white;
+        border: 2px solid rgba(139, 92, 246, 0.2);
+        border-radius: 10px;
+        color: var(--text-color);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3e%3cpath fill='%238b5cf6' d='M6 9L1 4h10z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px;
+        padding-right: 36px;
+      }
+
+      .tool-select:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(139, 92, 246, 0.05);
+      }
+
+      .tool-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+      }
+
+      /* 旋转控制布局 */
+      .rotation-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .icon-btn {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .icon-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+      }
+
+      .icon-btn:active {
+        transform: translateY(0);
+      }
+
+      .icon-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .rotation-controls .tool-select {
+        flex: 1;
+      }
+
+      /* 高级功能样式 */
+      .advanced-subsection {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+      }
+
+      .advanced-subsection:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .subsection-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      /* 高级功能控件容器 */
+      .watermark-controls,
+      .border-radius-controls,
+      .border-controls,
+      .shadow-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .watermark-controls > *,
+      .border-radius-controls > *,
+      .border-controls > *,
+      .shadow-controls > * {
+        margin-bottom: 0;
+      }
+
+      .watermark-controls > *:not(:last-child),
+      .border-radius-controls > *:not(:last-child),
+      .border-controls > *:not(:last-child),
+      .shadow-controls > *:not(:last-child) {
+        margin-bottom: 12px;
+      }
+
+      /* 水印控件内部布局 */
+      #textWatermarkControls,
+      #imageWatermarkControls {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #textWatermarkControls > *:not(:last-child),
+      #imageWatermarkControls > *:not(:last-child) {
+        margin-bottom: 12px;
+      }
+
+      /* 开关切换按钮 */
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.3s;
+        border-radius: 24px;
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+
+      .toggle-switch input:checked + .toggle-slider {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+      }
+
+      .toggle-switch input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+
+      .toggle-switch input:disabled + .toggle-slider {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* 文本输入框 */
+      .tool-input {
+        width: 100%;
+        padding: 10px 12px;
+        background: white;
+        border: 2px solid rgba(139, 92, 246, 0.2);
+        border-radius: 8px;
+        color: var(--text-color);
+        font-size: 14px;
+        font-weight: 500;
+        outline: none;
+        transition: all 0.3s ease;
+        margin-bottom: 8px;
+      }
+
+      .tool-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+      }
+
+      .tool-input::placeholder {
+        color: #999;
+      }
+
+      .small-input {
+        width: auto;
+        flex: 1;
+        margin-bottom: 0;
+        min-width: 0;
+      }
+
+      /* 确保control-row中的number输入框样式一致 */
+      .control-row input[type="number"] {
+        text-align: center;
+      }
+
+      /* 小尺寸选择器 */
+      .small-select {
+        margin-bottom: 0;
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* 小尺寸按钮 */
+      .small-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+        margin-bottom: 0;
+      }
+
+      /* 控制行布局 */
+      .control-row {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+        margin-bottom: 12px;
+      }
+
+      .control-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .control-row > * {
+        margin-bottom: 0 !important;
+      }
+
+      /* 控制行响应式 - 防止内容过度拥挤 */
+      @media (max-width: 1200px) {
+        .control-row {
+          flex-wrap: wrap;
+        }
+
+        .control-row .color-picker {
+          flex-basis: auto;
+        }
+
+        .control-row .small-input,
+        .control-row .small-select {
+          flex-basis: calc(100% - 58px);
+          min-width: calc(100% - 58px);
+        }
+      }
+
+      /* 颜色选择器 */
+      .color-picker {
+        width: 50px;
+        min-width: 50px;
+        height: auto;
+        padding: 4px;
+        border: 2px solid rgba(139, 92, 246, 0.2);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+        flex-shrink: 0;
+      }
+
+      .color-picker:hover {
+        border-color: var(--primary-color);
+      }
+
+      .color-picker::-webkit-color-swatch-wrapper {
+        padding: 0;
+      }
+
+      .color-picker::-webkit-color-swatch {
+        border: none;
+        border-radius: 6px;
+      }
+
       /* 滑块控制 */
       .slider-control {
         display: flex;
         flex-direction: column;
         gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .slider-control:last-child {
+        margin-bottom: 0;
       }
 
       .slider-label {
@@ -656,6 +955,10 @@
       .mobile-toolbar {
         display: none;
       }
+      .mobile-toolbar-wrapper {
+        display: none !important; /* PC端完全隐藏 */
+      }
+
 
       @media (max-width: 768px) {
         /* 移动端 Toast 优化 */
@@ -793,7 +1096,7 @@
           bottom: 0;
           left: 0;
           right: 0;
-          display: flex;
+          display: flex !important; /* 移动端显示 */
           flex-direction: column-reverse; /* ✨ 反转:导航在下,内容在上 */
           background: rgba(255, 255, 255, 0.98);
           backdrop-filter: blur(20px);
@@ -1340,6 +1643,40 @@
         gap: 6px;
       }
 
+      /* 移动端drawer-section带开关的标题 */
+      .drawer-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .drawer-section-header .drawer-section-title {
+        margin-bottom: 0;
+      }
+
+      /* 移动端高级功能控件容器 */
+      .mobile-watermark-controls,
+      .mobile-border-radius-controls,
+      .mobile-border-controls,
+      .mobile-shadow-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .mobile-watermark-controls .tool-select,
+      .mobile-watermark-controls .tool-input {
+        margin-bottom: 0;
+      }
+
+      #mobileTextWatermarkControls,
+      #mobileImageWatermarkControls {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
       .drawer-overlay {
         display: none;
         position: fixed;
@@ -1407,14 +1744,14 @@
 
           <div class="tool-section">
             <div class="tool-section-title">✂️ 裁剪比例</div>
-            <div class="ratio-grid">
-              <div class="ratio-btn active" data-ratio="free">自由</div>
-              <div class="ratio-btn" data-ratio="1:1">1:1</div>
-              <div class="ratio-btn" data-ratio="4:3">4:3</div>
-              <div class="ratio-btn" data-ratio="16:9">16:9</div>
-              <div class="ratio-btn" data-ratio="3:4">3:4</div>
-              <div class="ratio-btn" data-ratio="9:16">9:16</div>
-            </div>
+            <select class="tool-select" id="ratioSelect">
+              <option value="free">自由裁剪</option>
+              <option value="1:1">正方形 (1:1)</option>
+              <option value="4:3">横向 (4:3)</option>
+              <option value="16:9">宽屏 (16:9)</option>
+              <option value="3:4">竖向 (3:4)</option>
+              <option value="9:16">手机竖屏 (9:16)</option>
+            </select>
             <button class="tool-btn" id="applyCropBtn" disabled>
               <span>✂️</span>
               <span>应用裁剪</span>
@@ -1423,34 +1760,27 @@
 
           <div class="tool-section">
             <div class="tool-section-title">🔄 旋转翻转</div>
-            <button class="tool-btn" id="rotateLeftBtn" disabled>
-              <span>↶</span>
-              <span>左旋90°</span>
-            </button>
-            <button class="tool-btn" id="rotateRightBtn" disabled>
-              <span>↷</span>
-              <span>右旋90°</span>
-            </button>
-            <button class="tool-btn" id="flipHBtn" disabled>
-              <span>↔️</span>
-              <span>水平翻转</span>
-            </button>
-            <button class="tool-btn" id="flipVBtn" disabled>
-              <span>↕️</span>
-              <span>垂直翻转</span>
-            </button>
+            <div class="rotation-controls">
+              <select class="tool-select" id="flipSelect">
+                <option value="">选择翻转方式</option>
+                <option value="horizontal">↔️ 水平翻转</option>
+                <option value="vertical">↕️ 垂直翻转</option>
+              </select>
+              <button class="icon-btn" id="rotateLeftBtn" disabled title="左旋90°">↶</button>
+              <button class="icon-btn" id="rotateRightBtn" disabled title="右旋90°">↷</button>
+            </div>
           </div>
 
           <div class="tool-section">
             <div class="tool-section-title">🎨 滤镜效果</div>
-            <div class="filter-grid">
-              <div class="filter-btn active" data-filter="none">原图</div>
-              <div class="filter-btn" data-filter="grayscale">黑白</div>
-              <div class="filter-btn" data-filter="sepia">复古</div>
-              <div class="filter-btn" data-filter="invert">反色</div>
-              <div class="filter-btn" data-filter="blur">模糊</div>
-              <div class="filter-btn" data-filter="saturate">鲜艳</div>
-            </div>
+            <select class="tool-select" id="filterSelect">
+              <option value="none">原图</option>
+              <option value="grayscale">⚫ 黑白</option>
+              <option value="sepia">📜 复古</option>
+              <option value="invert">🔄 反色</option>
+              <option value="blur">💫 模糊</option>
+              <option value="saturate">🌈 鲜艳</option>
+            </select>
           </div>
 
           <div class="tool-section">
@@ -1475,6 +1805,229 @@
                 <span class="slider-value" id="saturationValue">100%</span>
               </div>
               <input type="range" id="saturationSlider" min="0" max="200" value="100" disabled />
+            </div>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-section-title">✨ 高级功能</div>
+
+            <!-- 水印功能 -->
+            <div class="advanced-subsection">
+              <div class="subsection-header">
+                <span>💧 水印</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="watermarkToggle" disabled>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="watermark-controls" id="watermarkControls" style="display: none;">
+                <select class="tool-select small-select" id="watermarkType">
+                  <option value="text">文字水印</option>
+                  <option value="image">图片水印</option>
+                </select>
+
+                <!-- 文字水印控件 -->
+                <div id="textWatermarkControls">
+                  <input type="text" class="tool-input" id="watermarkText" placeholder="输入水印文字" maxlength="50">
+
+                  <div class="control-row">
+                    <select class="tool-select small-select" id="watermarkFont">
+                      <option value="Arial">Arial</option>
+                      <option value="微软雅黑" selected>微软雅黑</option>
+                      <option value="宋体">宋体</option>
+                      <option value="黑体">黑体</option>
+                      <option value="楷体">楷体</option>
+                    </select>
+                    <input type="number" class="tool-input small-input" id="watermarkSize" value="36" min="12" max="200" placeholder="字号">
+                  </div>
+
+                  <div class="control-row">
+                    <input type="color" class="color-picker" id="watermarkColor" value="#ffffff">
+                    <select class="tool-select small-select" id="watermarkPosition">
+                      <option value="bottom-right">右下角</option>
+                      <option value="bottom-left">左下角</option>
+                      <option value="top-right">右上角</option>
+                      <option value="top-left">左上角</option>
+                      <option value="center">居中</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- 图片水印控件 -->
+                <div id="imageWatermarkControls" style="display: none;">
+                  <button class="tool-btn secondary small-btn" id="uploadWatermarkBtn">
+                    <span>📁</span>
+                    <span>选择水印图片</span>
+                  </button>
+                  <input type="file" id="watermarkImageInput" accept="image/*" style="display: none;">
+
+                  <div class="control-row">
+                    <input type="number" class="tool-input small-input" id="watermarkImageSize" value="20" min="5" max="100" placeholder="大小%">
+                    <select class="tool-select small-select" id="watermarkImagePosition">
+                      <option value="bottom-right">右下角</option>
+                      <option value="bottom-left">左下角</option>
+                      <option value="top-right">右上角</option>
+                      <option value="top-left">左上角</option>
+                      <option value="center">居中</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="slider-control">
+                  <div class="slider-label">
+                    <span>不透明度</span>
+                    <span class="slider-value" id="watermarkOpacityValue">80%</span>
+                  </div>
+                  <input type="range" id="watermarkOpacity" min="0" max="100" value="80" />
+                </div>
+
+                <!-- 平铺模式 -->
+                <div class="control-row" style="margin-top: 12px; padding: 8px; background: #fff3cd; border-radius: 4px;">
+                  <label style="display: flex; align-items: center; cursor: pointer; font-size: 13px; color: #856404;">
+                    <input type="checkbox" id="watermarkTiled" style="margin-right: 8px;">
+                    <span>🔲 平铺模式</span>
+                  </label>
+                </div>
+
+                <!-- 平铺参数（仅在平铺模式下显示） -->
+                <div id="watermarkTiledControls" style="display: none; margin-top: 12px;">
+                  <!-- 旋转角度 -->
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>🔄 旋转角度</span>
+                      <span class="slider-value" id="watermarkRotationValue">0°</span>
+                    </div>
+                    <input type="range" id="watermarkRotation" min="-180" max="180" value="0" />
+                  </div>
+
+                  <!-- 水平间距 -->
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↔️ 水平间距</span>
+                      <span class="slider-value" id="watermarkSpacingXValue">200px</span>
+                    </div>
+                    <input type="range" id="watermarkSpacingX" min="50" max="500" value="200" />
+                  </div>
+
+                  <!-- 垂直间距 -->
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↕️ 垂直间距</span>
+                      <span class="slider-value" id="watermarkSpacingYValue">200px</span>
+                    </div>
+                    <input type="range" id="watermarkSpacingY" min="50" max="500" value="200" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 圆角功能 -->
+            <div class="advanced-subsection">
+              <div class="subsection-header">
+                <span>⭕ 圆角</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="borderRadiusToggle" disabled>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="border-radius-controls" id="borderRadiusControls" style="display: none;">
+                <!-- 圆角模式切换 -->
+                <div class="control-row" style="margin-bottom: 12px;">
+                  <select class="tool-select" id="borderRadiusMode">
+                    <option value="unified">统一圆角</option>
+                    <option value="individual">独立设置</option>
+                  </select>
+                </div>
+
+                <!-- 统一圆角 -->
+                <div id="unifiedRadiusControl">
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>圆角大小</span>
+                      <span class="slider-value" id="borderRadiusValue">0px</span>
+                    </div>
+                    <input type="range" id="borderRadiusSlider" min="0" max="200" value="0" />
+                  </div>
+                </div>
+
+                <!-- 独立圆角 -->
+                <div id="individualRadiusControl" style="display: none;">
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↖️ 左上</span>
+                      <span class="slider-value" id="radiusTopLeftValue">0px</span>
+                    </div>
+                    <input type="range" id="radiusTopLeft" min="0" max="200" value="0" />
+                  </div>
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↗️ 右上</span>
+                      <span class="slider-value" id="radiusTopRightValue">0px</span>
+                    </div>
+                    <input type="range" id="radiusTopRight" min="0" max="200" value="0" />
+                  </div>
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↙️ 左下</span>
+                      <span class="slider-value" id="radiusBottomLeftValue">0px</span>
+                    </div>
+                    <input type="range" id="radiusBottomLeft" min="0" max="200" value="0" />
+                  </div>
+                  <div class="slider-control">
+                    <div class="slider-label">
+                      <span>↘️ 右下</span>
+                      <span class="slider-value" id="radiusBottomRightValue">0px</span>
+                    </div>
+                    <input type="range" id="radiusBottomRight" min="0" max="200" value="0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 边框功能 -->
+            <div class="advanced-subsection">
+              <div class="subsection-header">
+                <span>🖼️ 边框</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="borderToggle" disabled>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="border-controls" id="borderControls" style="display: none;">
+                <div class="control-row">
+                  <input type="number" class="tool-input small-input" id="borderWidth" value="10" min="1" max="100" placeholder="宽度">
+                  <input type="color" class="color-picker" id="borderColor" value="#ffffff">
+                </div>
+              </div>
+            </div>
+
+            <!-- 阴影功能 -->
+            <div class="advanced-subsection">
+              <div class="subsection-header">
+                <span>🌫️ 阴影</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="shadowToggle" disabled>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="shadow-controls" id="shadowControls" style="display: none;">
+                <div class="slider-control">
+                  <div class="slider-label">
+                    <span>模糊度</span>
+                    <span class="slider-value" id="shadowBlurValue">20px</span>
+                  </div>
+                  <input type="range" id="shadowBlur" min="0" max="100" value="20" />
+                </div>
+
+                <div class="control-row">
+                  <input type="color" class="color-picker" id="shadowColor" value="#000000">
+                  <input type="number" class="tool-input small-input" id="shadowOpacity" value="30" min="0" max="100" placeholder="透明%">
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1529,6 +2082,10 @@
               <button class="mobile-tab" data-tab="brightness">亮度</button>
               <button class="mobile-tab" data-tab="contrast">对比度</button>
               <button class="mobile-tab" data-tab="saturation">饱和度</button>
+              <button class="mobile-tab" data-tab="watermark">水印</button>
+              <button class="mobile-tab" data-tab="radius">圆角</button>
+              <button class="mobile-tab" data-tab="border">边框</button>
+              <button class="mobile-tab" data-tab="shadow">阴影</button>
               <button class="mobile-tab" data-tab="history">还原</button>
               <button class="mobile-tab" data-tab="export">导出</button>
             </div>
@@ -1592,6 +2149,201 @@
               <div class="mobile-slider-row">
                 <input type="range" id="mobileSaturationSlider3" min="0" max="200" value="100" disabled />
                 <span class="mobile-slider-value" id="mobileSaturationValue3">100%</span>
+              </div>
+            </div>
+
+            <!-- 水印 -->
+            <div class="mobile-tab-content" id="tabWatermark">
+              <select class="tool-select" id="mobileWatermarkType2" style="margin-bottom: 12px;" disabled>
+                <option value="text">💬 文字水印</option>
+                <option value="image">🖼️ 图片水印</option>
+              </select>
+
+              <!-- 文字水印 -->
+              <div id="mobileTextWatermarkControlsSimple">
+                <input type="text" class="tool-input" id="mobileWatermarkText2" placeholder="输入水印文字" maxlength="50" style="margin-bottom: 12px;" disabled>
+
+                <div style="display: grid; grid-template-columns: 1fr 80px; gap: 8px; margin-bottom: 12px;">
+                  <select class="tool-select" id="mobileWatermarkFont2" disabled>
+                    <option value="Arial">Arial</option>
+                    <option value="微软雅黑" selected>微软雅黑</option>
+                    <option value="宋体">宋体</option>
+                    <option value="黑体">黑体</option>
+                    <option value="楷体">楷体</option>
+                  </select>
+                  <input type="number" class="tool-input" id="mobileWatermarkSize2" value="36" min="12" max="200" placeholder="字号" disabled>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 60px 1fr; gap: 8px; margin-bottom: 12px; align-items: center;">
+                  <input type="color" class="color-picker" id="mobileWatermarkColor2" value="#ffffff" disabled>
+                  <select class="tool-select" id="mobileWatermarkPosition2" disabled>
+                    <option value="bottom-right">📍 右下角</option>
+                    <option value="bottom-left">📍 左下角</option>
+                    <option value="top-right">📍 右上角</option>
+                    <option value="top-left">📍 左上角</option>
+                    <option value="center">📍 居中</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 图片水印 -->
+              <div id="mobileImageWatermarkControlsSimple" style="display: none;">
+                <button class="mobile-option-btn" id="mobileUploadWatermarkBtn2" style="width: 100%; margin-bottom: 12px;" disabled>📁 选择水印图片</button>
+                <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px; margin-bottom: 12px;">
+                  <input type="number" class="tool-input" id="mobileWatermarkImageSize2" value="20" min="5" max="100" placeholder="大小%" disabled>
+                  <select class="tool-select" id="mobileWatermarkImagePosition2" disabled>
+                    <option value="bottom-right">📍 右下角</option>
+                    <option value="bottom-left">📍 左下角</option>
+                    <option value="top-right">📍 右上角</option>
+                    <option value="top-left">📍 左上角</option>
+                    <option value="center">📍 居中</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 透明度 -->
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">💧 透明度</span>
+                  <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileWatermarkOpacityValue2">80%</span>
+                </div>
+                <input type="range" id="mobileWatermarkOpacity2" min="0" max="100" value="80" style="width: 100%;" disabled />
+              </div>
+
+              <!-- 平铺模式 -->
+              <div style="padding: 12px; background: #fff3cd; border-radius: 8px; margin-bottom: 12px;">
+                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                  <span style="font-size: 14px; color: #856404; font-weight: 500;">🔲 平铺模式</span>
+                  <input type="checkbox" id="mobileWatermarkTiled2" style="width: 20px; height: 20px;" disabled>
+                </label>
+              </div>
+
+              <!-- 平铺参数（仅在平铺模式下显示） -->
+              <div id="mobileWatermarkTiledControls2" style="display: none;">
+                <!-- 旋转角度 -->
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">🔄 旋转角度</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileWatermarkRotationValue2">0°</span>
+                  </div>
+                  <input type="range" id="mobileWatermarkRotation2" min="-180" max="180" value="0" style="width: 100%;" disabled />
+                </div>
+
+                <!-- 水平间距 -->
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↔️ 水平间距</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileWatermarkSpacingXValue2">200px</span>
+                  </div>
+                  <input type="range" id="mobileWatermarkSpacingX2" min="50" max="500" value="200" style="width: 100%;" disabled />
+                </div>
+
+                <!-- 垂直间距 -->
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↕️ 垂直间距</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileWatermarkSpacingYValue2">200px</span>
+                  </div>
+                  <input type="range" id="mobileWatermarkSpacingY2" min="50" max="500" value="200" style="width: 100%;" disabled />
+                </div>
+              </div>
+            </div>
+
+            <!-- 圆角 -->
+            <div class="mobile-tab-content" id="tabRadius">
+              <select class="tool-select" id="mobileBorderRadiusMode2" style="margin-bottom: 12px;" disabled>
+                <option value="unified">⭕ 统一圆角</option>
+                <option value="individual">🔷 独立设置</option>
+              </select>
+
+              <!-- 统一圆角 -->
+              <div id="mobileUnifiedRadiusControlSimple">
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">⭕ 圆角大小</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileBorderRadiusValue2">0px</span>
+                  </div>
+                  <input type="range" id="mobileBorderRadiusSlider2" min="0" max="200" value="0" style="width: 100%;" disabled />
+                </div>
+              </div>
+
+              <!-- 独立圆角 -->
+              <div id="mobileIndividualRadiusControlSimple" style="display: none;">
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↖️ 左上角</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileRadiusTopLeftValue2">0px</span>
+                  </div>
+                  <input type="range" id="mobileRadiusTopLeft2" min="0" max="200" value="0" style="width: 100%;" disabled />
+                </div>
+
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↗️ 右上角</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileRadiusTopRightValue2">0px</span>
+                  </div>
+                  <input type="range" id="mobileRadiusTopRight2" min="0" max="200" value="0" style="width: 100%;" disabled />
+                </div>
+
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↙️ 左下角</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileRadiusBottomLeftValue2">0px</span>
+                  </div>
+                  <input type="range" id="mobileRadiusBottomLeft2" min="0" max="200" value="0" style="width: 100%;" disabled />
+                </div>
+
+                <div style="padding: 12px; background: #f8f8f8; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #666;">↘️ 右下角</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileRadiusBottomRightValue2">0px</span>
+                  </div>
+                  <input type="range" id="mobileRadiusBottomRight2" min="0" max="200" value="0" style="width: 100%;" disabled />
+                </div>
+              </div>
+            </div>
+
+            <!-- 边框 -->
+            <div class="mobile-tab-content" id="tabBorder">
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">🖼️ 边框宽度</span>
+                  <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileBorderWidthValue2">10px</span>
+                </div>
+                <input type="range" id="mobileBorderWidthSlider2" min="1" max="100" value="10" style="width: 100%;" disabled />
+              </div>
+
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">🎨 边框颜色</span>
+                </div>
+                <input type="color" class="color-picker" id="mobileBorderColor2" value="#000000" style="width: 100%; height: 44px;" disabled>
+              </div>
+            </div>
+
+            <!-- 阴影 -->
+            <div class="mobile-tab-content" id="tabShadow">
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">🌫️ 模糊度</span>
+                  <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileShadowBlurValue2">10px</span>
+                </div>
+                <input type="range" id="mobileShadowBlurSlider2" min="0" max="50" value="10" style="width: 100%;" disabled />
+              </div>
+
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">🎨 阴影颜色</span>
+                </div>
+                <input type="color" class="color-picker" id="mobileShadowColor2" value="#000000" style="width: 100%; height: 44px;" disabled>
+              </div>
+
+              <div style="padding: 12px; background: #f8f8f8; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 13px; color: #666;">💧 透明度</span>
+                  <span style="font-size: 14px; font-weight: 500; color: #333;" id="mobileShadowOpacityValue2">50%</span>
+                </div>
+                <input type="range" id="mobileShadowOpacity2" min="0" max="100" value="50" style="width: 100%;" disabled />
               </div>
             </div>
 
@@ -1671,11 +2423,11 @@
       </div>
     </div>
 
-    <!-- 移动端抽屉遮罩 - 已废弃,使用扁平化导航 -->
-    <div class="drawer-overlay" id="drawerOverlay" style="display: none;"></div>
+    <!-- 移动端抽屉遮罩 - 用于高级功能详细设置 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
 
-    <!-- 移动端抽屉面板 - 已废弃,使用扁平化导航 -->
-    <div class="mobile-drawer" id="mobileDrawer" style="display: none;">
+    <!-- 移动端抽屉面板 - 用于高级功能详细设置 -->
+    <div class="mobile-drawer" id="mobileDrawer">
       <div class="drawer-handle" id="drawerHandle">
         <div class="drawer-handle-bar"></div>
       </div>
@@ -1683,6 +2435,20 @@
         <!-- 裁剪功能 -->
         <div class="drawer-section">
           <div class="drawer-section-title">✂️ 裁剪比例</div>
+
+          <!-- 下拉选择器 -->
+          <select class="tool-select" id="mobileRatioSelect" style="margin-bottom: 12px;">
+            <option value="free">自由裁剪</option>
+            <option value="1:1">正方形 (1:1)</option>
+            <option value="4:3">横屏 (4:3)</option>
+            <option value="16:9">宽屏 (16:9)</option>
+            <option value="3:4">竖屏 (3:4)</option>
+            <option value="9:16">手机屏 (9:16)</option>
+            <option value="2:3">照片 (2:3)</option>
+            <option value="3:2">相机 (3:2)</option>
+          </select>
+
+          <!-- 按钮网格（保留用于快速选择） -->
           <div class="ratio-grid">
             <div class="ratio-btn active" data-ratio="free" data-mobile="true">自由</div>
             <div class="ratio-btn" data-ratio="1:1" data-mobile="true">1:1</div>
@@ -1700,6 +2466,18 @@
         <!-- 滤镜效果 -->
         <div class="drawer-section">
           <div class="drawer-section-title">🎨 滤镜效果</div>
+
+          <!-- 下拉选择器 -->
+          <select class="tool-select" id="mobileFilterSelect" style="margin-bottom: 12px;">
+            <option value="none">原图</option>
+            <option value="grayscale">⚫ 黑白</option>
+            <option value="sepia">📜 复古</option>
+            <option value="invert">🔄 反色</option>
+            <option value="blur">🌫️ 模糊</option>
+            <option value="saturate">🌈 鲜艳</option>
+          </select>
+
+          <!-- 按钮网格（保留用于快速选择） -->
           <div class="filter-grid">
             <div class="filter-btn active" data-filter="none" data-mobile="true">原图</div>
             <div class="filter-btn" data-filter="grayscale" data-mobile="true">黑白</div>
@@ -1739,6 +2517,19 @@
         <!-- 旋转翻转 -->
         <div class="drawer-section">
           <div class="drawer-section-title">🔄 旋转翻转</div>
+
+          <!-- 下拉选择器 -->
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <select class="tool-select" id="mobileFlipSelect" style="flex: 1;">
+              <option value="">选择翻转方式</option>
+              <option value="horizontal">↔️ 水平翻转</option>
+              <option value="vertical">↕️ 垂直翻转</option>
+            </select>
+            <button class="icon-btn" id="mobileRotateLeftBtn2" disabled title="左旋90°">↶</button>
+            <button class="icon-btn" id="mobileRotateRightBtn2" disabled title="右旋90°">↷</button>
+          </div>
+
+          <!-- 按钮网格（保留用于快速选择） -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <button class="tool-btn" id="mobileRotateLeftBtn" disabled>
               <span>↶</span>
@@ -1773,6 +2564,186 @@
             </button>
           </div>
         </div>
+
+        <!-- ========== 移动端高级功能 ========== -->
+
+        <!-- 水印功能 -->
+        <div class="drawer-section">
+          <div class="drawer-section-header">
+            <div class="drawer-section-title">💧 水印</div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mobileWatermarkToggle" disabled>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="mobile-watermark-controls" id="mobileWatermarkControls" style="display: none;">
+            <select class="tool-select" id="mobileWatermarkType">
+              <option value="text">文字水印</option>
+              <option value="image">图片水印</option>
+            </select>
+
+            <!-- 文字水印 -->
+            <div id="mobileTextWatermarkControls">
+              <input type="text" class="tool-input" id="mobileWatermarkText" placeholder="输入水印文字" maxlength="50">
+
+              <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+                <select class="tool-select" id="mobileWatermarkFont">
+                  <option value="Arial">Arial</option>
+                  <option value="微软雅黑" selected>微软雅黑</option>
+                  <option value="宋体">宋体</option>
+                  <option value="黑体">黑体</option>
+                  <option value="楷体">楷体</option>
+                </select>
+                <input type="number" class="tool-input" id="mobileWatermarkSize" value="36" min="12" max="200" placeholder="字号">
+              </div>
+
+              <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center;">
+                <input type="color" class="color-picker" id="mobileWatermarkColor" value="#ffffff">
+                <select class="tool-select" id="mobileWatermarkPosition">
+                  <option value="bottom-right">右下角</option>
+                  <option value="bottom-left">左下角</option>
+                  <option value="top-right">右上角</option>
+                  <option value="top-left">左上角</option>
+                  <option value="center">居中</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 图片水印 -->
+            <div id="mobileImageWatermarkControls" style="display: none;">
+              <button class="tool-btn secondary" id="mobileUploadWatermarkBtn" style="width: 100%;">
+                <span>📁</span>
+                <span>选择水印图片</span>
+              </button>
+
+              <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 8px;">
+                <input type="number" class="tool-input" id="mobileWatermarkImageSize" value="20" min="5" max="100" placeholder="大小%">
+                <select class="tool-select" id="mobileWatermarkImagePosition">
+                  <option value="bottom-right">右下角</option>
+                  <option value="bottom-left">左下角</option>
+                  <option value="top-right">右上角</option>
+                  <option value="top-left">左上角</option>
+                  <option value="center">居中</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-label">
+                <span>不透明度</span>
+                <span class="slider-value" id="mobileWatermarkOpacityValue">80%</span>
+              </div>
+              <input type="range" id="mobileWatermarkOpacity" min="0" max="100" value="80" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 圆角功能 -->
+        <div class="drawer-section">
+          <div class="drawer-section-header">
+            <div class="drawer-section-title">⭕ 圆角</div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mobileBorderRadiusToggle" disabled>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="mobile-border-radius-controls" id="mobileBorderRadiusControls" style="display: none;">
+            <!-- 圆角模式切换 -->
+            <select class="tool-select" id="mobileBorderRadiusMode">
+              <option value="unified">统一圆角</option>
+              <option value="individual">独立设置</option>
+            </select>
+
+            <!-- 统一圆角 -->
+            <div id="mobileUnifiedRadiusControl">
+              <div class="slider-control">
+                <div class="slider-label">
+                  <span>圆角大小</span>
+                  <span class="slider-value" id="mobileBorderRadiusValue">0px</span>
+                </div>
+                <input type="range" id="mobileBorderRadiusSlider" min="0" max="200" value="0" />
+              </div>
+            </div>
+
+            <!-- 独立圆角 -->
+            <div id="mobileIndividualRadiusControl" style="display: none;">
+              <div class="slider-control">
+                <div class="slider-label">
+                  <span>↖️ 左上</span>
+                  <span class="slider-value" id="mobileRadiusTopLeftValue">0px</span>
+                </div>
+                <input type="range" id="mobileRadiusTopLeft" min="0" max="200" value="0" />
+              </div>
+              <div class="slider-control">
+                <div class="slider-label">
+                  <span>↗️ 右上</span>
+                  <span class="slider-value" id="mobileRadiusTopRightValue">0px</span>
+                </div>
+                <input type="range" id="mobileRadiusTopRight" min="0" max="200" value="0" />
+              </div>
+              <div class="slider-control">
+                <div class="slider-label">
+                  <span>↙️ 左下</span>
+                  <span class="slider-value" id="mobileRadiusBottomLeftValue">0px</span>
+                </div>
+                <input type="range" id="mobileRadiusBottomLeft" min="0" max="200" value="0" />
+              </div>
+              <div class="slider-control">
+                <div class="slider-label">
+                  <span>↘️ 右下</span>
+                  <span class="slider-value" id="mobileRadiusBottomRightValue">0px</span>
+                </div>
+                <input type="range" id="mobileRadiusBottomRight" min="0" max="200" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 边框功能 -->
+        <div class="drawer-section">
+          <div class="drawer-section-header">
+            <div class="drawer-section-title">🖼️ 边框</div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mobileBorderToggle" disabled>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="mobile-border-controls" id="mobileBorderControls" style="display: none;">
+            <div style="display: grid; grid-template-columns: 2fr auto; gap: 8px; align-items: center;">
+              <input type="number" class="tool-input" id="mobileBorderWidth" value="10" min="1" max="100" placeholder="边框宽度">
+              <input type="color" class="color-picker" id="mobileBorderColor" value="#ffffff">
+            </div>
+          </div>
+        </div>
+
+        <!-- 阴影功能 -->
+        <div class="drawer-section">
+          <div class="drawer-section-header">
+            <div class="drawer-section-title">🌫️ 阴影</div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="mobileShadowToggle" disabled>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="mobile-shadow-controls" id="mobileShadowControls" style="display: none;">
+            <div class="slider-control">
+              <div class="slider-label">
+                <span>模糊度</span>
+                <span class="slider-value" id="mobileShadowBlurValue">20px</span>
+              </div>
+              <input type="range" id="mobileShadowBlur" min="0" max="100" value="20" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center;">
+              <input type="color" class="color-picker" id="mobileShadowColor" value="#000000">
+              <input type="number" class="tool-input" id="mobileShadowOpacity" value="30" min="0" max="100" placeholder="透明度%">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1798,7 +2769,45 @@
         filter: 'none',
         rotation: 0,
         flipH: false,
-        flipV: false
+        flipV: false,
+        // 高级功能状态
+        watermark: {
+          enabled: false,
+          type: 'text',
+          text: '',
+          font: '微软雅黑',
+          size: 36,
+          color: '#ffffff',
+          position: 'bottom-right',
+          opacity: 0.8,
+          image: null,
+          imageSize: 20,
+          // 平铺模式
+          tiled: false,        // 是否启用平铺
+          rotation: 0,         // 旋转角度 (-180 到 180)
+          spacingX: 200,       // 水平间距
+          spacingY: 200        // 垂直间距
+        },
+        borderRadius: {
+          enabled: false,
+          mode: 'unified', // 'unified' 或 'individual'
+          value: 0, // 统一圆角值
+          topLeft: 0,
+          topRight: 0,
+          bottomLeft: 0,
+          bottomRight: 0
+        },
+        border: {
+          enabled: false,
+          width: 10,
+          color: '#ffffff'
+        },
+        shadow: {
+          enabled: false,
+          blur: 20,
+          color: '#000000',
+          opacity: 0.3
+        }
       };
 
       // 历史记录系统
@@ -1828,21 +2837,42 @@
 
         document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
 
-        // 裁剪比例 (仅绑定PC端按钮)
-        document.querySelectorAll('.toolbar .ratio-btn').forEach(btn => {
-          btn.addEventListener('click', handleRatioChange);
-        });
+        // 裁剪比例 - 下拉选择器
+        const ratioSelect = document.getElementById('ratioSelect');
+        if (ratioSelect) {
+          ratioSelect.addEventListener('change', function() {
+            const ratio = this.value;
+            handleRatioChange({ target: { dataset: { ratio } } });
+          });
+        }
 
-        // 旋转翻转
+        // 旋转翻转 - 图标按钮保持不变
         document.getElementById('rotateLeftBtn').addEventListener('click', () => rotateImage(-90));
         document.getElementById('rotateRightBtn').addEventListener('click', () => rotateImage(90));
-        document.getElementById('flipHBtn').addEventListener('click', flipHorizontal);
-        document.getElementById('flipVBtn').addEventListener('click', flipVertical);
 
-        // 滤镜 (仅绑定PC端按钮)
-        document.querySelectorAll('.toolbar .filter-btn').forEach(btn => {
-          btn.addEventListener('click', handleFilterChange);
-        });
+        // 翻转 - 下拉选择器
+        const flipSelect = document.getElementById('flipSelect');
+        if (flipSelect) {
+          flipSelect.addEventListener('change', function() {
+            const flipType = this.value;
+            if (flipType === 'horizontal') {
+              flipHorizontal();
+            } else if (flipType === 'vertical') {
+              flipVertical();
+            }
+            // 重置下拉选择器
+            setTimeout(() => this.value = '', 300);
+          });
+        }
+
+        // 滤镜 - 下拉选择器
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect) {
+          filterSelect.addEventListener('change', function() {
+            const filter = this.value;
+            handleFilterChange({ target: { dataset: { filter } } });
+          });
+        }
 
         // 滑块
         document.getElementById('brightnessSlider').addEventListener('input', handleBrightnessChange);
@@ -1863,6 +2893,260 @@
         // 应用裁剪
         document.getElementById('applyCropBtn').addEventListener('click', applyCrop);
 
+        // ========== 高级功能事件监听器 ==========
+
+        // 水印开关
+        document.getElementById('watermarkToggle').addEventListener('change', function() {
+          imageState.watermark.enabled = this.checked;
+          document.getElementById('watermarkControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        // 水印类型切换
+        document.getElementById('watermarkType').addEventListener('change', function() {
+          imageState.watermark.type = this.value;
+          const isText = this.value === 'text';
+          document.getElementById('textWatermarkControls').style.display = isText ? 'block' : 'none';
+          document.getElementById('imageWatermarkControls').style.display = isText ? 'none' : 'block';
+          renderImage();
+        });
+
+        // 文字水印控件
+        document.getElementById('watermarkText').addEventListener('input', function() {
+          imageState.watermark.text = this.value;
+          renderImage();
+        });
+
+        document.getElementById('watermarkFont').addEventListener('change', function() {
+          imageState.watermark.font = this.value;
+          renderImage();
+        });
+
+        document.getElementById('watermarkSize').addEventListener('input', function() {
+          imageState.watermark.size = parseInt(this.value);
+          renderImage();
+        });
+
+        document.getElementById('watermarkColor').addEventListener('change', function() {
+          imageState.watermark.color = this.value;
+          renderImage();
+        });
+
+        document.getElementById('watermarkPosition').addEventListener('change', function() {
+          imageState.watermark.position = this.value;
+          renderImage();
+        });
+
+        document.getElementById('watermarkOpacity').addEventListener('input', function() {
+          imageState.watermark.opacity = parseInt(this.value) / 100;
+          document.getElementById('watermarkOpacityValue').textContent = this.value + '%';
+          renderImage();
+        });
+
+        // 图片水印上传
+        document.getElementById('uploadWatermarkBtn').addEventListener('click', function() {
+          document.getElementById('watermarkImageInput').click();
+        });
+
+        document.getElementById('watermarkImageInput').addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              const img = new Image();
+              img.onload = function() {
+                imageState.watermark.image = img;
+                showToast('水印图片已加载', 'success');
+                renderImage();
+              };
+              img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        document.getElementById('watermarkImageSize').addEventListener('input', function() {
+          imageState.watermark.imageSize = parseInt(this.value);
+          renderImage();
+        });
+
+        document.getElementById('watermarkImagePosition').addEventListener('change', function() {
+          imageState.watermark.position = this.value;
+          renderImage();
+        });
+
+        // 水印平铺模式
+        document.getElementById('watermarkTiled').addEventListener('change', function() {
+          imageState.watermark.tiled = this.checked;
+          document.getElementById('watermarkTiledControls').style.display = this.checked ? 'block' : 'none';
+
+          // 同步移动端
+          const mobileCheckbox = document.getElementById('mobileWatermarkTiled2');
+          if (mobileCheckbox) {
+            mobileCheckbox.checked = this.checked;
+            const mobileControls = document.getElementById('mobileWatermarkTiledControls2');
+            if (mobileControls) {
+              mobileControls.style.display = this.checked ? 'block' : 'none';
+            }
+          }
+
+          renderImage();
+        });
+
+        // 水印旋转角度
+        document.getElementById('watermarkRotation').addEventListener('input', function() {
+          imageState.watermark.rotation = parseInt(this.value);
+          document.getElementById('watermarkRotationValue').textContent = this.value + '°';
+
+          // 同步移动端
+          const mobileSlider = document.getElementById('mobileWatermarkRotation2');
+          const mobileValue = document.getElementById('mobileWatermarkRotationValue2');
+          if (mobileSlider) mobileSlider.value = this.value;
+          if (mobileValue) mobileValue.textContent = this.value + '°';
+
+          renderImage();
+        });
+
+        // 水印水平间距
+        document.getElementById('watermarkSpacingX').addEventListener('input', function() {
+          imageState.watermark.spacingX = parseInt(this.value);
+          document.getElementById('watermarkSpacingXValue').textContent = this.value + 'px';
+
+          // 同步移动端
+          const mobileSlider = document.getElementById('mobileWatermarkSpacingX2');
+          const mobileValue = document.getElementById('mobileWatermarkSpacingXValue2');
+          if (mobileSlider) mobileSlider.value = this.value;
+          if (mobileValue) mobileValue.textContent = this.value + 'px';
+
+          renderImage();
+        });
+
+        // 水印垂直间距
+        document.getElementById('watermarkSpacingY').addEventListener('input', function() {
+          imageState.watermark.spacingY = parseInt(this.value);
+          document.getElementById('watermarkSpacingYValue').textContent = this.value + 'px';
+
+          // 同步移动端
+          const mobileSlider = document.getElementById('mobileWatermarkSpacingY2');
+          const mobileValue = document.getElementById('mobileWatermarkSpacingYValue2');
+          if (mobileSlider) mobileSlider.value = this.value;
+          if (mobileValue) mobileValue.textContent = this.value + 'px';
+
+          renderImage();
+        });
+
+        // 圆角开关
+        document.getElementById('borderRadiusToggle').addEventListener('change', function() {
+          imageState.borderRadius.enabled = this.checked;
+          document.getElementById('borderRadiusControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        // 圆角模式切换
+        document.getElementById('borderRadiusMode').addEventListener('change', function() {
+          imageState.borderRadius.mode = this.value;
+          const isUnified = this.value === 'unified';
+          document.getElementById('unifiedRadiusControl').style.display = isUnified ? 'block' : 'none';
+          document.getElementById('individualRadiusControl').style.display = isUnified ? 'none' : 'block';
+
+          // 同步移动端
+          document.getElementById('mobileBorderRadiusMode').value = this.value;
+          document.getElementById('mobileUnifiedRadiusControl').style.display = isUnified ? 'block' : 'none';
+          document.getElementById('mobileIndividualRadiusControl').style.display = isUnified ? 'none' : 'block';
+
+          renderImage();
+        });
+
+        // 统一圆角滑块
+        document.getElementById('borderRadiusSlider').addEventListener('input', function() {
+          imageState.borderRadius.value = parseInt(this.value);
+          document.getElementById('borderRadiusValue').textContent = this.value + 'px';
+          // 同步移动端
+          document.getElementById('mobileBorderRadiusSlider').value = this.value;
+          document.getElementById('mobileBorderRadiusValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 独立圆角 - 左上
+        document.getElementById('radiusTopLeft').addEventListener('input', function() {
+          imageState.borderRadius.topLeft = parseInt(this.value);
+          document.getElementById('radiusTopLeftValue').textContent = this.value + 'px';
+          // 同步移动端
+          document.getElementById('mobileRadiusTopLeft').value = this.value;
+          document.getElementById('mobileRadiusTopLeftValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 独立圆角 - 右上
+        document.getElementById('radiusTopRight').addEventListener('input', function() {
+          imageState.borderRadius.topRight = parseInt(this.value);
+          document.getElementById('radiusTopRightValue').textContent = this.value + 'px';
+          // 同步移动端
+          document.getElementById('mobileRadiusTopRight').value = this.value;
+          document.getElementById('mobileRadiusTopRightValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 独立圆角 - 左下
+        document.getElementById('radiusBottomLeft').addEventListener('input', function() {
+          imageState.borderRadius.bottomLeft = parseInt(this.value);
+          document.getElementById('radiusBottomLeftValue').textContent = this.value + 'px';
+          // 同步移动端
+          document.getElementById('mobileRadiusBottomLeft').value = this.value;
+          document.getElementById('mobileRadiusBottomLeftValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 独立圆角 - 右下
+        document.getElementById('radiusBottomRight').addEventListener('input', function() {
+          imageState.borderRadius.bottomRight = parseInt(this.value);
+          document.getElementById('radiusBottomRightValue').textContent = this.value + 'px';
+          // 同步移动端
+          document.getElementById('mobileRadiusBottomRight').value = this.value;
+          document.getElementById('mobileRadiusBottomRightValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 边框开关
+        document.getElementById('borderToggle').addEventListener('change', function() {
+          imageState.border.enabled = this.checked;
+          document.getElementById('borderControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        document.getElementById('borderWidth').addEventListener('input', function() {
+          imageState.border.width = parseInt(this.value);
+          renderImage();
+        });
+
+        document.getElementById('borderColor').addEventListener('change', function() {
+          imageState.border.color = this.value;
+          renderImage();
+        });
+
+        // 阴影开关
+        document.getElementById('shadowToggle').addEventListener('change', function() {
+          imageState.shadow.enabled = this.checked;
+          document.getElementById('shadowControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        document.getElementById('shadowBlur').addEventListener('input', function() {
+          imageState.shadow.blur = parseInt(this.value);
+          document.getElementById('shadowBlurValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        document.getElementById('shadowColor').addEventListener('change', function() {
+          imageState.shadow.color = this.value;
+          renderImage();
+        });
+
+        document.getElementById('shadowOpacity').addEventListener('input', function() {
+          imageState.shadow.opacity = parseInt(this.value) / 100;
+          renderImage();
+        });
+
         // 移动端扁平化导航按钮
         document.getElementById('mobileRotateLeftBtn').addEventListener('click', () => rotateImage(-90));
         document.getElementById('mobileRotateRightBtn').addEventListener('click', () => rotateImage(90));
@@ -1873,6 +3157,422 @@
         document.getElementById('mobileResetBtn2').addEventListener('click', resetImage);
         document.getElementById('mobileDownloadPNGBtn3').addEventListener('click', () => downloadImage('png'));
         document.getElementById('mobileDownloadJPGBtn3').addEventListener('click', () => downloadImage('jpeg'));
+
+        // 移动端高级功能 - 无需toggle，调整控件时自动启用功能
+        // （控件在各自的监听器中自动启用对应功能）
+
+        // 移动端水印详细控件（新的一级标签版本）
+        // 水印类型切换
+        document.getElementById('mobileWatermarkType2')?.addEventListener('change', function() {
+          // 自动启用水印功能
+          imageState.watermark.enabled = true;
+          imageState.watermark.type = this.value;
+
+          // 同步PC端toggle
+          const pcToggle = document.getElementById('watermarkToggle');
+          if (pcToggle) pcToggle.checked = true;
+          const pcControls = document.getElementById('watermarkControls');
+          if (pcControls) pcControls.style.display = 'block';
+
+          const textControls = document.getElementById('mobileTextWatermarkControlsSimple');
+          const imageControls = document.getElementById('mobileImageWatermarkControlsSimple');
+          if (this.value === 'text') {
+            if (textControls) textControls.style.display = 'block';
+            if (imageControls) imageControls.style.display = 'none';
+          } else {
+            if (textControls) textControls.style.display = 'none';
+            if (imageControls) imageControls.style.display = 'block';
+          }
+          // 同步PC端
+          const pcType = document.getElementById('watermarkType');
+          if (pcType) pcType.value = this.value;
+          renderImage();
+        });
+
+        // 水印文字 - 输入时自动启用
+        document.getElementById('mobileWatermarkText2')?.addEventListener('input', function() {
+          if (this.value) {
+            imageState.watermark.enabled = true;
+            const pcToggle = document.getElementById('watermarkToggle');
+            if (pcToggle) pcToggle.checked = true;
+          }
+          imageState.watermark.text = this.value;
+          const pcText = document.getElementById('watermarkText');
+          if (pcText) pcText.value = this.value;
+          renderImage();
+        });
+
+        // 水印字体
+        document.getElementById('mobileWatermarkFont2')?.addEventListener('change', function() {
+          imageState.watermark.font = this.value;
+          const pcFont = document.getElementById('watermarkFont');
+          if (pcFont) pcFont.value = this.value;
+          renderImage();
+        });
+
+        // 水印大小
+        document.getElementById('mobileWatermarkSize2')?.addEventListener('input', function() {
+          imageState.watermark.size = parseInt(this.value);
+          const pcSize = document.getElementById('watermarkSize');
+          if (pcSize) pcSize.value = this.value;
+          renderImage();
+        });
+
+        // 水印颜色
+        document.getElementById('mobileWatermarkColor2')?.addEventListener('input', function() {
+          imageState.watermark.color = this.value;
+          const pcColor = document.getElementById('watermarkColor');
+          if (pcColor) pcColor.value = this.value;
+          renderImage();
+        });
+
+        // 水印位置
+        document.getElementById('mobileWatermarkPosition2')?.addEventListener('change', function() {
+          imageState.watermark.position = this.value;
+          const pcPosition = document.getElementById('watermarkPosition');
+          if (pcPosition) pcPosition.value = this.value;
+          renderImage();
+        });
+
+        // 水印不透明度
+        document.getElementById('mobileWatermarkOpacity2')?.addEventListener('input', function() {
+          imageState.watermark.opacity = parseInt(this.value) / 100;
+          const valueDisplay = document.getElementById('mobileWatermarkOpacityValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + '%';
+          const pcOpacity = document.getElementById('watermarkOpacity');
+          if (pcOpacity) {
+            pcOpacity.value = this.value;
+            const pcValueDisplay = document.getElementById('watermarkOpacityValue');
+            if (pcValueDisplay) pcValueDisplay.textContent = this.value + '%';
+          }
+          renderImage();
+        });
+
+        // 移动端水印平铺模式
+        document.getElementById('mobileWatermarkTiled2')?.addEventListener('change', function() {
+          imageState.watermark.tiled = this.checked;
+          const mobileControls = document.getElementById('mobileWatermarkTiledControls2');
+          if (mobileControls) {
+            mobileControls.style.display = this.checked ? 'block' : 'none';
+          }
+
+          // 同步PC端
+          const pcCheckbox = document.getElementById('watermarkTiled');
+          if (pcCheckbox) {
+            pcCheckbox.checked = this.checked;
+            const pcControls = document.getElementById('watermarkTiledControls');
+            if (pcControls) {
+              pcControls.style.display = this.checked ? 'block' : 'none';
+            }
+          }
+
+          renderImage();
+        });
+
+        // 移动端水印旋转角度
+        document.getElementById('mobileWatermarkRotation2')?.addEventListener('input', function() {
+          imageState.watermark.rotation = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileWatermarkRotationValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + '°';
+
+          // 同步PC端
+          const pcSlider = document.getElementById('watermarkRotation');
+          const pcValue = document.getElementById('watermarkRotationValue');
+          if (pcSlider) pcSlider.value = this.value;
+          if (pcValue) pcValue.textContent = this.value + '°';
+
+          renderImage();
+        });
+
+        // 移动端水印水平间距
+        document.getElementById('mobileWatermarkSpacingX2')?.addEventListener('input', function() {
+          imageState.watermark.spacingX = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileWatermarkSpacingXValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+
+          // 同步PC端
+          const pcSlider = document.getElementById('watermarkSpacingX');
+          const pcValue = document.getElementById('watermarkSpacingXValue');
+          if (pcSlider) pcSlider.value = this.value;
+          if (pcValue) pcValue.textContent = this.value + 'px';
+
+          renderImage();
+        });
+
+        // 移动端水印垂直间距
+        document.getElementById('mobileWatermarkSpacingY2')?.addEventListener('input', function() {
+          imageState.watermark.spacingY = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileWatermarkSpacingYValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+
+          // 同步PC端
+          const pcSlider = document.getElementById('watermarkSpacingY');
+          const pcValue = document.getElementById('watermarkSpacingYValue');
+          if (pcSlider) pcSlider.value = this.value;
+          if (pcValue) pcValue.textContent = this.value + 'px';
+
+          renderImage();
+        });
+
+        // 移动端圆角详细控件（新的一级标签版本）
+        // 圆角模式切换
+        document.getElementById('mobileBorderRadiusMode2')?.addEventListener('change', function() {
+          imageState.borderRadius.mode = this.value;
+          const unifiedControl = document.getElementById('mobileUnifiedRadiusControlSimple');
+          const individualControl = document.getElementById('mobileIndividualRadiusControlSimple');
+          if (this.value === 'unified') {
+            if (unifiedControl) unifiedControl.style.display = 'block';
+            if (individualControl) individualControl.style.display = 'none';
+          } else {
+            if (unifiedControl) unifiedControl.style.display = 'none';
+            if (individualControl) individualControl.style.display = 'block';
+          }
+          // 同步PC端
+          const pcMode = document.getElementById('borderRadiusMode');
+          if (pcMode) {
+            pcMode.value = this.value;
+            pcMode.dispatchEvent(new Event('change'));
+          }
+          renderImage();
+        });
+
+        // 统一圆角滑块 - 拖动时自动启用
+        document.getElementById('mobileBorderRadiusSlider2')?.addEventListener('input', function() {
+          if (parseInt(this.value) > 0) {
+            imageState.borderRadius.enabled = true;
+            const pcToggle = document.getElementById('borderRadiusToggle');
+            if (pcToggle) pcToggle.checked = true;
+            const pcControls = document.getElementById('borderRadiusControls');
+            if (pcControls) pcControls.style.display = 'block';
+          }
+          imageState.borderRadius.value = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileBorderRadiusValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+          // 同步PC端
+          const pcSlider = document.getElementById('borderRadiusSlider');
+          if (pcSlider) {
+            pcSlider.value = this.value;
+            const pcValueDisplay = document.getElementById('borderRadiusValue');
+            if (pcValueDisplay) pcValueDisplay.textContent = this.value + 'px';
+          }
+          renderImage();
+        });
+
+        // 独立圆角滑块
+        ['TopLeft', 'TopRight', 'BottomLeft', 'BottomRight'].forEach(corner => {
+          const slider = document.getElementById(`mobileRadius${corner}2`);
+          if (slider) {
+            slider.addEventListener('input', function() {
+              const cornerKey = corner.charAt(0).toLowerCase() + corner.slice(1);
+              imageState.borderRadius[cornerKey] = parseInt(this.value);
+              const valueDisplay = document.getElementById(`mobileRadius${corner}Value2`);
+              if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+              // 同步PC端
+              const pcSlider = document.getElementById(`radius${corner}`);
+              if (pcSlider) {
+                pcSlider.value = this.value;
+                const pcValueDisplay = document.getElementById(`radius${corner}Value`);
+                if (pcValueDisplay) pcValueDisplay.textContent = this.value + 'px';
+              }
+              renderImage();
+            });
+          }
+        });
+
+        // 移动端边框详细控件（新的一级标签版本）
+        // 边框宽度 - 拖动时自动启用
+        document.getElementById('mobileBorderWidthSlider2')?.addEventListener('input', function() {
+          if (parseInt(this.value) > 0) {
+            imageState.border.enabled = true;
+            const pcToggle = document.getElementById('borderToggle');
+            if (pcToggle) pcToggle.checked = true;
+            const pcControls = document.getElementById('borderControls');
+            if (pcControls) pcControls.style.display = 'block';
+          }
+          imageState.border.width = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileBorderWidthValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+          // 同步PC端
+          const pcSlider = document.getElementById('borderWidthSlider');
+          if (pcSlider) {
+            pcSlider.value = this.value;
+            const pcValueDisplay = document.getElementById('borderWidthValue');
+            if (pcValueDisplay) pcValueDisplay.textContent = this.value + 'px';
+          }
+          renderImage();
+        });
+
+        // 边框颜色 - 选择时自动启用
+        document.getElementById('mobileBorderColor2')?.addEventListener('input', function() {
+          imageState.border.enabled = true;
+          const pcToggle = document.getElementById('borderToggle');
+          if (pcToggle) pcToggle.checked = true;
+          imageState.border.color = this.value;
+          // 同步PC端
+          const pcColor = document.getElementById('borderColor');
+          if (pcColor) pcColor.value = this.value;
+          renderImage();
+        });
+
+        // 移动端阴影详细控件（新的一级标签版本）
+        // 阴影模糊度 - 拖动时自动启用
+        document.getElementById('mobileShadowBlurSlider2')?.addEventListener('input', function() {
+          if (parseInt(this.value) > 0) {
+            imageState.shadow.enabled = true;
+            const pcToggle = document.getElementById('shadowToggle');
+            if (pcToggle) pcToggle.checked = true;
+            const pcControls = document.getElementById('shadowControls');
+            if (pcControls) pcControls.style.display = 'block';
+          }
+          imageState.shadow.blur = parseInt(this.value);
+          const valueDisplay = document.getElementById('mobileShadowBlurValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + 'px';
+          // 同步PC端
+          const pcSlider = document.getElementById('shadowBlurSlider');
+          if (pcSlider) {
+            pcSlider.value = this.value;
+            const pcValueDisplay = document.getElementById('shadowBlurValue');
+            if (pcValueDisplay) pcValueDisplay.textContent = this.value + 'px';
+          }
+          renderImage();
+        });
+
+        // 阴影颜色 - 选择时自动启用
+        document.getElementById('mobileShadowColor2')?.addEventListener('input', function() {
+          imageState.shadow.enabled = true;
+          const pcToggle = document.getElementById('shadowToggle');
+          if (pcToggle) pcToggle.checked = true;
+          imageState.shadow.color = this.value;
+          // 同步PC端
+          const pcColor = document.getElementById('shadowColor');
+          if (pcColor) pcColor.value = this.value;
+          renderImage();
+        });
+
+        // 阴影透明度
+        document.getElementById('mobileShadowOpacity2')?.addEventListener('input', function() {
+          imageState.shadow.opacity = parseInt(this.value) / 100;
+          const valueDisplay = document.getElementById('mobileShadowOpacityValue2');
+          if (valueDisplay) valueDisplay.textContent = this.value + '%';
+          // 同步PC端
+          const pcSlider = document.getElementById('shadowOpacity');
+          if (pcSlider) {
+            pcSlider.value = this.value;
+            const pcValueDisplay = document.getElementById('shadowOpacityValue');
+            if (pcValueDisplay) pcValueDisplay.textContent = this.value + '%';
+          }
+          renderImage();
+        });
+
+        // 打开移动端抽屉函数（已弃用，保留用于兼容）
+        function openMobileDrawer() {
+          const drawer = document.getElementById('mobileDrawer');
+          const overlay = document.getElementById('drawerOverlay');
+          if (drawer && overlay) {
+            drawer.classList.add('active');
+            overlay.classList.add('active');
+            // 禁止body滚动
+            document.body.style.overflow = 'hidden';
+          }
+        }
+
+        // 关闭移动端抽屉函数
+        function closeMobileDrawer() {
+          const drawer = document.getElementById('mobileDrawer');
+          const overlay = document.getElementById('drawerOverlay');
+          if (drawer && overlay) {
+            drawer.classList.remove('active');
+            overlay.classList.remove('active');
+            // 恢复body滚动
+            document.body.style.overflow = '';
+          }
+        }
+
+        // 抽屉手柄点击关闭
+        const drawerHandle = document.getElementById('drawerHandle');
+        if (drawerHandle) {
+          drawerHandle.addEventListener('click', closeMobileDrawer);
+        }
+
+        // 遮罩点击关闭
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        if (drawerOverlay) {
+          drawerOverlay.addEventListener('click', closeMobileDrawer);
+        }
+
+        // 移动端下拉选择器
+        const mobileRatioSelect = document.getElementById('mobileRatioSelect');
+        if (mobileRatioSelect) {
+          mobileRatioSelect.addEventListener('change', function() {
+            if (!currentImage) {
+              showToast('请先上传图片', 'warning');
+              this.value = 'free';
+              return;
+            }
+
+            const ratio = this.value;
+
+            // 同步PC端下拉选择器
+            const pcRatioSelect = document.getElementById('ratioSelect');
+            if (pcRatioSelect) pcRatioSelect.value = ratio;
+
+            // 设置裁剪比例
+            if (ratio === 'free') {
+              cropRatio = null;
+            } else {
+              const [w, h] = ratio.split(':').map(Number);
+              cropRatio = w / h;
+            }
+
+            // 初始化裁剪框
+            initCropBox();
+          });
+        }
+
+        const mobileFilterSelect = document.getElementById('mobileFilterSelect');
+        if (mobileFilterSelect) {
+          mobileFilterSelect.addEventListener('change', function() {
+            imageState.filter = this.value;
+
+            // 同步PC端下拉选择器
+            const pcFilterSelect = document.getElementById('filterSelect');
+            if (pcFilterSelect) pcFilterSelect.value = this.value;
+
+            renderImage();
+          });
+        }
+
+        const mobileFlipSelect = document.getElementById('mobileFlipSelect');
+        if (mobileFlipSelect) {
+          mobileFlipSelect.addEventListener('change', function() {
+            const value = this.value;
+
+            // 同步PC端下拉选择器
+            const pcFlipSelect = document.getElementById('flipSelect');
+            if (pcFlipSelect) pcFlipSelect.value = value;
+
+            if (value === 'horizontal') {
+              flipHorizontal();
+            } else if (value === 'vertical') {
+              flipVertical();
+            }
+
+            // 重置下拉框
+            this.value = '';
+            if (pcFlipSelect) pcFlipSelect.value = '';
+          });
+        }
+
+        // 移动端旋转按钮2（下拉选择器旁边的图标按钮）
+        const mobileRotateLeftBtn2 = document.getElementById('mobileRotateLeftBtn2');
+        if (mobileRotateLeftBtn2) {
+          mobileRotateLeftBtn2.addEventListener('click', () => rotateImage(-90));
+        }
+
+        const mobileRotateRightBtn2 = document.getElementById('mobileRotateRightBtn2');
+        if (mobileRotateRightBtn2) {
+          mobileRotateRightBtn2.addEventListener('click', () => rotateImage(90));
+        }
 
         // 移动端旧版本滑块 (slider1 系列 - 如果存在)
         const mobileBrightnessSlider = document.getElementById('mobileBrightnessSlider');
@@ -2142,6 +3842,209 @@
           });
         });
 
+        // ========== 移动端高级功能事件监听器 ==========
+
+        // 移动端水印开关
+        document.getElementById('mobileWatermarkToggle').addEventListener('change', function() {
+          imageState.watermark.enabled = this.checked;
+          document.getElementById('watermarkToggle').checked = this.checked;
+          document.getElementById('mobileWatermarkControls').style.display = this.checked ? 'block' : 'none';
+          document.getElementById('watermarkControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        // 移动端水印类型
+        document.getElementById('mobileWatermarkType').addEventListener('change', function() {
+          imageState.watermark.type = this.value;
+          document.getElementById('watermarkType').value = this.value;
+          const isText = this.value === 'text';
+          document.getElementById('mobileTextWatermarkControls').style.display = isText ? 'block' : 'none';
+          document.getElementById('mobileImageWatermarkControls').style.display = isText ? 'none' : 'block';
+          document.getElementById('textWatermarkControls').style.display = isText ? 'block' : 'none';
+          document.getElementById('imageWatermarkControls').style.display = isText ? 'none' : 'block';
+          renderImage();
+        });
+
+        // 移动端文字水印控件
+        document.getElementById('mobileWatermarkText').addEventListener('input', function() {
+          imageState.watermark.text = this.value;
+          document.getElementById('watermarkText').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkFont').addEventListener('change', function() {
+          imageState.watermark.font = this.value;
+          document.getElementById('watermarkFont').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkSize').addEventListener('input', function() {
+          imageState.watermark.size = parseInt(this.value);
+          document.getElementById('watermarkSize').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkColor').addEventListener('change', function() {
+          imageState.watermark.color = this.value;
+          document.getElementById('watermarkColor').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkPosition').addEventListener('change', function() {
+          imageState.watermark.position = this.value;
+          document.getElementById('watermarkPosition').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkOpacity').addEventListener('input', function() {
+          imageState.watermark.opacity = parseInt(this.value) / 100;
+          document.getElementById('mobileWatermarkOpacityValue').textContent = this.value + '%';
+          document.getElementById('watermarkOpacity').value = this.value;
+          document.getElementById('watermarkOpacityValue').textContent = this.value + '%';
+          renderImage();
+        });
+
+        // 移动端图片水印
+        document.getElementById('mobileUploadWatermarkBtn').addEventListener('click', function() {
+          document.getElementById('watermarkImageInput').click();
+        });
+
+        document.getElementById('mobileWatermarkImageSize').addEventListener('input', function() {
+          imageState.watermark.imageSize = parseInt(this.value);
+          document.getElementById('watermarkImageSize').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileWatermarkImagePosition').addEventListener('change', function() {
+          imageState.watermark.position = this.value;
+          document.getElementById('watermarkImagePosition').value = this.value;
+          renderImage();
+        });
+
+        // 移动端圆角开关
+        document.getElementById('mobileBorderRadiusToggle').addEventListener('change', function() {
+          imageState.borderRadius.enabled = this.checked;
+          document.getElementById('borderRadiusToggle').checked = this.checked;
+          document.getElementById('mobileBorderRadiusControls').style.display = this.checked ? 'block' : 'none';
+          document.getElementById('borderRadiusControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        // 移动端圆角模式切换
+        document.getElementById('mobileBorderRadiusMode').addEventListener('change', function() {
+          imageState.borderRadius.mode = this.value;
+          const isUnified = this.value === 'unified';
+          document.getElementById('mobileUnifiedRadiusControl').style.display = isUnified ? 'block' : 'none';
+          document.getElementById('mobileIndividualRadiusControl').style.display = isUnified ? 'none' : 'block';
+
+          // 同步PC端
+          document.getElementById('borderRadiusMode').value = this.value;
+          document.getElementById('unifiedRadiusControl').style.display = isUnified ? 'block' : 'none';
+          document.getElementById('individualRadiusControl').style.display = isUnified ? 'none' : 'block';
+
+          renderImage();
+        });
+
+        // 移动端统一圆角滑块
+        document.getElementById('mobileBorderRadiusSlider').addEventListener('input', function() {
+          imageState.borderRadius.value = parseInt(this.value);
+          document.getElementById('mobileBorderRadiusValue').textContent = this.value + 'px';
+          // 同步PC端
+          document.getElementById('borderRadiusSlider').value = this.value;
+          document.getElementById('borderRadiusValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 移动端独立圆角 - 左上
+        document.getElementById('mobileRadiusTopLeft').addEventListener('input', function() {
+          imageState.borderRadius.topLeft = parseInt(this.value);
+          document.getElementById('mobileRadiusTopLeftValue').textContent = this.value + 'px';
+          // 同步PC端
+          document.getElementById('radiusTopLeft').value = this.value;
+          document.getElementById('radiusTopLeftValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 移动端独立圆角 - 右上
+        document.getElementById('mobileRadiusTopRight').addEventListener('input', function() {
+          imageState.borderRadius.topRight = parseInt(this.value);
+          document.getElementById('mobileRadiusTopRightValue').textContent = this.value + 'px';
+          // 同步PC端
+          document.getElementById('radiusTopRight').value = this.value;
+          document.getElementById('radiusTopRightValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 移动端独立圆角 - 左下
+        document.getElementById('mobileRadiusBottomLeft').addEventListener('input', function() {
+          imageState.borderRadius.bottomLeft = parseInt(this.value);
+          document.getElementById('mobileRadiusBottomLeftValue').textContent = this.value + 'px';
+          // 同步PC端
+          document.getElementById('radiusBottomLeft').value = this.value;
+          document.getElementById('radiusBottomLeftValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 移动端独立圆角 - 右下
+        document.getElementById('mobileRadiusBottomRight').addEventListener('input', function() {
+          imageState.borderRadius.bottomRight = parseInt(this.value);
+          document.getElementById('mobileRadiusBottomRightValue').textContent = this.value + 'px';
+          // 同步PC端
+          document.getElementById('radiusBottomRight').value = this.value;
+          document.getElementById('radiusBottomRightValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        // 移动端边框开关
+        document.getElementById('mobileBorderToggle').addEventListener('change', function() {
+          imageState.border.enabled = this.checked;
+          document.getElementById('borderToggle').checked = this.checked;
+          document.getElementById('mobileBorderControls').style.display = this.checked ? 'block' : 'none';
+          document.getElementById('borderControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        document.getElementById('mobileBorderWidth').addEventListener('input', function() {
+          imageState.border.width = parseInt(this.value);
+          document.getElementById('borderWidth').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileBorderColor').addEventListener('change', function() {
+          imageState.border.color = this.value;
+          document.getElementById('borderColor').value = this.value;
+          renderImage();
+        });
+
+        // 移动端阴影开关
+        document.getElementById('mobileShadowToggle').addEventListener('change', function() {
+          imageState.shadow.enabled = this.checked;
+          document.getElementById('shadowToggle').checked = this.checked;
+          document.getElementById('mobileShadowControls').style.display = this.checked ? 'block' : 'none';
+          document.getElementById('shadowControls').style.display = this.checked ? 'block' : 'none';
+          renderImage();
+        });
+
+        document.getElementById('mobileShadowBlur').addEventListener('input', function() {
+          imageState.shadow.blur = parseInt(this.value);
+          document.getElementById('mobileShadowBlurValue').textContent = this.value + 'px';
+          document.getElementById('shadowBlur').value = this.value;
+          document.getElementById('shadowBlurValue').textContent = this.value + 'px';
+          renderImage();
+        });
+
+        document.getElementById('mobileShadowColor').addEventListener('change', function() {
+          imageState.shadow.color = this.value;
+          document.getElementById('shadowColor').value = this.value;
+          renderImage();
+        });
+
+        document.getElementById('mobileShadowOpacity').addEventListener('input', function() {
+          imageState.shadow.opacity = parseInt(this.value) / 100;
+          document.getElementById('shadowOpacity').value = this.value;
+          renderImage();
+        });
+
         // 防止滑块滑动时触发页面滚动
         const preventScrollOnSliders = () => {
           const sliders = [
@@ -2194,16 +4097,7 @@
           handleCanvasScroll();
         }
 
-        // 抽屉控制 (已废弃 - 如果元素存在则绑定)
-        const drawerOverlay = document.getElementById('drawerOverlay');
-        const drawerHandle = document.getElementById('drawerHandle');
-
-        if (drawerOverlay) {
-          drawerOverlay.addEventListener('click', closeMobileDrawer);
-        }
-        if (drawerHandle) {
-          drawerHandle.addEventListener('click', closeMobileDrawer);
-        }
+        // 抽屉控制已移至移动端高级功能按钮事件监听器部分
       }
 
       // 进入移动端裁剪模式
@@ -2331,9 +4225,78 @@
         // 保存上下文
         ctx.save();
 
+        // 计算边框偏移（阴影不影响图片尺寸，只是视觉效果）
+        const borderWidth = imageState.border.enabled ? imageState.border.width : 0;
+
+        // 绘制区域(只扣除边框空间，不扣除阴影空间)
+        const drawWidth = canvas.width - (borderWidth * 2);
+        const drawHeight = canvas.height - (borderWidth * 2);
+        const offsetX = borderWidth;
+        const offsetY = borderWidth;
+
+        // 获取圆角值（支持统一和独立模式）
+        const getRadiusValues = () => {
+          if (!imageState.borderRadius.enabled) {
+            return { topLeft: 0, topRight: 0, bottomLeft: 0, bottomRight: 0 };
+          }
+          if (imageState.borderRadius.mode === 'unified') {
+            const r = imageState.borderRadius.value;
+            return { topLeft: r, topRight: r, bottomLeft: r, bottomRight: r };
+          } else {
+            return {
+              topLeft: imageState.borderRadius.topLeft,
+              topRight: imageState.borderRadius.topRight,
+              bottomLeft: imageState.borderRadius.bottomLeft,
+              bottomRight: imageState.borderRadius.bottomRight
+            };
+          }
+        };
+
+        const radius = getRadiusValues();
+        const hasRadius = radius.topLeft > 0 || radius.topRight > 0 || radius.bottomLeft > 0 || radius.bottomRight > 0;
+
+        // 设置阴影（应用到边框或图片）
+        if (imageState.shadow.enabled && imageState.shadow.blur > 0) {
+          ctx.shadowColor = hexToRgba(imageState.shadow.color, imageState.shadow.opacity);
+          ctx.shadowBlur = imageState.shadow.blur;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+        }
+
+        // 绘制边框背景
+        if (imageState.border.enabled) {
+          ctx.fillStyle = imageState.border.color;
+          if (hasRadius) {
+            roundRectPath(ctx, offsetX, offsetY, drawWidth, drawHeight, radius);
+            ctx.fill();
+          } else {
+            ctx.fillRect(offsetX, offsetY, drawWidth, drawHeight);
+          }
+
+          // 如果有边框，清除阴影（避免图片再次产生阴影）
+          ctx.shadowColor = 'transparent';
+          ctx.shadowBlur = 0;
+        }
+
+        // 注意：如果没有边框，阴影会保留并应用到图片上
+
+        // 应用圆角裁剪
+        if (hasRadius) {
+          ctx.save();
+          const inset = borderWidth;
+          const innerRadius = {
+            topLeft: Math.max(0, radius.topLeft - inset),
+            topRight: Math.max(0, radius.topRight - inset),
+            bottomLeft: Math.max(0, radius.bottomLeft - inset),
+            bottomRight: Math.max(0, radius.bottomRight - inset)
+          };
+          roundRectPath(ctx, offsetX + inset, offsetY + inset, drawWidth - inset * 2, drawHeight - inset * 2, innerRadius);
+          ctx.clip();
+        }
+
         // 应用变换
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+        const centerX = offsetX + drawWidth / 2;
+        const centerY = offsetY + drawHeight / 2;
 
         ctx.translate(centerX, centerY);
 
@@ -2350,13 +4313,28 @@
         applyFilters();
 
         // 绘制图片
+        const imgDrawWidth = drawWidth - (imageState.border.enabled ? borderWidth * 2 : 0);
+        const imgDrawHeight = drawHeight - (imageState.border.enabled ? borderWidth * 2 : 0);
+
         ctx.drawImage(
           currentImage,
-          -canvas.width / 2,
-          -canvas.height / 2,
-          canvas.width,
-          canvas.height
+          -imgDrawWidth / 2,
+          -imgDrawHeight / 2,
+          imgDrawWidth,
+          imgDrawHeight
         );
+
+        ctx.restore();
+
+        // 如果使用了圆角,恢复上下文
+        if (hasRadius) {
+          ctx.restore();
+        }
+
+        // 绘制水印
+        if (imageState.watermark.enabled) {
+          drawWatermark();
+        }
 
         ctx.restore();
 
@@ -2379,6 +4357,222 @@
               }
             }
           }, 100); // 等待DOM更新
+        }
+      }
+
+      // 绘制圆角矩形路径（支持独立圆角）
+      function roundRectPath(ctx, x, y, width, height, radius) {
+        // radius 可以是数字（统一圆角）或对象（独立圆角）
+        let r = { topLeft: 0, topRight: 0, bottomRight: 0, bottomLeft: 0 };
+
+        if (typeof radius === 'number') {
+          r.topLeft = r.topRight = r.bottomRight = r.bottomLeft = radius;
+        } else {
+          r.topLeft = radius.topLeft || 0;
+          r.topRight = radius.topRight || 0;
+          r.bottomRight = radius.bottomRight || 0;
+          r.bottomLeft = radius.bottomLeft || 0;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(x + r.topLeft, y);
+
+        // 顶边 -> 右上角
+        ctx.lineTo(x + width - r.topRight, y);
+        if (r.topRight > 0) {
+          ctx.quadraticCurveTo(x + width, y, x + width, y + r.topRight);
+        }
+
+        // 右边 -> 右下角
+        ctx.lineTo(x + width, y + height - r.bottomRight);
+        if (r.bottomRight > 0) {
+          ctx.quadraticCurveTo(x + width, y + height, x + width - r.bottomRight, y + height);
+        }
+
+        // 底边 -> 左下角
+        ctx.lineTo(x + r.bottomLeft, y + height);
+        if (r.bottomLeft > 0) {
+          ctx.quadraticCurveTo(x, y + height, x, y + height - r.bottomLeft);
+        }
+
+        // 左边 -> 左上角
+        ctx.lineTo(x, y + r.topLeft);
+        if (r.topLeft > 0) {
+          ctx.quadraticCurveTo(x, y, x + r.topLeft, y);
+        }
+
+        ctx.closePath();
+      }
+
+      // 十六进制颜色转RGBA
+      function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      // 绘制水印
+      function drawWatermark() {
+        const wm = imageState.watermark;
+
+        if (wm.type === 'text' && wm.text) {
+          // 文字水印
+          ctx.save();
+          ctx.globalAlpha = wm.opacity;
+          ctx.font = `${wm.size}px ${wm.font}`;
+          ctx.fillStyle = wm.color;
+          ctx.textBaseline = 'bottom';
+
+          const textMetrics = ctx.measureText(wm.text);
+          const textWidth = textMetrics.width;
+          const textHeight = wm.size;
+
+          if (wm.tiled) {
+            // 平铺模式
+            const spacingX = wm.spacingX;
+            const spacingY = wm.spacingY;
+            const rotation = (wm.rotation * Math.PI) / 180; // 转换为弧度
+
+            // 计算需要绘制的行列数(考虑旋转后的边界)
+            const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+            const cols = Math.ceil(diagonal / spacingX) + 2;
+            const rows = Math.ceil(diagonal / spacingY) + 2;
+
+            // 从画布中心开始平铺
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let row = -rows; row <= rows; row++) {
+              for (let col = -cols; col <= cols; col++) {
+                ctx.save();
+
+                const baseX = centerX + col * spacingX;
+                const baseY = centerY + row * spacingY;
+
+                // 移动到绘制位置
+                ctx.translate(baseX, baseY);
+
+                // 应用旋转
+                if (rotation !== 0) {
+                  ctx.rotate(rotation);
+                }
+
+                // 绘制水印(以当前位置为中心)
+                ctx.fillText(wm.text, -textWidth / 2, textHeight / 2);
+
+                ctx.restore();
+              }
+            }
+          } else {
+            // 单个水印(原有逻辑)
+            const padding = 20;
+            let x, y;
+
+            switch (wm.position) {
+              case 'bottom-right':
+                x = canvas.width - textWidth - padding;
+                y = canvas.height - padding;
+                break;
+              case 'bottom-left':
+                x = padding;
+                y = canvas.height - padding;
+                break;
+              case 'top-right':
+                x = canvas.width - textWidth - padding;
+                y = textHeight + padding;
+                break;
+              case 'top-left':
+                x = padding;
+                y = textHeight + padding;
+                break;
+              case 'center':
+                x = (canvas.width - textWidth) / 2;
+                y = (canvas.height + textHeight) / 2;
+                break;
+            }
+
+            ctx.fillText(wm.text, x, y);
+          }
+
+          ctx.restore();
+
+        } else if (wm.type === 'image' && wm.image) {
+          // 图片水印
+          ctx.save();
+          ctx.globalAlpha = wm.opacity;
+
+          const wmWidth = canvas.width * (wm.imageSize / 100);
+          const wmHeight = (wm.image.height / wm.image.width) * wmWidth;
+
+          if (wm.tiled) {
+            // 平铺模式
+            const spacingX = wm.spacingX;
+            const spacingY = wm.spacingY;
+            const rotation = (wm.rotation * Math.PI) / 180; // 转换为弧度
+
+            // 计算需要绘制的行列数(考虑旋转后的边界)
+            const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+            const cols = Math.ceil(diagonal / spacingX) + 2;
+            const rows = Math.ceil(diagonal / spacingY) + 2;
+
+            // 从画布中心开始平铺
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let row = -rows; row <= rows; row++) {
+              for (let col = -cols; col <= cols; col++) {
+                ctx.save();
+
+                const baseX = centerX + col * spacingX;
+                const baseY = centerY + row * spacingY;
+
+                // 移动到绘制位置
+                ctx.translate(baseX, baseY);
+
+                // 应用旋转
+                if (rotation !== 0) {
+                  ctx.rotate(rotation);
+                }
+
+                // 绘制水印图片(以当前位置为中心)
+                ctx.drawImage(wm.image, -wmWidth / 2, -wmHeight / 2, wmWidth, wmHeight);
+
+                ctx.restore();
+              }
+            }
+          } else {
+            // 单个水印(原有逻辑)
+            const padding = 20;
+            let x, y;
+
+            switch (wm.position) {
+              case 'bottom-right':
+                x = canvas.width - wmWidth - padding;
+                y = canvas.height - wmHeight - padding;
+                break;
+              case 'bottom-left':
+                x = padding;
+                y = canvas.height - wmHeight - padding;
+                break;
+              case 'top-right':
+                x = canvas.width - wmWidth - padding;
+                y = padding;
+                break;
+              case 'top-left':
+                x = padding;
+                y = padding;
+                break;
+              case 'center':
+                x = (canvas.width - wmWidth) / 2;
+                y = (canvas.height - wmHeight) / 2;
+                break;
+            }
+
+            ctx.drawImage(wm.image, x, y, wmWidth, wmHeight);
+          }
+
+          ctx.restore();
         }
       }
 
@@ -2460,10 +4654,20 @@
           return;
         }
 
+        // 更新按钮状态(兼容旧版按钮)
         document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
+        if (e.target.classList) {
+          e.target.classList.add('active');
+        }
 
         const ratio = e.target.dataset.ratio;
+
+        // 同步下拉选择器的值
+        const ratioSelect = document.getElementById('ratioSelect');
+        if (ratioSelect && ratioSelect.value !== ratio) {
+          ratioSelect.value = ratio;
+        }
+
         if (ratio === 'free') {
           cropRatio = null;
         } else {
@@ -2840,10 +5044,21 @@
 
       // 滤镜切换
       function handleFilterChange(e) {
+        // 更新按钮状态(兼容旧版按钮)
         document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
+        if (e.target.classList) {
+          e.target.classList.add('active');
+        }
 
-        imageState.filter = e.target.dataset.filter;
+        const filter = e.target.dataset.filter;
+        imageState.filter = filter;
+
+        // 同步下拉选择器的值
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect && filterSelect.value !== filter) {
+          filterSelect.value = filter;
+        }
+
         renderImage();
       }
 
@@ -2976,11 +5191,152 @@
         document.querySelectorAll('.filter-btn-mobile').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.filter-btn-mobile[data-filter-mobile="none"]').forEach(btn => btn.classList.add('active'));
 
+        // 重置滤镜下拉选择器
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect) {
+          filterSelect.value = 'none';
+        }
+
         // 重置裁剪比例
         document.querySelectorAll('.ratio-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.ratio-btn[data-ratio="free"]').forEach(btn => btn.classList.add('active'));
         document.querySelectorAll('.ratio-btn-mobile').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.ratio-btn-mobile[data-ratio-mobile="free"]').forEach(btn => btn.classList.add('active'));
+
+        // 重置裁剪比例下拉选择器
+        const ratioSelect = document.getElementById('ratioSelect');
+        if (ratioSelect) {
+          ratioSelect.value = 'free';
+        }
+
+        // 重置翻转下拉选择器
+        const flipSelect = document.getElementById('flipSelect');
+        if (flipSelect) {
+          flipSelect.value = '';
+        }
+
+        // 重置移动端下拉选择器
+        const mobileRatioSelect = document.getElementById('mobileRatioSelect');
+        if (mobileRatioSelect) {
+          mobileRatioSelect.value = 'free';
+        }
+
+        const mobileFilterSelect = document.getElementById('mobileFilterSelect');
+        if (mobileFilterSelect) {
+          mobileFilterSelect.value = 'none';
+        }
+
+        const mobileFlipSelect = document.getElementById('mobileFlipSelect');
+        if (mobileFlipSelect) {
+          mobileFlipSelect.value = '';
+        }
+
+        // 重置高级功能
+        imageState.watermark = {
+          enabled: false,
+          type: 'text',
+          text: '',
+          font: '微软雅黑',
+          size: 36,
+          color: '#ffffff',
+          position: 'bottom-right',
+          opacity: 0.8,
+          image: null,
+          imageSize: 20
+        };
+        imageState.borderRadius = {
+          enabled: false,
+          mode: 'unified',
+          value: 0,
+          topLeft: 0,
+          topRight: 0,
+          bottomLeft: 0,
+          bottomRight: 0
+        };
+        imageState.border = {
+          enabled: false,
+          width: 10,
+          color: '#ffffff'
+        };
+        imageState.shadow = {
+          enabled: false,
+          blur: 20,
+          color: '#000000',
+          opacity: 0.3
+        };
+
+        // 重置高级功能UI
+        document.getElementById('watermarkToggle').checked = false;
+        document.getElementById('watermarkControls').style.display = 'none';
+        document.getElementById('watermarkText').value = '';
+        document.getElementById('watermarkType').value = 'text';
+        document.getElementById('textWatermarkControls').style.display = 'block';
+        document.getElementById('imageWatermarkControls').style.display = 'none';
+
+        document.getElementById('borderRadiusToggle').checked = false;
+        document.getElementById('borderRadiusControls').style.display = 'none';
+        document.getElementById('borderRadiusMode').value = 'unified';
+        document.getElementById('unifiedRadiusControl').style.display = 'block';
+        document.getElementById('individualRadiusControl').style.display = 'none';
+        document.getElementById('borderRadiusSlider').value = 0;
+        document.getElementById('borderRadiusValue').textContent = '0px';
+        document.getElementById('radiusTopLeft').value = 0;
+        document.getElementById('radiusTopLeftValue').textContent = '0px';
+        document.getElementById('radiusTopRight').value = 0;
+        document.getElementById('radiusTopRightValue').textContent = '0px';
+        document.getElementById('radiusBottomLeft').value = 0;
+        document.getElementById('radiusBottomLeftValue').textContent = '0px';
+        document.getElementById('radiusBottomRight').value = 0;
+        document.getElementById('radiusBottomRightValue').textContent = '0px';
+
+        document.getElementById('borderToggle').checked = false;
+        document.getElementById('borderControls').style.display = 'none';
+        document.getElementById('borderWidth').value = 10;
+        document.getElementById('borderColor').value = '#ffffff';
+
+        document.getElementById('shadowToggle').checked = false;
+        document.getElementById('shadowControls').style.display = 'none';
+        document.getElementById('shadowBlur').value = 20;
+        document.getElementById('shadowBlurValue').textContent = '20px';
+        document.getElementById('shadowColor').value = '#000000';
+        document.getElementById('shadowOpacity').value = 30;
+
+        // 重置移动端高级功能UI
+        document.getElementById('mobileWatermarkToggle').checked = false;
+        document.getElementById('mobileWatermarkControls').style.display = 'none';
+        document.getElementById('mobileWatermarkText').value = '';
+        document.getElementById('mobileWatermarkType').value = 'text';
+        document.getElementById('mobileTextWatermarkControls').style.display = 'block';
+        document.getElementById('mobileImageWatermarkControls').style.display = 'none';
+
+        document.getElementById('mobileBorderRadiusToggle').checked = false;
+        document.getElementById('mobileBorderRadiusControls').style.display = 'none';
+        document.getElementById('mobileBorderRadiusMode').value = 'unified';
+        document.getElementById('mobileUnifiedRadiusControl').style.display = 'block';
+        document.getElementById('mobileIndividualRadiusControl').style.display = 'none';
+        document.getElementById('mobileBorderRadiusSlider').value = 0;
+        document.getElementById('mobileBorderRadiusValue').textContent = '0px';
+        document.getElementById('mobileRadiusTopLeft').value = 0;
+        document.getElementById('mobileRadiusTopLeftValue').textContent = '0px';
+        document.getElementById('mobileRadiusTopRight').value = 0;
+        document.getElementById('mobileRadiusTopRightValue').textContent = '0px';
+        document.getElementById('mobileRadiusBottomLeft').value = 0;
+        document.getElementById('mobileRadiusBottomLeftValue').textContent = '0px';
+        document.getElementById('mobileRadiusBottomRight').value = 0;
+        document.getElementById('mobileRadiusBottomRightValue').textContent = '0px';
+
+        document.getElementById('mobileBorderToggle').checked = false;
+        document.getElementById('mobileBorderControls').style.display = 'none';
+        document.getElementById('mobileBorderWidth').value = 10;
+        document.getElementById('mobileBorderColor').value = '#ffffff';
+
+        document.getElementById('mobileShadowToggle').checked = false;
+        document.getElementById('mobileShadowControls').style.display = 'none';
+        document.getElementById('mobileShadowBlur').value = 20;
+        document.getElementById('mobileShadowBlurValue').textContent = '20px';
+        document.getElementById('mobileShadowColor').value = '#000000';
+        document.getElementById('mobileShadowOpacity').value = 30;
+
         cropRatio = null;
         cropBox.classList.remove('active');
 
@@ -2993,13 +5349,79 @@
         document.getElementById('resetBtn').disabled = false;
         document.getElementById('rotateLeftBtn').disabled = false;
         document.getElementById('rotateRightBtn').disabled = false;
-        document.getElementById('flipHBtn').disabled = false;
-        document.getElementById('flipVBtn').disabled = false;
         document.getElementById('brightnessSlider').disabled = false;
         document.getElementById('contrastSlider').disabled = false;
         document.getElementById('saturationSlider').disabled = false;
         document.getElementById('downloadPNGBtn').disabled = false;
         document.getElementById('downloadJPGBtn').disabled = false;
+
+        // PC端下拉选择器
+        const ratioSelect = document.getElementById('ratioSelect');
+        if (ratioSelect) ratioSelect.disabled = false;
+
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect) filterSelect.disabled = false;
+
+        const flipSelect = document.getElementById('flipSelect');
+        if (flipSelect) flipSelect.disabled = false;
+
+        // 高级功能开关
+        document.getElementById('watermarkToggle').disabled = false;
+        document.getElementById('borderRadiusToggle').disabled = false;
+        document.getElementById('borderToggle').disabled = false;
+        document.getElementById('shadowToggle').disabled = false;
+
+        // 移动端高级功能开关
+        document.getElementById('mobileWatermarkToggle').disabled = false;
+        document.getElementById('mobileBorderRadiusToggle').disabled = false;
+        document.getElementById('mobileBorderToggle').disabled = false;
+        document.getElementById('mobileShadowToggle').disabled = false;
+
+        // 移动端下拉选择器
+        const mobileRatioSelect = document.getElementById('mobileRatioSelect');
+        if (mobileRatioSelect) mobileRatioSelect.disabled = false;
+
+        const mobileFilterSelect = document.getElementById('mobileFilterSelect');
+        if (mobileFilterSelect) mobileFilterSelect.disabled = false;
+
+        const mobileFlipSelect = document.getElementById('mobileFlipSelect');
+        if (mobileFlipSelect) mobileFlipSelect.disabled = false;
+
+        // 移动端旋转按钮2
+        const mobileRotateLeftBtn2 = document.getElementById('mobileRotateLeftBtn2');
+        if (mobileRotateLeftBtn2) mobileRotateLeftBtn2.disabled = false;
+
+        const mobileRotateRightBtn2 = document.getElementById('mobileRotateRightBtn2');
+        if (mobileRotateRightBtn2) mobileRotateRightBtn2.disabled = false;
+
+        // 移动端高级功能一级标签版本 - 无toggle，直接启用所有控件
+        document.getElementById('mobileWatermarkType2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkText2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkFont2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkSize2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkColor2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkPosition2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkOpacity2')?.removeAttribute('disabled');
+
+        // 水印平铺模式控件
+        document.getElementById('mobileWatermarkTiled2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkRotation2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkSpacingX2')?.removeAttribute('disabled');
+        document.getElementById('mobileWatermarkSpacingY2')?.removeAttribute('disabled');
+
+        document.getElementById('mobileBorderRadiusMode2')?.removeAttribute('disabled');
+        document.getElementById('mobileBorderRadiusSlider2')?.removeAttribute('disabled');
+        document.getElementById('mobileRadiusTopLeft2')?.removeAttribute('disabled');
+        document.getElementById('mobileRadiusTopRight2')?.removeAttribute('disabled');
+        document.getElementById('mobileRadiusBottomLeft2')?.removeAttribute('disabled');
+        document.getElementById('mobileRadiusBottomRight2')?.removeAttribute('disabled');
+
+        document.getElementById('mobileBorderWidthSlider2')?.removeAttribute('disabled');
+        document.getElementById('mobileBorderColor2')?.removeAttribute('disabled');
+
+        document.getElementById('mobileShadowBlurSlider2')?.removeAttribute('disabled');
+        document.getElementById('mobileShadowColor2')?.removeAttribute('disabled');
+        document.getElementById('mobileShadowOpacity2')?.removeAttribute('disabled');
 
         // 移动端扁平化导航按钮
         document.getElementById('mobileRotateLeftBtn').disabled = false;
@@ -3178,40 +5600,9 @@
         if (mobileRedoBtn) mobileRedoBtn.disabled = historyIndex >= history.length - 1;
       }
 
-      // 打开移动端抽屉
-      function openMobileDrawer() {
-        console.log('openMobileDrawer 函数被调用');
-        const drawer = document.getElementById('mobileDrawer');
-        const overlay = document.getElementById('drawerOverlay');
+      // openMobileDrawer 函数已移至移动端高级功能按钮事件监听器部分
 
-        console.log('抽屉元素:', drawer);
-        console.log('遮罩元素:', overlay);
-
-        if (!drawer || !overlay) {
-          console.error('抽屉元素未找到');
-          return;
-        }
-
-        console.log('添加 active 类');
-        drawer.classList.add('active');
-        overlay.classList.add('active');
-
-        console.log('抽屉类名:', drawer.className);
-        console.log('遮罩类名:', overlay.className);
-
-        // 禁止body滚动
-        document.body.style.overflow = 'hidden';
-      }
-
-      // 关闭移动端抽屉 (已废弃函数)
-      function closeMobileDrawer() {
-        const drawer = document.getElementById('mobileDrawer');
-        const overlay = document.getElementById('drawerOverlay');
-        if (drawer) drawer.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
-        // 恢复body滚动
-        document.body.style.overflow = '';
-      }
+      // closeMobileDrawer 函数已移至移动端高级功能按钮事件监听器部分
 
       // Toast提示
       // Toast 自动隐藏定时器

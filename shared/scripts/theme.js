@@ -196,6 +196,43 @@ class ThemeManager {
     root.style.setProperty("--accent-color", colors.accent);
     root.style.setProperty("--primary-dark", this._darkenColor(colors.primary));
 
+    // ========== 动态生成透明度变量 ==========
+    // 主色调透明度系列
+    const primaryRGB = this._hexToRgb(colors.primary);
+    if (primaryRGB) {
+      root.style.setProperty("--primary-alpha-90", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.9)`);
+      root.style.setProperty("--primary-alpha-80", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.8)`);
+      root.style.setProperty("--primary-alpha-60", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.6)`);
+      root.style.setProperty("--primary-alpha-40", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.4)`);
+      root.style.setProperty("--primary-alpha-20", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.2)`);
+      root.style.setProperty("--primary-alpha-10", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.1)`);
+      root.style.setProperty("--primary-alpha-05", `rgba(${primaryRGB.r}, ${primaryRGB.g}, ${primaryRGB.b}, 0.05)`);
+    }
+
+    // 次色调透明度系列
+    const secondaryRGB = this._hexToRgb(colors.secondary);
+    if (secondaryRGB) {
+      root.style.setProperty("--secondary-alpha-90", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.9)`);
+      root.style.setProperty("--secondary-alpha-80", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.8)`);
+      root.style.setProperty("--secondary-alpha-60", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.6)`);
+      root.style.setProperty("--secondary-alpha-40", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.4)`);
+      root.style.setProperty("--secondary-alpha-20", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.2)`);
+      root.style.setProperty("--secondary-alpha-10", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.1)`);
+      root.style.setProperty("--secondary-alpha-05", `rgba(${secondaryRGB.r}, ${secondaryRGB.g}, ${secondaryRGB.b}, 0.05)`);
+    }
+
+    // 强调色透明度系列
+    const accentRGB = this._hexToRgb(colors.accent);
+    if (accentRGB) {
+      root.style.setProperty("--accent-alpha-90", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.9)`);
+      root.style.setProperty("--accent-alpha-80", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.8)`);
+      root.style.setProperty("--accent-alpha-60", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.6)`);
+      root.style.setProperty("--accent-alpha-40", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.4)`);
+      root.style.setProperty("--accent-alpha-20", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.2)`);
+      root.style.setProperty("--accent-alpha-10", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.1)`);
+      root.style.setProperty("--accent-alpha-05", `rgba(${accentRGB.r}, ${accentRGB.g}, ${accentRGB.b}, 0.05)`);
+    }
+
     // 更新背景渐变
     const gradient = `linear-gradient(
       135deg,
@@ -228,6 +265,27 @@ class ThemeManager {
     `;
 
     document.head.appendChild(style);
+  }
+
+  /**
+   * Hex颜色转RGB
+   */
+  _hexToRgb(hex) {
+    // 移除 # 号
+    hex = hex.replace("#", "");
+
+    // 处理简写格式 #RGB
+    if (hex.length === 3) {
+      hex = hex.split("").map(char => char + char).join("");
+    }
+
+    // 解析为RGB
+    const num = parseInt(hex, 16);
+    return {
+      r: (num >> 16) & 255,
+      g: (num >> 8) & 255,
+      b: num & 255
+    };
   }
 
   /**
@@ -667,6 +725,8 @@ function openThemeSelector() {
   let modal = document.getElementById("theme-selector-modal");
   if (modal) {
     modal.classList.add("show");
+    // 重新打开时也更新预览
+    setTimeout(() => updatePreviewBanner(), 50);
     return;
   }
 
@@ -682,74 +742,153 @@ function openThemeSelector() {
         <button class="theme-modal-close" onclick="closeThemeSelector()">✕</button>
       </div>
 
+      <!-- 标签页导航 -->
+      <div class="theme-tabs">
+        <button class="theme-tab active" data-tab="preset" onclick="switchThemeTab('preset')">
+          <span class="tab-icon">🎨</span>
+          <span class="tab-label">预设主题</span>
+        </button>
+        <button class="theme-tab" data-tab="auto" onclick="switchThemeTab('auto')">
+          <span class="tab-icon">⏰</span>
+          <span class="tab-label">自动切换</span>
+        </button>
+        <button class="theme-tab" data-tab="custom" onclick="switchThemeTab('custom')">
+          <span class="tab-icon">✏️</span>
+          <span class="tab-label">自定义</span>
+        </button>
+      </div>
+
       <div class="theme-modal-body">
-        <!-- 自动主题 -->
-        <div class="theme-section">
-          <div class="theme-section-header">
-            <h3>⏰ 自动主题</h3>
-            <label class="theme-toggle-switch">
-              <input type="checkbox" id="auto-theme-toggle" ${window.autoThemeManager.enabled ? "checked" : ""} onchange="toggleAutoTheme()">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          <p class="theme-section-desc">根据时间段自动切换主题,让界面随着一天的时光流转</p>
-
-          <div class="auto-theme-content" id="auto-theme-content">
-            <!-- 预设方案选择 -->
-            <div class="auto-theme-presets" id="auto-theme-presets"></div>
-
-            <!-- 当前状态 -->
-            <div class="auto-theme-status">
-              <div class="status-item">
-                <span class="status-label">当前时间</span>
-                <span class="status-value" id="current-time">--:--</span>
-              </div>
-              <div class="status-item">
-                <span class="status-label">正在使用</span>
-                <span class="status-value" id="current-theme-name">--</span>
-              </div>
-              <div class="status-item">
-                <span class="status-label">下次切换</span>
-                <span class="status-value" id="next-change-time">--:--</span>
-              </div>
-            </div>
-
-            <!-- 时间轴预览 -->
-            <div class="auto-theme-timeline" id="auto-theme-timeline"></div>
+        <!-- 实时预览区域 -->
+        <div class="theme-preview-banner" id="preview-banner">
+          <div class="preview-gradient"></div>
+          <div class="preview-info">
+            <h3 class="preview-theme-name" id="preview-name">黎明破晓</h3>
+            <p class="preview-theme-desc" id="preview-desc">温暖的日出时分，充满希望</p>
           </div>
         </div>
 
-        <!-- 预设主题 -->
-        <div class="theme-section">
-          <h3>🎨 预设主题</h3>
-          <p class="theme-section-desc">精选的黎明系列配色方案</p>
+        <!-- 预设主题标签页 -->
+        <div class="theme-tab-content active" data-content="preset">
           <div class="theme-grid" id="preset-themes"></div>
         </div>
 
-        <!-- 自定义主题 -->
-        <div class="theme-section">
-          <h3>✏️ 自定义主题</h3>
-          <p class="theme-section-desc">创造属于你的独特配色</p>
-          <div class="theme-custom">
-            <div class="theme-custom-preview" id="custom-preview">
-              <div class="custom-preview-gradient"></div>
-              <p>自定义渐变预览</p>
+        <!-- 自动主题标签页 -->
+        <div class="theme-tab-content" data-content="auto">
+          <div class="auto-theme-toggle-section">
+            <div class="auto-toggle-header">
+              <div>
+                <h4>⏰ 启用自动主题切换</h4>
+                <p class="auto-toggle-desc">根据时间段自动切换主题，让界面随时光流转</p>
+              </div>
+              <label class="theme-toggle-switch">
+                <input type="checkbox" id="auto-theme-toggle" ${window.autoThemeManager.enabled ? "checked" : ""} onchange="toggleAutoTheme()">
+                <span class="toggle-slider"></span>
+              </label>
             </div>
-            <div class="theme-custom-controls">
-              <div class="color-input-group">
-                <label>夜幕深蓝 <input type="color" id="color-bg1" value="#1e3a5f"></label>
-                <label>暮色蓝灰 <input type="color" id="color-bg2" value="#3d5a80"></label>
-                <label>日出橙红 <input type="color" id="color-bg3" value="#ee6c4d"></label>
+          </div>
+
+          <div class="auto-theme-content" id="auto-theme-content" style="${window.autoThemeManager.enabled ? '' : 'display:none'}">
+            <!-- 当前状态卡片 -->
+            <div class="auto-status-card">
+              <div class="status-item">
+                <span class="status-icon">🕐</span>
+                <div>
+                  <div class="status-label">当前时间</div>
+                  <div class="status-value" id="current-time">--:--</div>
+                </div>
               </div>
-              <div class="color-input-group">
-                <label>晨曦金橙 <input type="color" id="color-bg4" value="#f4a261"></label>
-                <label>朝霞金黄 <input type="color" id="color-bg5" value="#e9c46a"></label>
-                <label>黎明天蓝 <input type="color" id="color-bg6" value="#98c1d9"></label>
+              <div class="status-item">
+                <span class="status-icon">🎨</span>
+                <div>
+                  <div class="status-label">正在使用</div>
+                  <div class="status-value" id="current-theme-name">--</div>
+                </div>
               </div>
-              <div class="theme-custom-actions">
-                <button class="theme-btn theme-btn-secondary" onclick="resetCustomTheme()">重置</button>
-                <button class="theme-btn theme-btn-primary" onclick="applyCustomTheme()">应用自定义主题</button>
+              <div class="status-item">
+                <span class="status-icon">⏰</span>
+                <div>
+                  <div class="status-label">下次切换</div>
+                  <div class="status-value" id="next-change-time">--:--</div>
+                </div>
               </div>
+            </div>
+
+            <!-- 预设方案 -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h4 class="section-subtitle" style="margin: 0;">选择自动切换方案</h4>
+              <button class="theme-btn theme-btn-secondary" onclick="openCustomScheduleEditor()" style="padding: 6px 16px; font-size: 13px;">
+                <span>⚙️</span> 编辑自定义方案
+              </button>
+            </div>
+            <div class="auto-theme-presets" id="auto-theme-presets"></div>
+          </div>
+        </div>
+
+        <!-- 自定义主题标签页 -->
+        <div class="theme-tab-content" data-content="custom">
+          <!-- 我的主题库 -->
+          <div class="custom-theme-library">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+              <h4 class="section-subtitle" style="margin: 0;">📚 我的主题库</h4>
+              <button class="theme-btn theme-btn-secondary" onclick="toggleColorEditor()" style="padding: 6px 16px; font-size: 13px;">
+                <span>🎨</span> <span id="editor-toggle-text">创建新主题</span>
+              </button>
+            </div>
+            <div id="saved-themes-grid" class="theme-grid"></div>
+            <p id="empty-library-hint" style="text-align: center; color: var(--text-light); padding: 40px 20px; display: none;">
+              还没有保存的自定义主题<br>
+              点击"创建新主题"开始设计你的专属配色
+            </p>
+          </div>
+
+          <!-- 颜色编辑器 (初始隐藏) -->
+          <div class="custom-theme-editor" id="color-editor-section" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+            <h4 class="section-subtitle">🎨 颜色编辑器</h4>
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; font-size: 13px; color: var(--text-light); margin-bottom: 8px;">主题名称</label>
+              <input type="text" id="custom-theme-name" placeholder="输入主题名称..."
+                     style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px;">
+            </div>
+            <div class="color-palette">
+              <div class="color-item">
+                <label class="color-label">夜幕深蓝</label>
+                <input type="color" id="color-bg1" value="#1e3a5f" onchange="updateCustomPreview()">
+              </div>
+              <div class="color-item">
+                <label class="color-label">暮色蓝灰</label>
+                <input type="color" id="color-bg2" value="#3d5a80" onchange="updateCustomPreview()">
+              </div>
+              <div class="color-item">
+                <label class="color-label">日出橙红</label>
+                <input type="color" id="color-bg3" value="#ee6c4d" onchange="updateCustomPreview()">
+              </div>
+              <div class="color-item">
+                <label class="color-label">晨曦金橙</label>
+                <input type="color" id="color-bg4" value="#f4a261" onchange="updateCustomPreview()">
+              </div>
+              <div class="color-item">
+                <label class="color-label">朝霞金黄</label>
+                <input type="color" id="color-bg5" value="#e9c46a" onchange="updateCustomPreview()">
+              </div>
+              <div class="color-item">
+                <label class="color-label">黎明天蓝</label>
+                <input type="color" id="color-bg6" value="#98c1d9" onchange="updateCustomPreview()">
+              </div>
+            </div>
+            <div class="custom-actions">
+              <button class="theme-btn theme-btn-secondary" onclick="resetCustomTheme()">
+                <span>🔄</span> 重置
+              </button>
+              <button class="theme-btn theme-btn-secondary" onclick="applyCustomThemePreview()">
+                <span>👁️</span> 预览效果
+              </button>
+              <button class="theme-btn theme-btn-secondary" onclick="toggleColorEditor()">
+                <span>✕</span> 取消
+              </button>
+              <button class="theme-btn theme-btn-primary" onclick="saveCustomTheme()">
+                <span>💾</span> 保存到主题库
+              </button>
             </div>
           </div>
         </div>
@@ -762,17 +901,25 @@ function openThemeSelector() {
   // 添加样式
   addThemeSelectorStyles();
 
-  // 渲染预设主题
-  renderPresetThemes();
+  // 显示模态框（先显示，确保DOM已渲染）
+  setTimeout(() => {
+    modal.classList.add("show");
 
-  // 渲染自动主题内容
-  renderAutoThemeContent();
+    // 渲染预设主题
+    renderPresetThemes();
 
-  // 绑定事件
-  bindThemeSelectorEvents();
+    // 渲染自动主题内容
+    renderAutoThemeContent();
 
-  // 显示模态框
-  setTimeout(() => modal.classList.add("show"), 10);
+    // 渲染自定义主题库
+    renderSavedThemes();
+
+    // 绑定事件
+    bindThemeSelectorEvents();
+
+    // 更新预览（确保DOM已准备好）
+    updatePreviewBanner();
+  }, 10);
 }
 
 /**
@@ -806,11 +953,98 @@ function renderPresetThemes() {
         <div class="theme-card-name">${theme.name}</div>
         <div class="theme-card-desc">${theme.description}</div>
       </div>
-      <div class="theme-card-check">✓</div>
+      ${currentTheme?.id === theme.id ? '<div class="theme-card-check">✓</div>' : ''}
     </div>
   `
     )
     .join("");
+}
+
+/**
+ * 切换标签页
+ */
+function switchThemeTab(tabName) {
+  const modalBody = document.querySelector(".theme-modal-body");
+
+  // 添加切换状态类,隐藏滚动条并降低不透明度
+  if (modalBody) {
+    modalBody.classList.add('switching');
+  }
+
+  // 更新标签按钮状态
+  document.querySelectorAll(".theme-tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.tab === tabName);
+  });
+
+  // 移除所有标签页的 active 状态
+  document.querySelectorAll(".theme-tab-content").forEach((content) => {
+    content.classList.remove("active");
+  });
+
+  // 使用 requestAnimationFrame 确保 DOM 更新
+  requestAnimationFrame(() => {
+    // 重置滚动位置到顶部
+    if (modalBody) {
+      modalBody.scrollTop = 0;
+    }
+
+    // 激活新标签页
+    requestAnimationFrame(() => {
+      const targetContent = document.querySelector(
+        `.theme-tab-content[data-content="${tabName}"]`
+      );
+      if (targetContent) {
+        targetContent.classList.add("active");
+      }
+
+      // 等待内容渲染后移除切换状态
+      setTimeout(() => {
+        if (modalBody) {
+          modalBody.classList.remove('switching');
+        }
+      }, 100);
+    });
+  });
+}
+
+/**
+ * 更新预览横幅
+ */
+function updatePreviewBanner() {
+  const currentTheme = window.themeManager.getCurrentTheme();
+  if (!currentTheme) {
+    console.warn("updatePreviewBanner: 没有当前主题");
+    return;
+  }
+
+  const previewGradient = document.querySelector(".preview-gradient");
+  const previewName = document.getElementById("preview-name");
+  const previewDesc = document.getElementById("preview-desc");
+
+  if (!previewGradient || !previewName || !previewDesc) {
+    console.warn("updatePreviewBanner: DOM元素未找到", {
+      previewGradient: !!previewGradient,
+      previewName: !!previewName,
+      previewDesc: !!previewDesc
+    });
+    return;
+  }
+
+  // 更新渐变背景
+  if (currentTheme.colors) {
+    const { bg1, bg2, bg3, bg4, bg5, bg6 } = currentTheme.colors;
+    const gradient = `linear-gradient(135deg, ${bg1} 0%, ${bg2} 15%, ${bg3} 45%, ${bg4} 65%, ${bg5} 85%, ${bg6} 100%)`;
+    previewGradient.style.background = gradient;
+    console.log("预览横幅已更新:", currentTheme.name);
+  }
+
+  // 更新标题
+  previewName.textContent = `${currentTheme.icon || "🎨"} ${currentTheme.name}`;
+
+  // 更新描述
+  if (currentTheme.description) {
+    previewDesc.textContent = currentTheme.description;
+  }
 }
 
 /**
@@ -819,10 +1053,28 @@ function renderPresetThemes() {
 function selectPresetTheme(themeId) {
   window.themeManager.applyTheme(themeId);
 
-  // 更新选中状态
-  document.querySelectorAll(".theme-card").forEach((card) => {
-    card.classList.toggle("active", card.dataset.themeId === themeId);
+  // 更新选中状态和勾选标记
+  document.querySelectorAll("#preset-themes .theme-card").forEach((card) => {
+    const isActive = card.dataset.themeId === themeId;
+    card.classList.toggle("active", isActive);
+
+    // 移除旧的勾选标记
+    const existingCheck = card.querySelector(".theme-card-check");
+    if (existingCheck) {
+      existingCheck.remove();
+    }
+
+    // 为激活的主题添加勾选标记
+    if (isActive) {
+      const checkMark = document.createElement('div');
+      checkMark.className = 'theme-card-check';
+      checkMark.textContent = '✓';
+      card.appendChild(checkMark);
+    }
   });
+
+  // 更新预览
+  updatePreviewBanner();
 
   // 显示成功提示
   if (typeof Utils !== "undefined") {
@@ -831,9 +1083,9 @@ function selectPresetTheme(themeId) {
 }
 
 /**
- * 应用自定义主题
+ * 应用当前编辑器中的自定义主题（临时预览）
  */
-function applyCustomTheme() {
+function applyCustomThemePreview() {
   const colors = {
     bg1: document.getElementById("color-bg1").value,
     bg2: document.getElementById("color-bg2").value,
@@ -853,8 +1105,11 @@ function applyCustomTheme() {
     card.classList.remove("active");
   });
 
+  // 更新预览
+  updatePreviewBanner();
+
   if (typeof Utils !== "undefined") {
-    Utils.showToast("已应用自定义主题", "success", 2000);
+    Utils.showToast("预览已应用（请保存到主题库以永久使用）", "info", 3000);
   }
 }
 
@@ -876,19 +1131,99 @@ function resetCustomTheme() {
  * 更新自定义预览
  */
 function updateCustomPreview() {
-  const preview = document.querySelector(".custom-preview-gradient");
-  if (!preview) return;
-
-  const colors = {
-    bg1: document.getElementById("color-bg1").value,
-    bg2: document.getElementById("color-bg2").value,
-    bg3: document.getElementById("color-bg3").value,
-    bg4: document.getElementById("color-bg4").value,
-    bg5: document.getElementById("color-bg5").value,
-    bg6: document.getElementById("color-bg6").value,
+  const colorInputs = {
+    bg1: document.getElementById("color-bg1"),
+    bg2: document.getElementById("color-bg2"),
+    bg3: document.getElementById("color-bg3"),
+    bg4: document.getElementById("color-bg4"),
+    bg5: document.getElementById("color-bg5"),
+    bg6: document.getElementById("color-bg6"),
   };
 
-  preview.style.background = `linear-gradient(135deg, ${colors.bg1} 0%, ${colors.bg2} 15%, ${colors.bg3} 45%, ${colors.bg4} 65%, ${colors.bg5} 85%, ${colors.bg6} 100%)`;
+  // 检查所有颜色输入是否存在
+  const allInputsExist = Object.values(colorInputs).every(input => input !== null);
+  if (!allInputsExist) {
+    console.warn("updateCustomPreview: 某些颜色输入未找到");
+    return;
+  }
+
+  const colors = {
+    bg1: colorInputs.bg1.value,
+    bg2: colorInputs.bg2.value,
+    bg3: colorInputs.bg3.value,
+    bg4: colorInputs.bg4.value,
+    bg5: colorInputs.bg5.value,
+    bg6: colorInputs.bg6.value,
+  };
+
+  // 更新顶部预览横幅
+  const previewGradient = document.querySelector(".preview-gradient");
+  const previewName = document.getElementById("preview-name");
+  const previewDesc = document.getElementById("preview-desc");
+
+  if (previewGradient) {
+    const gradient = `linear-gradient(135deg, ${colors.bg1} 0%, ${colors.bg2} 15%, ${colors.bg3} 45%, ${colors.bg4} 65%, ${colors.bg5} 85%, ${colors.bg6} 100%)`;
+    previewGradient.style.background = gradient;
+    console.log("自定义预览已更新");
+  }
+
+  if (previewName) {
+    previewName.textContent = "🎨 自定义主题（预览）";
+  }
+
+  if (previewDesc) {
+    previewDesc.textContent = "你的专属配色设计";
+  }
+}
+
+/**
+ * 生成预设方案的时间轴预览 HTML
+ */
+function generatePresetPreview(preset) {
+  if (!preset.schedule || preset.schedule.length === 0) {
+    return '';
+  }
+
+  // 为每个时间段生成预览条
+  const previewBars = preset.schedule.map((item) => {
+    const theme = PRESET_THEMES[item.theme];
+    if (!theme) return '';
+
+    // 计算时间段在 24 小时中的占比
+    const startHour = parseInt(item.start.split(':')[0]);
+    const startMinute = parseInt(item.start.split(':')[1]);
+    const endHour = parseInt(item.end.split(':')[0]) || 24;
+    const endMinute = parseInt(item.end.split(':')[1]);
+
+    const startPercent = ((startHour * 60 + startMinute) / 1440) * 100;
+    const endPercent = ((endHour * 60 + endMinute) / 1440) * 100;
+    const widthPercent = endPercent - startPercent;
+
+    // 生成渐变背景
+    const gradient = `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.secondary})`;
+
+    return `
+      <div class="preset-preview-segment"
+           style="left: ${startPercent}%; width: ${widthPercent}%; background: ${gradient};"
+           title="${item.start}-${item.end}: ${theme.name}">
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="preset-preview-timeline">
+      <div class="preset-preview-track">
+        ${previewBars}
+      </div>
+      <div class="preset-preview-labels">
+        <span>00:00</span>
+        <span>06:00</span>
+        <span>12:00</span>
+        <span>18:00</span>
+        <span>24:00</span>
+      </div>
+    </div>
+  `;
 }
 
 /**
@@ -898,56 +1233,30 @@ function renderAutoThemeContent() {
   const autoThemeManager = window.autoThemeManager;
   const config = autoThemeManager.getConfig();
 
-  // 渲染预设方案
+  // 渲染预设方案（简化版）
   const presetsContainer = document.getElementById("auto-theme-presets");
-  presetsContainer.innerHTML = Object.values(AUTO_THEME_PRESETS)
-    .map(
-      (preset) => {
-        // 自定义方案添加编辑按钮
-        if (preset.isCustom) {
-          return `
-    <div class="auto-preset-card custom ${config.preset === preset.id ? "active" : ""}"
-         data-preset-id="${preset.id}">
-      <div class="auto-preset-header">
-        <div class="auto-preset-name">${preset.name}</div>
-        <button class="edit-custom-btn" onclick="openCustomScheduleEditor(event)" title="编辑自定义方案">
-          ✏️
-        </button>
+  if (presetsContainer) {
+    presetsContainer.innerHTML = Object.values(AUTO_THEME_PRESETS)
+      .map(
+        (preset) => `
+      <div class="auto-preset-card ${config.preset === preset.id ? "active" : ""}"
+           data-preset-id="${preset.id}"
+           onclick="selectAutoPreset('${preset.id}')">
+        <div class="preset-header">
+          <h5>${preset.name}</h5>
+          <span class="preset-badge">${preset.schedule.length} 个时段</span>
+        </div>
+        <p class="preset-desc">${preset.description}</p>
+        ${generatePresetPreview(preset)}
+        ${config.preset === preset.id ? '<div class="preset-check">✓</div>' : ''}
       </div>
-      <div class="auto-preset-desc">${preset.description}</div>
-      <div class="auto-preset-count">${preset.schedule.length} 个时段</div>
-      <button class="select-preset-btn" onclick="selectAutoPreset('${preset.id}')">
-        ${config.preset === preset.id ? '已选择' : '选择此方案'}
-      </button>
-    </div>
-  `;
-        }
-
-        // 普通预设方案
-        return `
-    <div class="auto-preset-card ${config.preset === preset.id ? "active" : ""}"
-         data-preset-id="${preset.id}"
-         onclick="selectAutoPreset('${preset.id}')">
-      <div class="auto-preset-name">${preset.name}</div>
-      <div class="auto-preset-desc">${preset.description}</div>
-      <div class="auto-preset-count">${preset.schedule.length} 个时段</div>
-    </div>
-  `;
-      }
-    )
-    .join("");
+    `
+      )
+      .join("");
+  }
 
   // 更新状态信息
   updateAutoThemeStatus();
-
-  // 渲染时间轴
-  renderAutoThemeTimeline();
-
-  // 更新自动主题区域的显示状态
-  const autoContent = document.getElementById("auto-theme-content");
-  if (autoContent) {
-    autoContent.style.display = config.enabled ? "block" : "none";
-  }
 }
 
 /**
@@ -1002,50 +1311,6 @@ function getNextChangeTime(presetId) {
 }
 
 /**
- * 渲染自动主题时间轴
- */
-function renderAutoThemeTimeline() {
-  const timelineContainer = document.getElementById("auto-theme-timeline");
-  if (!timelineContainer) return;
-
-  const config = window.autoThemeManager.getConfig();
-  if (!config.enabled || !config.preset) {
-    timelineContainer.innerHTML = "";
-    return;
-  }
-
-  const preset = AUTO_THEME_PRESETS[config.preset];
-  if (!preset) return;
-
-  const now = new Date();
-  const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
-    now.getMinutes()
-  ).padStart(2, "0")}`;
-
-  timelineContainer.innerHTML = `
-    <div class="timeline-header">24小时主题时间轴</div>
-    <div class="timeline-items">
-      ${preset.schedule
-        .map((item) => {
-          const theme = PRESET_THEMES[item.theme];
-          const isActive = currentTime >= item.start && currentTime < item.end;
-          return `
-          <div class="timeline-item ${isActive ? "active" : ""}"
-               style="background: linear-gradient(135deg, ${theme.colors.bg3}, ${theme.colors.bg5})">
-            <div class="timeline-time">${item.start} - ${item.end}</div>
-            <div class="timeline-theme">
-              <span class="timeline-icon">${theme.icon}</span>
-              <span class="timeline-name">${theme.name}</span>
-            </div>
-          </div>
-        `;
-        })
-        .join("")}
-    </div>
-  `;
-}
-
-/**
  * 切换自动主题
  */
 function toggleAutoTheme() {
@@ -1066,10 +1331,7 @@ function toggleAutoTheme() {
 
   if (enabled) {
     updateAutoThemeStatus();
-    renderAutoThemeTimeline();
   }
-
-  // 更新徽章状态(已在start/stop中调用,此处无需重复)
 
   if (typeof Utils !== "undefined") {
     Utils.showToast(
@@ -1088,12 +1350,19 @@ function selectAutoPreset(presetId) {
 
   // 更新选中状态
   document.querySelectorAll(".auto-preset-card").forEach((card) => {
-    card.classList.toggle("active", card.dataset.presetId === presetId);
+    const isActive = card.dataset.presetId === presetId;
+    card.classList.toggle("active", isActive);
+    // 更新选中标记
+    const existingCheck = card.querySelector(".preset-check");
+    if (isActive && !existingCheck) {
+      card.insertAdjacentHTML("beforeend", '<div class="preset-check">✓</div>');
+    } else if (!isActive && existingCheck) {
+      existingCheck.remove();
+    }
   });
 
-  // 更新状态和时间轴
+  // 更新状态
   updateAutoThemeStatus();
-  renderAutoThemeTimeline();
 
   if (typeof Utils !== "undefined") {
     Utils.showToast(
@@ -1147,10 +1416,23 @@ function bindThemeSelectorEvents() {
  * 添加样式
  */
 function addThemeSelectorStyles() {
+  // 检查是否已加载样式
+  if (document.getElementById("theme-selector-styles")) return;
+
+  // 加载外部CSS文件
+  const link = document.createElement("link");
+  link.id = "theme-selector-styles";
+  link.rel = "stylesheet";
+  link.href = "./shared/styles/theme-selector.css";
+  document.head.appendChild(link);
+}
+
+// 旧的内联样式（保留作为后备）
+function addThemeSelectorStylesInline() {
   if (document.getElementById("theme-selector-styles")) return;
 
   const style = document.createElement("style");
-  style.id = "theme-selector-styles";
+  style.id = "theme-selector-styles-inline";
   style.textContent = `
     .theme-modal {
       position: fixed;
@@ -2494,4 +2776,488 @@ function minutesToTime(minutes) {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+}
+
+// 存储当前编辑的时间段数据
+let currentSchedule = [];
+
+/**
+ * 打开自定义时间段编辑器
+ */
+function openCustomScheduleEditor() {
+  const customPreset = AUTO_THEME_PRESETS.custom;
+  currentSchedule = JSON.parse(JSON.stringify(customPreset.schedule || [{ start: "00:00", end: "24:00", theme: "dawn" }]));
+
+  const editorHtml = `
+    <div class="theme-modal show" id="schedule-editor-modal">
+      <div class="theme-modal-overlay" onclick="closeScheduleEditor()"></div>
+      <div class="theme-modal-content" style="max-width: 700px;">
+        <div class="theme-modal-header">
+          <h2>⚙️ 自定义时间段方案</h2>
+          <button class="theme-modal-close" onclick="closeScheduleEditor()">×</button>
+        </div>
+        <div class="theme-modal-body" style="max-height: 600px;">
+          <div style="padding: 20px 24px;">
+            <p style="margin: 0 0 20px; color: var(--text-light); font-size: 14px;">
+              设置一天中不同时段自动切换的主题，最多可添加 10 个时间段
+            </p>
+
+            <div id="schedule-list"></div>
+
+            <button class="theme-btn theme-btn-secondary" onclick="addScheduleItem()"
+                    style="width: 100%; margin-top: 16px;" id="add-schedule-btn">
+              <span>➕</span> 添加时间段
+            </button>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+              <button class="theme-btn theme-btn-secondary" onclick="closeScheduleEditor()" style="flex: 1;">
+                取消
+              </button>
+              <button class="theme-btn theme-btn-primary" onclick="saveCustomSchedule()" style="flex: 1;">
+                <span>💾</span> 保存方案
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', editorHtml);
+  renderScheduleList(currentSchedule);
+}
+
+/**
+ * 渲染时间段列表
+ */
+function renderScheduleList(schedule) {
+  const container = document.getElementById('schedule-list');
+  const themes = window.themeManager.getPresetThemes();
+
+  container.innerHTML = schedule.map((item, index) => `
+    <div class="schedule-item" data-index="${index}">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <span style="font-weight: 600; color: var(--text-color); min-width: 60px;">时段 ${index + 1}</span>
+        <input type="time" value="${item.start}"
+               onchange="updateScheduleItem(${index}, 'start', this.value)"
+               style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px;">
+        <span style="color: var(--text-light);">至</span>
+        <input type="time" value="${item.end}"
+               onchange="updateScheduleItem(${index}, 'end', this.value)"
+               style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px;">
+        <button onclick="removeScheduleItem(${index})"
+                style="padding: 8px 12px; background: var(--error-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
+          🗑️
+        </button>
+      </div>
+      <select onchange="updateScheduleItem(${index}, 'theme', this.value)"
+              style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px;">
+        ${Object.values(themes).map(theme => `
+          <option value="${theme.id}" ${item.theme === theme.id ? 'selected' : ''}>
+            ${theme.icon} ${theme.name}
+          </option>
+        `).join('')}
+      </select>
+    </div>
+  `).join('');
+
+  // 更新添加按钮状态
+  const addBtn = document.getElementById('add-schedule-btn');
+  if (addBtn) {
+    addBtn.disabled = schedule.length >= 10;
+    addBtn.style.opacity = schedule.length >= 10 ? '0.5' : '1';
+  }
+}
+
+/**
+ * 更新时间段项
+ */
+function updateScheduleItem(index, field, value) {
+  if (currentSchedule[index]) {
+    currentSchedule[index][field] = value;
+  }
+}
+
+/**
+ * 添加时间段
+ */
+function addScheduleItem() {
+  if (currentSchedule.length >= 10) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('最多添加10个时间段', 'warning');
+    }
+    return;
+  }
+
+  // 获取最后一个时间段的结束时间作为新时间段的开始时间
+  const lastItem = currentSchedule[currentSchedule.length - 1];
+  const newStart = lastItem ? lastItem.end : "00:00";
+  const newEnd = "24:00";
+
+  currentSchedule.push({
+    start: newStart,
+    end: newEnd,
+    theme: "dawn"
+  });
+
+  renderScheduleList(currentSchedule);
+}
+
+/**
+ * 删除时间段
+ */
+function removeScheduleItem(index) {
+  if (currentSchedule.length <= 1) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('至少保留一个时间段', 'warning');
+    }
+    return;
+  }
+
+  currentSchedule.splice(index, 1);
+  renderScheduleList(currentSchedule);
+}
+
+/**
+ * 保存自定义时间段
+ */
+function saveCustomSchedule() {
+  // 验证时间段
+  for (let i = 0; i < currentSchedule.length; i++) {
+    const item = currentSchedule[i];
+    if (!item.start || !item.end || !item.theme) {
+      if (typeof Utils !== 'undefined') {
+        Utils.showToast(`时段 ${i + 1} 信息不完整`, 'error');
+      }
+      return;
+    }
+
+    const startMinutes = timeToMinutes(item.start);
+    const endMinutes = timeToMinutes(item.end);
+
+    if (endMinutes <= startMinutes) {
+      if (typeof Utils !== 'undefined') {
+        Utils.showToast(`时段 ${i + 1} 结束时间必须晚于开始时间`, 'error');
+      }
+      return;
+    }
+  }
+
+  // 保存到 AUTO_THEME_PRESETS
+  AUTO_THEME_PRESETS.custom.schedule = currentSchedule;
+
+  // 保存到 localStorage
+  try {
+    localStorage.setItem('customSchedule', JSON.stringify(currentSchedule));
+
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('自定义方案保存成功', 'success');
+    }
+
+    closeScheduleEditor();
+
+    // 如果主模态框还在，刷新自动主题内容
+    const mainModal = document.getElementById('theme-selector-modal');
+    if (mainModal && mainModal.classList.contains('show')) {
+      renderAutoThemeContent();
+    }
+  } catch (e) {
+    console.error('保存失败:', e);
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('保存失败，请重试', 'error');
+    }
+  }
+}
+
+/**
+ * 关闭编辑器
+ */
+function closeScheduleEditor() {
+  const modal = document.getElementById('schedule-editor-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(() => modal.remove(), 300);
+  }
+}
+
+// 页面加载时恢复自定义时间段
+if (typeof window !== 'undefined') {
+  try {
+    const savedSchedule = localStorage.getItem('customSchedule');
+    if (savedSchedule) {
+      AUTO_THEME_PRESETS.custom.schedule = JSON.parse(savedSchedule);
+    }
+  } catch (e) {
+    console.warn('恢复自定义时间段失败:', e);
+  }
+}
+
+// ========== 自定义主题库功能 ==========
+
+// 当前编辑的自定义主题ID (null表示新建)
+let editingThemeId = null;
+
+/**
+ * 获取保存的自定义主题列表
+ */
+function getSavedCustomThemes() {
+  try {
+    const saved = localStorage.getItem('customThemes');
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    console.error('读取自定义主题失败:', e);
+    return [];
+  }
+}
+
+/**
+ * 保存自定义主题列表
+ */
+function saveCustomThemesToStorage(themes) {
+  try {
+    localStorage.setItem('customThemes', JSON.stringify(themes));
+    return true;
+  } catch (e) {
+    console.error('保存自定义主题失败:', e);
+    return false;
+  }
+}
+
+/**
+ * 渲染已保存的自定义主题
+ */
+function renderSavedThemes() {
+  const container = document.getElementById('saved-themes-grid');
+  const emptyHint = document.getElementById('empty-library-hint');
+  const savedThemes = getSavedCustomThemes();
+
+  if (savedThemes.length === 0) {
+    container.style.display = 'none';
+    emptyHint.style.display = 'block';
+    return;
+  }
+
+  container.style.display = 'grid';
+  emptyHint.style.display = 'none';
+
+  const currentTheme = window.themeManager.getCurrentTheme();
+
+  container.innerHTML = savedThemes.map(theme => `
+    <div class="theme-card ${currentTheme?.id === theme.id ? 'active' : ''}"
+         data-theme-id="${theme.id}">
+      <div class="theme-card-preview"
+           style="background: linear-gradient(135deg, ${theme.colors.bg1}, ${theme.colors.bg3}, ${theme.colors.bg5}, ${theme.colors.bg6})"
+           onclick="applySavedCustomTheme('${theme.id}')"></div>
+      <div class="theme-card-info">
+        <div class="theme-card-icon">🎨</div>
+        <div class="theme-card-name">${theme.name}</div>
+        <div class="theme-card-desc">自定义主题</div>
+      </div>
+      <div style="display: flex; gap: 4px; padding: 0 8px 8px;">
+        <button onclick="editSavedTheme('${theme.id}')"
+                style="flex: 1; padding: 6px; background: var(--primary-alpha-10); color: var(--primary-color); border: 1px solid var(--primary-alpha-40); border-radius: 4px; cursor: pointer; font-size: 12px;">
+          ✏️ 编辑
+        </button>
+        <button onclick="deleteSavedTheme('${theme.id}')"
+                style="flex: 1; padding: 6px; background: var(--error-alpha-10); color: var(--error-color); border: 1px solid var(--error-alpha-40); border-radius: 4px; cursor: pointer; font-size: 12px;">
+          🗑️ 删除
+        </button>
+      </div>
+      ${currentTheme?.id === theme.id ? '<div class="theme-card-check">✓</div>' : ''}
+    </div>
+  `).join('');
+}
+
+/**
+ * 切换颜色编辑器显示/隐藏
+ */
+function toggleColorEditor() {
+  const editor = document.getElementById('color-editor-section');
+  const toggleText = document.getElementById('editor-toggle-text');
+
+  if (editor.style.display === 'none' || !editor.style.display) {
+    // 显示编辑器 - 新建模式
+    editor.style.display = 'block';
+    toggleText.textContent = '隐藏编辑器';
+    editingThemeId = null;
+
+    // 重置表单
+    const nameInput = document.getElementById('custom-theme-name');
+    if (nameInput) nameInput.value = '';
+    resetCustomTheme();
+
+    // 平滑滚动到编辑器
+    setTimeout(() => {
+      editor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  } else {
+    // 隐藏编辑器
+    editor.style.display = 'none';
+    toggleText.textContent = '创建新主题';
+    editingThemeId = null;
+  }
+}
+
+/**
+ * 保存自定义主题到主题库
+ */
+function saveCustomTheme() {
+  const name = document.getElementById('custom-theme-name').value.trim();
+
+  if (!name) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('请输入主题名称', 'warning');
+    }
+    return;
+  }
+
+  const colors = {
+    bg1: document.getElementById('color-bg1').value,
+    bg2: document.getElementById('color-bg2').value,
+    bg3: document.getElementById('color-bg3').value,
+    bg4: document.getElementById('color-bg4').value,
+    bg5: document.getElementById('color-bg5').value,
+    bg6: document.getElementById('color-bg6').value,
+    primary: document.getElementById('color-bg3').value,
+    secondary: document.getElementById('color-bg4').value,
+    accent: document.getElementById('color-bg5').value,
+  };
+
+  let themes = getSavedCustomThemes();
+
+  if (editingThemeId) {
+    // 编辑模式 - 更新现有主题
+    const index = themes.findIndex(t => t.id === editingThemeId);
+    if (index !== -1) {
+      themes[index] = {
+        ...themes[index],
+        name,
+        colors,
+        updatedAt: new Date().toISOString()
+      };
+    }
+  } else {
+    // 新建模式
+    const newTheme = {
+      id: `custom_${Date.now()}`,
+      name,
+      icon: '🎨',
+      description: '自定义主题',
+      colors,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    themes.push(newTheme);
+  }
+
+  if (saveCustomThemesToStorage(themes)) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast(editingThemeId ? '主题已更新' : '主题已保存', 'success');
+    }
+
+    // 刷新主题库显示
+    renderSavedThemes();
+
+    // 隐藏编辑器
+    toggleColorEditor();
+  }
+}
+
+/**
+ * 应用已保存的自定义主题
+ */
+function applySavedCustomTheme(themeId) {
+  const themes = getSavedCustomThemes();
+  const theme = themes.find(t => t.id === themeId);
+
+  if (!theme) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('主题不存在', 'error');
+    }
+    return;
+  }
+
+  window.themeManager.applyCustomTheme(theme.colors, theme.id, theme.name);
+
+  // 取消预设主题的选中状态
+  document.querySelectorAll('.theme-card').forEach(card => {
+    card.classList.remove('active');
+  });
+
+  // 设置当前卡片为激活状态
+  const currentCard = document.querySelector(`.theme-card[data-theme-id="${themeId}"]`);
+  if (currentCard) {
+    currentCard.classList.add('active');
+  }
+
+  // 更新预览
+  updatePreviewBanner();
+
+  if (typeof Utils !== 'undefined') {
+    Utils.showToast(`已应用主题: ${theme.name}`, 'success');
+  }
+}
+
+/**
+ * 编辑已保存的主题
+ */
+function editSavedTheme(themeId) {
+  const themes = getSavedCustomThemes();
+  const theme = themes.find(t => t.id === themeId);
+
+  if (!theme) return;
+
+  // 设置编辑模式
+  editingThemeId = themeId;
+
+  // 填充表单
+  document.getElementById('custom-theme-name').value = theme.name;
+  document.getElementById('color-bg1').value = theme.colors.bg1;
+  document.getElementById('color-bg2').value = theme.colors.bg2;
+  document.getElementById('color-bg3').value = theme.colors.bg3;
+  document.getElementById('color-bg4').value = theme.colors.bg4;
+  document.getElementById('color-bg5').value = theme.colors.bg5;
+  document.getElementById('color-bg6').value = theme.colors.bg6;
+
+  // 显示编辑器
+  const editor = document.getElementById('color-editor-section');
+  const toggleText = document.getElementById('editor-toggle-text');
+  editor.style.display = 'block';
+  toggleText.textContent = '隐藏编辑器';
+
+  // 更新预览
+  updateCustomPreview();
+
+  // 滚动到编辑器
+  setTimeout(() => {
+    editor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+/**
+ * 删除已保存的主题
+ */
+function deleteSavedTheme(themeId) {
+  if (!confirm('确定要删除这个主题吗？')) {
+    return;
+  }
+
+  let themes = getSavedCustomThemes();
+  themes = themes.filter(t => t.id !== themeId);
+
+  if (saveCustomThemesToStorage(themes)) {
+    if (typeof Utils !== 'undefined') {
+      Utils.showToast('主题已删除', 'success');
+    }
+
+    // 刷新显示
+    renderSavedThemes();
+
+    // 如果删除的是当前主题，切换到默认主题
+    const currentTheme = window.themeManager.getCurrentTheme();
+    if (currentTheme && currentTheme.id === themeId) {
+      window.themeManager.applyTheme('dawn');
+      updatePreviewBanner();
+    }
+  }
 }

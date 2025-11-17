@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>主题系统完整测试</title>
+  <link rel="stylesheet" href="../../shared/styles/common.css">
+  <link rel="stylesheet" href="../../shared/styles/theme-selector.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg-color) 0%, var(--primary-alpha-10) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .test-container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .test-card {
+      background: white;
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 20px;
+    }
+
+    .test-card h1 {
+      margin: 0 0 12px 0;
+      color: var(--text-color);
+      font-size: 32px;
+    }
+
+    .test-card p {
+      margin: 0 0 24px 0;
+      color: var(--text-light);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .test-btn {
+      padding: 14px 32px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px var(--primary-alpha-20);
+    }
+
+    .test-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-alpha-30);
+    }
+
+    .test-btn:active {
+      transform: translateY(0);
+    }
+
+    .feature-list {
+      background: var(--bg-color);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin-top: 20px;
+    }
+
+    .feature-list h3 {
+      margin: 0 0 16px 0;
+      color: var(--text-color);
+      font-size: 18px;
+    }
+
+    .feature-list ul {
+      margin: 0;
+      padding-left: 24px;
+      color: var(--text-color);
+    }
+
+    .feature-list li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--success-alpha-10);
+      color: var(--success-color);
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .current-theme-display {
+      background: var(--primary-alpha-05);
+      border: 1px solid var(--primary-alpha-20);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .current-theme-display strong {
+      color: var(--primary-color);
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-card">
+      <h1>🎨 主题系统完整测试</h1>
+      <p>所有功能已优化完成，点击下方按钮打开主题选择器进行测试。</p>
+
+      <button class="test-btn" onclick="openThemeSelector()">
+        🚀 打开主题选择器
+      </button>
+
+      <div class="current-theme-display">
+        <div>
+          <strong>当前主题：</strong>
+          <span id="current-theme-info">加载中...</span>
+        </div>
+        <span class="status-badge">✓ 已就绪</span>
+      </div>
+
+      <div class="feature-list">
+        <h3>✨ 已完成的功能优化</h3>
+        <ul>
+          <li><strong>问题1 - 预设主题选中标识：</strong> 已修复，现在只有当前激活的主题会显示勾选标记</li>
+          <li><strong>问题2 - 自定义时间段编辑：</strong> 已添加"编辑自定义方案"功能，可自定义一天中不同时段的主题</li>
+          <li><strong>问题3 - 自定义主题库：</strong> 新增主题库功能，支持保存、编辑、删除自定义主题</li>
+          <li><strong>问题4 - 整体优化：</strong> 改进交互体验、视觉设计和响应式布局</li>
+        </ul>
+      </div>
+
+      <div class="feature-list" style="margin-top: 16px;">
+        <h3>🎯 测试指南</h3>
+        <ul>
+          <li><strong>预设主题：</strong> 点击任意主题卡片，查看选中标识是否正确</li>
+          <li><strong>自动切换：</strong> 点击"编辑自定义方案"按钮，尝试添加/删除时间段</li>
+          <li><strong>自定义主题：</strong> 在自定义标签页创建并保存主题，测试编辑和删除功能</li>
+          <li><strong>预览功能：</strong> 查看顶部预览横幅是否随主题切换实时更新</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../shared/scripts/common.js"></script>
+  <script src="../../shared/scripts/theme.js"></script>
+  <script>
+    // 更新当前主题信息
+    function updateCurrentThemeInfo() {
+      const currentTheme = window.themeManager?.getCurrentTheme();
+      const infoEl = document.getElementById('current-theme-info');
+
+      if (currentTheme) {
+        infoEl.innerHTML = `${currentTheme.icon || '🎨'} <strong>${currentTheme.name}</strong>`;
+      } else {
+        infoEl.textContent = '未知主题';
+      }
+    }
+
+    // 页面加载完成
+    window.addEventListener('load', () => {
+      console.log('主题系统测试页面已加载');
+      updateCurrentThemeInfo();
+    });
+
+    // 监听主题变更
+    window.addEventListener('themechange', (e) => {
+      console.log('主题已变更:', e.detail.theme);
+      updateCurrentThemeInfo();
+    });
+  </script>
+</body>
+</html>

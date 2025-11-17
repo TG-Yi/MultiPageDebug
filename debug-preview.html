@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>预览功能调试</title>
+  <link rel="stylesheet" href="./shared/styles/common.css">
+  <link rel="stylesheet" href="./shared/styles/theme-selector.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: sans-serif;
+    }
+    .debug-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .preview-test {
+      margin-top: 20px;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    pre {
+      background: #333;
+      color: #0f0;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 主题预览功能调试</h1>
+
+  <div class="debug-section">
+    <h2>1. 检查DOM结构</h2>
+    <button onclick="checkPreviewElements()">检查预览元素</button>
+    <pre id="dom-check"></pre>
+  </div>
+
+  <div class="debug-section">
+    <h2>2. 测试预览横幅</h2>
+    <div class="preview-test">
+      <div class="theme-preview-banner" id="test-banner">
+        <div class="preview-gradient" id="test-gradient"></div>
+        <div class="preview-info">
+          <h3 class="preview-theme-name" id="test-name">测试主题</h3>
+          <p class="preview-theme-desc" id="test-desc">这是测试描述</p>
+        </div>
+      </div>
+    </div>
+    <button onclick="testUpdatePreview()">更新预览</button>
+  </div>
+
+  <div class="debug-section">
+    <h2>3. 打开主题选择器</h2>
+    <button onclick="openThemeSelector()">打开主题选择器</button>
+    <button onclick="checkModalPreview()">检查模态框中的预览</button>
+    <pre id="modal-check"></pre>
+  </div>
+
+  <div class="debug-section">
+    <h2>4. 控制台日志</h2>
+    <pre id="console-log">等待操作...</pre>
+  </div>
+
+  <script src="./shared/scripts/common.js"></script>
+  <script src="./shared/scripts/theme.js"></script>
+  <script>
+    const logEl = document.getElementById('console-log');
+    const originalLog = console.log;
+    const originalWarn = console.warn;
+
+    // 拦截console.log
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      logEl.textContent += `[LOG] ${args.join(' ')}\n`;
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      logEl.textContent += `[WARN] ${args.join(' ')}\n`;
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    function checkPreviewElements() {
+      const banner = document.querySelector('.theme-preview-banner');
+      const gradient = document.querySelector('.preview-gradient');
+      const name = document.getElementById('preview-name');
+      const desc = document.getElementById('preview-desc');
+
+      const result = {
+        '预览横幅': !!banner,
+        '渐变层': !!gradient,
+        '标题元素': !!name,
+        '描述元素': !!desc,
+        '横幅数量': document.querySelectorAll('.theme-preview-banner').length,
+        '渐变层数量': document.querySelectorAll('.preview-gradient').length
+      };
+
+      document.getElementById('dom-check').textContent = JSON.stringify(result, null, 2);
+    }
+
+    function testUpdatePreview() {
+      const gradient = document.getElementById('test-gradient');
+      const name = document.getElementById('test-name');
+      const desc = document.getElementById('test-desc');
+
+      const colors = {
+        bg1: '#1e3a5f',
+        bg2: '#3d5a80',
+        bg3: '#ee6c4d',
+        bg4: '#f4a261',
+        bg5: '#e9c46a',
+        bg6: '#98c1d9'
+      };
+
+      const gradientStr = `linear-gradient(135deg, ${colors.bg1} 0%, ${colors.bg2} 15%, ${colors.bg3} 45%, ${colors.bg4} 65%, ${colors.bg5} 85%, ${colors.bg6} 100%)`;
+      gradient.style.background = gradientStr;
+      name.textContent = '🌅 黎明破晓';
+      desc.textContent = '温暖的日出时分，充满希望';
+
+      console.log('测试预览已更新');
+      console.log('渐变背景:', gradientStr);
+    }
+
+    function checkModalPreview() {
+      const modal = document.getElementById('theme-selector-modal');
+      if (!modal) {
+        document.getElementById('modal-check').textContent = '模态框未打开';
+        return;
+      }
+
+      const banner = modal.querySelector('.theme-preview-banner');
+      const gradient = modal.querySelector('.preview-gradient');
+      const name = modal.querySelector('#preview-name');
+      const desc = modal.querySelector('#preview-desc');
+
+      const result = {
+        '模态框存在': !!modal,
+        '预览横幅': !!banner,
+        '渐变层': !!gradient,
+        '标题': name ? name.textContent : null,
+        '描述': desc ? desc.textContent : null,
+        '渐变背景': gradient ? gradient.style.background : null
+      };
+
+      document.getElementById('modal-check').textContent = JSON.stringify(result, null, 2);
+    }
+
+    // 页面加载完成
+    window.addEventListener('load', () => {
+      console.log('调试页面已加载');
+      console.log('themeManager:', window.themeManager ? '存在' : '不存在');
+      console.log('当前主题:', window.themeManager?.getCurrentTheme()?.name);
+      checkPreviewElements();
+    });
+  </script>
+</body>
+</html>
